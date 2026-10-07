@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+app:
+  security:
+    secret: test-only-secret-at-least-32-bytes-do-not-deploy
+logging:
+  level:
+    root: WARN

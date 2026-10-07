@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    password: ${DB_PASSWORD:clothes_local}
+app:
+  security:
+    # Local development only; the default profile requires JWT_SECRET.
+    secret: ${JWT_SECRET:local-development-secret-at-least-32-bytes-change-me}

@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:8080
+@email = customer@example.com
+@password = Password-1234
+
+### Register; use a new email when running this request again
+# @name register
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "confirmPassword": "{{password}}",
+  "fullName": "Nguyễn An",
+  "phone": "0901234567",
+  "dateOfBirth": "2000-01-02"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Current account
+GET {{baseUrl}}/api/v1/auth/me
+Authorization: Bearer {{login.response.body.$.data.accessToken}}
+
+### Seeded administrator (V3)
+# @name adminLogin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin",
+  "password": "admin123"
+}
+
+### Requires ADMIN + ACCOUNT_READ
+GET {{baseUrl}}/api/v1/admin/accounts?page=0&size=20&status=ACTIVE
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Account details; requires ADMIN + ACCOUNT_READ
+GET {{baseUrl}}/api/v1/admin/accounts/{{login.response.body.$.data.account.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Public health endpoint
+GET {{baseUrl}}/actuator/health

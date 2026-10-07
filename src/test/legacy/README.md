@@ -1,0 +1,1 @@
+CommerceIntegrationTests.java thuộc phiên bản catalog/cart/order trước đây. Các lớp production tương ứng đã bị loại khỏi workspace trước khi triển khai auth hiện tại. Giữ test ở đây để tham khảo khi khôi phục những chức năng đó; Maven chỉ chạy test trong src/test/java.
