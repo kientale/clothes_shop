@@ -40,7 +40,7 @@ test('real customer registers, reloads, signs in and cannot enter admin', async 
   const password = 'Password-1234'
   await page.goto('http://127.0.0.1:3400/shop/orders')
   await expect(page).toHaveURL(/\/shop\/login$/)
-  await page.locator('.auth-card').getByRole('link', { name: 'Đăng ký' }).click()
+  await page.locator('.auth-form').getByRole('link', { name: 'Tạo tài khoản', exact: true }).click()
   await page.getByLabel('Họ tên', { exact: true }).fill('Nguyễn An')
   await page.getByLabel('Email', { exact: true }).fill(email)
   await page.getByLabel('Mật khẩu (8-72 ký tự)', { exact: true }).fill(password)
