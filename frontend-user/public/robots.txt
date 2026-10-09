@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /shop/cart
+Disallow: /shop/checkout
+Disallow: /shop/account
+Disallow: /shop/orders
+Disallow: /shop/notifications
+Disallow: /shop/wishlist
+Disallow: /shop/login
+Disallow: /shop/register
+Disallow: /shop/forgot-password
+Disallow: /shop/reset-password
+
+# The reverse proxy serves /sitemap.xml from the backend (GET /api/v1/store/sitemap.xml); see README.
+Sitemap: /sitemap.xml

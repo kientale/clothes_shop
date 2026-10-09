@@ -1,10 +1,11 @@
 package lemonadex.project.clothes;
 
-import lemonadex.project.clothes.dto.auth.*;
-import lemonadex.project.clothes.model.Account;
-import lemonadex.project.clothes.properties.SecurityProperties;
-import lemonadex.project.clothes.repository.AccountRepository;
-import lemonadex.project.clothes.service.AuthService;
+import lemonadex.project.clothes.features.auth.dto.*;
+import lemonadex.project.clothes.features.account.dto.*;
+import lemonadex.project.clothes.features.account.model.Account;
+import lemonadex.project.clothes.features.auth.config.SecurityProperties;
+import lemonadex.project.clothes.features.account.repository.AccountRepository;
+import lemonadex.project.clothes.features.auth.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -55,7 +56,13 @@ class AuthIntegrationTests extends PostgresTestSupport {
                     .andExpect(status().isOk()).andExpect(jsonPath("$.code").value("LOGIN_SUCCESS"))
                     .andExpect(jsonPath("$.data.account.email").value("admin@example.com"))
                     .andExpect(jsonPath("$.data.account.roles", contains("ADMIN")))
-                    .andExpect(jsonPath("$.data.account.permissions", contains("ACCOUNT_READ", "AUTH_PROFILE_READ")))
+                    .andExpect(jsonPath("$.data.account.permissions", contains("ACCOUNT_READ", "ACCOUNT_WRITE", "ARTICLE_READ", "ARTICLE_WRITE", "AUTH_PROFILE_READ",
+                            "BANNER_READ", "BANNER_WRITE", "COUPON_READ", "COUPON_WRITE", "CUSTOMER_READ", "CUSTOMER_WRITE",
+                            "FLASH_SALE_READ", "FLASH_SALE_WRITE", "INVENTORY_READ", "INVENTORY_WRITE", "NOTIFICATION_READ", "NOTIFICATION_WRITE",
+                            "ORDER_READ", "ORDER_WRITE", "PAYMENT_READ", "PAYMENT_WRITE", "POLICY_READ", "POLICY_WRITE", "PRODUCT_READ", "PRODUCT_WRITE",
+                            "PROMOTION_READ", "PROMOTION_WRITE", "REFUND_READ", "REFUND_WRITE",
+                            "REPORT_CUSTOMER_READ", "REPORT_INVENTORY_READ", "REPORT_ORDER_READ", "REPORT_PRODUCT_READ", "REPORT_PROMOTION_READ", "REPORT_RETURN_READ", "REPORT_REVENUE_READ",
+                            "RETURN_READ", "RETURN_WRITE", "REVIEW_READ", "REVIEW_WRITE", "ROLE_READ", "ROLE_WRITE", "SETTINGS_GENERAL_READ", "SETTINGS_GENERAL_WRITE", "SETTINGS_NOTIFICATION_READ", "SETTINGS_NOTIFICATION_WRITE", "SETTINGS_ORDER_READ", "SETTINGS_ORDER_WRITE", "SETTINGS_PAYMENT_READ", "SETTINGS_PAYMENT_WRITE", "SETTINGS_SHIPPING_READ", "SETTINGS_SHIPPING_WRITE", "SETTINGS_STORE_READ", "SETTINGS_STORE_WRITE", "SHIPMENT_READ", "SHIPMENT_WRITE", "STOCK_ALERT_READ")))
                     .andReturn();
             Map<?, ?> data = (Map<?, ?>) body(result).get("data");
             mvc.perform(get("/api/v1/admin/accounts").header(HttpHeaders.AUTHORIZATION, "Bearer " + data.get("accessToken")))
@@ -368,7 +375,8 @@ class AuthIntegrationTests extends PostgresTestSupport {
                 documented.add(method.toString().toUpperCase(Locale.ROOT) + " " + path)));
         Set<String> implemented = new HashSet<>();
         mappings.getHandlerMethods().forEach((mapping, handler) -> {
-            if (handler.getBeanType().getPackageName().equals("lemonadex.project.clothes.controller")) {
+            if (handler.getBeanType().getPackageName().startsWith("lemonadex.project.clothes.features.")
+                    && handler.getBeanType().getPackageName().endsWith(".controller")) {
                 mapping.getPatternValues().forEach(path -> mapping.getMethodsCondition().getMethods()
                         .forEach(method -> implemented.add(method.name() + " " + path)));
             }

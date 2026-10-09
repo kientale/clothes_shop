@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LemonadeX Tennis Club &amp; Academy</title>
+<meta name="description" content="LemonadeX is a members' tennis club and academy where focused coaching meets championship courts." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&display=swap" />
+<link rel="preload" as="image" href="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/hero/hero-court.webp" fetchpriority="high" />
+<style>
+/*
+ * Z-index scale: hero plate -10, ghost text 0, coach card 10, trust controls 20,
+ * menu overlay 70, contact modal 90, intro loader 200.
+ */
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --brand: #2563c9;
+  --brand-deep: #0f2f63;
+  --brand-light: #5790e6;
+  --accent-teal: #0b6e97;
+  --surface: #f4f4f4;
+  --surface-card: #ffffff;
+  --ink: #0a0a0a;
+  --ink-soft: #717784;
+  --ghost: #d7dae1;
+  --hairline: #e6e8ec;
+  --on-brand: #ffffff;
+  --radius-card: 1.5rem;
+  --radius-card-lg: 2rem;
+  --radius-pill: 62.5rem;
+  --expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --inset: 0.5rem;
+  --hx: 1.5rem;
+}
+@media (min-width: 640px) { :root { --inset: 0.75rem; --hx: 2.5rem; } }
+
+/* Adaptive rem grid: design width 1920, scaled down by vw below it, up by JS above it. */
+html { font-size: 16px; }
+@media (max-width: 1920px) { html { font-size: 0.833333vw; } }
+@media (max-width: 1440px) { html { font-size: 1.111111vw; } }
+@media (max-width: 1024px) { html { font-size: 1.5625vw; } }
+/* 639.98px rather than 640px so this never overlaps the min-width: 640px layout rules. */
+@media (max-width: 639.98px) { html { font-size: 4.444444vw; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html.locked { position: relative; overflow: hidden; height: 100%; }
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Onest", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+button { cursor: pointer; font: inherit; color: inherit; }
+a { color: inherit; }
+ul { list-style: none; padding: 0; }
+:focus-visible { outline: 2px solid var(--brand-light); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+main { width: 100%; padding: var(--inset); overflow-x: clip; }
+
+/* Reveal primitives: clip-mask slide-up and word fade-rise. */
+.rv-clip { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.rv-line { display: block; }
+.rv-inner {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  transition: transform var(--dur, 950ms) var(--ease, var(--expo)), opacity var(--dur, 950ms) var(--ease, var(--expo));
+  transition-delay: var(--delay, 0ms);
+}
+.rv-fade { display: inline-block; }
+.rv-fade .rv-inner { transform: translateY(18px); --ease: var(--quart); }
+.rv-on .rv-inner { transform: none; opacity: 1; }
+.rv-reset .rv-inner { transition: none !important; }
+
+/* Shared: brand mark, eyebrow, pill, arrow button, dots, glass */
+.mark { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+.brand {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em;
+  text-decoration: none; color: inherit;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.22em;
+  color: var(--ink-soft);
+}
+.eyebrow::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: var(--radius-pill); background: var(--brand); }
+.eyebrow.light { color: rgb(255 255 255 / 0.7); }
+.eyebrow.light::before { background: var(--brand-light); }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: var(--radius-pill); border: 1px solid transparent;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.025em;
+  white-space: nowrap; text-decoration: none;
+  transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+}
+.pill svg { width: 1rem; height: 1rem; }
+.pill-arrow { display: inline-flex; }
+.pill-light { background: #fff; color: var(--brand-deep); }
+.pill-solid { background: var(--ink); color: #fff; }
+.pill-outline { background: transparent; border-color: var(--ink); color: var(--ink); }
+@media (hover: hover) {
+  .pill-light:hover { background: var(--brand-light); color: #fff; }
+  .pill-solid:hover { background: var(--brand-deep); }
+  .pill-outline:hover { background: var(--ink); color: #fff; }
+}
+
+.arrow-btn {
+  display: grid; place-items: center;
+  width: 3rem; height: 3rem; border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline); background: transparent; color: var(--ink);
+  transition: border-color 0.25s, background-color 0.25s;
+}
+.arrow-btn .ico { display: inline-flex; }
+.arrow-btn svg { width: 1.25rem; height: 1.25rem; }
+.arrow-btn.prev svg { transform: scaleX(-1); }
+.arrow-btn.solid { background: var(--ink); border-color: var(--ink); color: #fff; }
+@media (hover: hover) {
+  .arrow-btn:hover { border-color: var(--ink); }
+  .arrow-btn.solid:hover { background: var(--brand-deep); border-color: var(--brand-deep); }
+}
+@media (min-width: 640px) { .arrow-btn { width: 3.5rem; height: 3.5rem; } }
+
+.dots { display: flex; align-items: center; gap: 0.5rem; }
+.dot { padding: 0.375rem; border: 0; background: none; display: grid; }
+.dot i {
+  display: block; width: 0.375rem; height: 0.375rem; border-radius: var(--radius-pill);
+  background: var(--ghost); transition: width 0.4s var(--expo), background-color 0.3s;
+}
+.dot[aria-current="true"] i { width: 1.25rem; background: var(--ink); }
+.dots.light .dot i { background: rgb(255 255 255 / 0.4); }
+.dots.light .dot[aria-current="true"] i { background: #fff; }
+
+.glass {
+  border: 1px solid rgb(255 255 255 / 0.15);
+  background: rgb(255 255 255 / 0.1);
+  padding: 0.75rem;
+  border-radius: var(--radius-card);
+  box-shadow: 0 1.25rem 2.5rem rgb(15 47 99 / 0.2);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.round-btn {
+  display: grid; place-items: center; flex-shrink: 0;
+  width: 2.5rem; height: 2.5rem; border: 0; border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 0.15); color: #fff;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  transition: background-color 0.25s;
+}
+.round-btn:hover { background: rgb(255 255 255 / 0.25); }
+.round-btn svg { width: 1.125rem; height: 1.125rem; }
+.x-ico { display: inline-flex; }
+
+.stack-title { font-size: 3rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.025em; margin-top: 1rem; }
+
+/* Loader */
+.loader {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+  background: var(--brand-deep); color: #fff;
+  transition: transform 850ms var(--inout);
+}
+.loader.exit { transform: translateY(-105%); }
+.loader-mark { display: flex; align-items: center; gap: 0.75rem; font-size: 1.5rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em; }
+.loader-mark .mark { width: 1.75rem; height: 1.75rem; }
+.loader-track { width: 10rem; height: 1px; border-radius: var(--radius-pill); background: rgb(255 255 255 / 0.2); overflow: hidden; }
+.loader-fill { height: 100%; background: #fff; transform: scaleX(0); transform-origin: left; transition: transform 1280ms var(--inout) 120ms; }
+.loader.go .loader-fill { transform: scaleX(1); }
+
+/* Hero */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column;
+  height: calc(100svh - 1rem); min-height: 36rem;
+  border-radius: var(--radius-card-lg);
+  background: var(--brand-deep); color: #fff;
+}
+@media (min-width: 640px) { .hero { height: calc(100svh - 1.5rem); } }
+.hero-plate { position: absolute; inset: 0; z-index: -10; }
+.hero-plate-inner { position: absolute; left: 0; right: 0; top: -16%; width: 100%; height: 132%; will-change: transform; }
+.hero-plate-inner img { width: 100%; height: 100%; object-fit: cover; }
+.hero-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(15 47 99 / 0.65), rgb(15 47 99 / 0.35), rgb(15 47 99 / 0.75)); }
+
+.site-header { display: flex; align-items: center; padding: 1.5rem 1.5rem 0; font-size: 0.75rem; }
+@media (min-width: 640px) { .site-header { padding: 2rem 2.5rem 0; } }
+.nav-left { display: none; flex: 1; gap: 2rem; }
+.nav-left a { color: rgb(255 255 255 / 0.9); text-decoration: none; transition: color 0.2s; }
+.nav-left a:hover { color: #fff; }
+.site-header .brand { flex: 1; }
+.header-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 1rem; }
+.text-btn { display: none; border: 0; background: none; padding: 0; text-transform: uppercase; letter-spacing: 0.025em; font-size: 0.75rem; }
+.text-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.burger { display: grid; place-content: center; gap: 5px; }
+.burger i { display: block; width: 1rem; height: 1px; background: #fff; }
+@media (min-width: 640px) { .header-right { gap: 1.25rem; } .text-btn { display: inline; } }
+@media (min-width: 1024px) {
+  .nav-left { display: flex; }
+  .site-header .brand { justify-content: center; }
+}
+
+.hero-title-wrap { padding: 1rem 1.5rem 0; }
+@media (min-width: 640px) { .hero-title-wrap { padding-left: 2.5rem; padding-right: 2.5rem; } }
+/* Spec says 12.5vw, but Onest at that size runs wider than the hero; these sizes keep one line inside the padding. */
+.hero-title { font-size: 9.8vw; font-weight: 500; text-transform: uppercase; line-height: 0.85; letter-spacing: -0.02em; white-space: nowrap; }
+@media (min-width: 640px) { .hero-title { font-size: 10.8vw; } }
+
+.hero-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 1.5rem; padding: 0 1.5rem 2rem; }
+@media (min-width: 640px) { .hero-bottom { flex-direction: row; justify-content: space-between; align-items: flex-end; padding: 0 2.5rem 2.5rem; } }
+.tagline { font-size: 2.4rem; font-weight: 500; text-transform: uppercase; line-height: 0.95; letter-spacing: -0.025em; color: rgb(255 255 255 / 0.85); }
+.hero-cluster { display: flex; align-items: flex-end; gap: 1rem; }
+
+.collection { display: none; width: 16rem; flex-direction: column; gap: 0.75rem; }
+@media (min-width: 768px) { .collection { display: flex; } }
+.coll-stage { position: relative; }
+.coll-card { display: flex; gap: 0.75rem; }
+.coll-card.out { position: absolute; top: 0; left: 0; width: 100%; pointer-events: none; }
+.coll-card img { width: 3.5rem; height: 3.5rem; border-radius: 0.75rem; object-fit: cover; flex-shrink: 0; }
+.coll-brand { font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.025em; }
+.coll-title { font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+.coll-cta { display: inline-block; margin-top: 0.25rem; font-size: 0.65rem; text-decoration: underline; text-underline-offset: 2px; }
+
+.member { width: 100%; max-width: 20rem; display: flex; align-items: stretch; gap: 0.75rem; }
+@media (min-width: 640px) { .member { max-width: 15rem; } }
+.member-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 0.5rem; }
+.member-value { font-size: 1.875rem; font-weight: 500; line-height: 1; }
+.avatars { display: flex; }
+.avatars i { width: 1.25rem; height: 1.25rem; border-radius: var(--radius-pill); border: 1px solid rgb(15 47 99 / 0.4); }
+.avatars i + i { margin-left: -0.5rem; }
+.member-cap { font-size: 0.65rem; opacity: 0.8; }
+.member img { width: 4rem; aspect-ratio: 3 / 4; border-radius: 0.75rem; object-fit: cover; }
+
+/* Trust */
+.trust { position: relative; isolation: isolate; overflow: hidden; background: var(--background); padding: 4rem 1.5rem; }
+@media (min-width: 640px) { .trust { padding: 5rem 2.5rem; } }
+.trust-top { position: relative; z-index: 20; display: flex; flex-direction: column; gap: 1.5rem; }
+@media (min-width: 640px) { .trust-top { flex-direction: row; justify-content: space-between; align-items: flex-start; } }
+.pct { width: 7rem; height: 7rem; border-radius: var(--radius-pill); background: var(--surface); display: grid; place-content: center; text-align: center; }
+.pct strong { display: block; font-size: 1.5rem; font-weight: 500; line-height: 1.1; }
+.pct span { display: block; max-width: 7em; margin: 0.25rem auto 0; font-size: 0.6rem; line-height: 1.3; color: var(--ink-soft); }
+@media (min-width: 640px) { .pct { width: 8rem; height: 8rem; } }
+.badge { max-width: 28rem; display: flex; gap: 1rem; border-radius: var(--radius-card); background: var(--surface); padding: 1.25rem; }
+@media (min-width: 640px) { .badge { gap: 1.25rem; padding: 1.5rem; } }
+.badge-idx { align-self: flex-start; border-radius: 0.75rem; background: var(--background); padding: 0.5rem 1rem; font-size: 1.25rem; font-weight: 500; }
+.badge h3 { font-size: 1.125rem; font-weight: 500; }
+.badge p { margin-top: 0.375rem; font-size: 0.75rem; line-height: 1.625; color: var(--ink-soft); }
+
+.ghost {
+  position: relative; z-index: 0; pointer-events: none; user-select: none;
+  max-width: 88rem; margin: 3rem auto 0;
+  font-size: 8.2vw; font-weight: 500; text-transform: uppercase; line-height: 1.02; letter-spacing: -0.025em;
+}
+.ghost-row { display: flex; justify-content: space-between; }
+.ghost-word { display: block; color: var(--ghost); will-change: transform; }
+.ghost-word.ink { color: var(--ink); }
+.ghost .rv-clip { padding-bottom: 0.12em; margin-bottom: -0.12em; }
+
+.coach-pos { position: relative; z-index: 10; width: 13rem; margin: 2rem auto 0; }
+@media (min-width: 640px) { .coach-pos { position: absolute; left: 50%; top: 50%; width: 16rem; margin: 0; transform: translate(-50%, -50%); } }
+.coach-rot { transform: rotate(6deg); }
+.coach { position: relative; aspect-ratio: 3 / 4; border-radius: var(--radius-card); background: var(--brand); overflow: hidden; }
+.coach img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.glass-cap {
+  position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.75rem; z-index: 1;
+  border-radius: 0.75rem; color: #fff; padding: 0.5rem 0.75rem;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.coach .glass-cap { background: rgb(15 47 99 / 0.4); }
+.cap-name { font-size: 0.875rem; font-weight: 500; }
+.cap-role { font-size: 0.65rem; opacity: 0.8; }
+.trust-controls { position: relative; z-index: 20; margin-top: 3rem; display: flex; align-items: center; justify-content: space-between; }
+@media (min-width: 640px) { .trust-controls { margin-top: 6rem; } }
+
+/* Programs */
+.programs { background: var(--surface); padding: 6rem 1.5rem; }
+@media (min-width: 640px) { .programs { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.program-list { margin-top: 3.5rem; }
+.program-list li { border-top: 1px solid var(--hairline); }
+.program-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.program { display: block; text-decoration: none; color: inherit; }
+.program:focus-visible { background: var(--background); }
+.program-row { display: flex; align-items: center; gap: 1.5rem; padding: 1.75rem 0; }
+.program-idx { width: 2.5rem; flex-shrink: 0; font-size: 0.875rem; font-weight: 500; color: var(--ink-soft); }
+.program-text { flex: 1; min-width: 0; }
+.program-name { font-size: 1.5rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1.2; }
+.program-desc { font-size: 0.875rem; color: var(--ink-soft); margin-top: 0.25rem; }
+.program-go { width: 2.75rem; height: 2.75rem; flex-shrink: 0; display: grid; place-items: center; border-radius: var(--radius-pill); border: 1px solid var(--hairline); }
+.program-go span { display: inline-flex; }
+.program-go svg { width: 1.125rem; height: 1.125rem; }
+@media (min-width: 640px) { .program-name { font-size: 1.875rem; } }
+
+/* Facilities */
+.facilities { position: relative; margin-top: -2.5rem; border-radius: var(--radius-card-lg); background: var(--background); padding: 4rem 1.5rem 5rem; }
+@media (min-width: 640px) { .facilities { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.fac-grid { display: grid; grid-template-columns: 1fr; align-items: end; gap: 2.5rem; }
+@media (min-width: 768px) { .fac-grid { grid-template-columns: 1fr 1fr; } }
+.fac-intro { max-width: 24rem; }
+.fac-icon { width: 4rem; height: 4rem; border-radius: var(--radius-card); object-fit: cover; }
+.facilities .stack-title { margin-top: 1.5rem; }
+.fac-body { margin-top: 1.5rem; max-width: 20rem; font-size: 0.875rem; color: var(--ink-soft); }
+.fac-cards { display: flex; align-items: flex-end; gap: 1.25rem; }
+.fac-cards > div { flex: 1; min-width: 0; }
+.fac-cards > div:nth-child(2) { margin-bottom: 2rem; }
+.court { position: relative; aspect-ratio: 3 / 4; border-radius: var(--radius-card); overflow: hidden; background: var(--surface); }
+.court img { width: 100%; height: 100%; object-fit: cover; }
+.court .glass-cap { padding: 0.75rem 1rem; }
+.court.clay .glass-cap { background: rgb(15 47 99 / 0.4); }
+.court.blue .glass-cap { background: rgb(11 110 151 / 0.55); }
+.court .cap-role { opacity: 0.85; }
+
+/* Stats */
+.stats { margin-top: 0.75rem; border-radius: var(--radius-card-lg); background: var(--brand-deep); color: #fff; padding: 5rem 1.5rem; }
+@media (min-width: 640px) { .stats { padding-left: 2.5rem; padding-right: 2.5rem; } }
+.stat-grid { margin-top: 4rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem 2rem; }
+@media (min-width: 1024px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+.stat { border-top: 1px solid rgb(255 255 255 / 0.2); padding-top: 1.25rem; }
+.stat dd { margin: 0; }
+.stat-value { font-size: 3.75rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1; }
+.stat-label { margin-top: 0.75rem; font-size: 0.875rem; color: rgb(255 255 255 / 0.65); }
+@media (min-width: 640px) { .stat-value { font-size: 4.5rem; } }
+
+/* Testimonials */
+.testimonials { background: var(--background); padding: 5rem 1.5rem; }
+@media (min-width: 640px) { .testimonials { padding: 6rem 2.5rem; } }
+.quote-grid { margin-top: 3.5rem; display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+@media (min-width: 768px) { .quote-grid { grid-template-columns: repeat(3, 1fr); } }
+.quote-grid > li { display: flex; }
+.quote { width: 100%; display: flex; flex-direction: column; justify-content: space-between; height: 100%; border-radius: var(--radius-card); background: var(--surface); padding: 1.75rem; }
+.quote-mark { font-size: 2.25rem; line-height: 1; color: var(--brand); }
+.quote blockquote { margin-top: 1rem; font-size: 1.125rem; line-height: 1.625; color: var(--ink); }
+.quote figcaption { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--hairline); }
+.quote-name { font-weight: 500; }
+.quote-role { font-size: 0.875rem; color: var(--ink-soft); }
+
+/* Footer */
+.footer { margin-top: 0.75rem; border-radius: var(--radius-card-lg); background: var(--brand-deep); color: #fff; padding: 3.5rem 1.5rem; }
+@media (min-width: 640px) { .footer { padding: 4rem 2.5rem; } }
+.footer-cta { display: flex; flex-direction: column; gap: 2rem; padding-bottom: 3.5rem; border-bottom: 1px solid rgb(255 255 255 / 0.15); }
+@media (min-width: 640px) { .footer-cta { flex-direction: row; justify-content: space-between; align-items: flex-end; } }
+.footer-cta .stack-title { font-size: 3.75rem; line-height: 0.92; }
+.footer-cols { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding: 3.5rem 0; }
+@media (min-width: 768px) { .footer-cols { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+.footer-brand { max-width: 20rem; }
+.footer-brand .brand { font-size: 1.125rem; }
+.footer-blurb { margin-top: 1rem; font-size: 0.875rem; color: rgb(255 255 255 / 0.65); }
+.footer address { margin-top: 1.5rem; font-style: normal; font-size: 0.875rem; color: rgb(255 255 255 / 0.8); display: flex; flex-direction: column; gap: 0.25rem; }
+.footer address a { text-decoration: none; }
+.footer address a:hover { text-decoration: underline; }
+.footer address span { color: rgb(255 255 255 / 0.55); }
+.footer-nav h3 { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em; color: rgb(255 255 255 / 0.5); }
+.footer-nav ul { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem; color: rgb(255 255 255 / 0.8); }
+.footer-nav a, .footer-bottom a { text-decoration: none; transition: color 0.2s; }
+.footer-nav a:hover, .footer-bottom a:hover { color: #fff; }
+.footer-bottom { display: flex; flex-direction: column; gap: 1.25rem; padding-top: 2rem; border-top: 1px solid rgb(255 255 255 / 0.15); font-size: 0.875rem; color: rgb(255 255 255 / 0.6); }
+@media (min-width: 640px) { .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.inline-nav { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+
+/* Overlays */
+.overlay { position: fixed; inset: 0; pointer-events: none; }
+.overlay.open { pointer-events: auto; }
+
+.menu { z-index: 70; display: flex; flex-direction: column; }
+.menu-bg { position: absolute; inset: 0; background: var(--brand-deep); opacity: 0; }
+.menu-panel { position: relative; height: 100%; padding: var(--inset); color: #fff; opacity: 0; }
+.menu-inner { height: 100%; display: flex; flex-direction: column; padding: 1.5rem; }
+@media (min-width: 640px) { .menu-inner { padding: 2rem 2.5rem 2.5rem; } }
+.menu-top { display: flex; align-items: center; justify-content: space-between; }
+.menu-nav { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; }
+.menu-nav a { display: block; width: fit-content; font-size: 3rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1.05; text-decoration: none; transition: color 0.2s; }
+.menu-nav a:hover { color: var(--brand-light); }
+@media (min-width: 640px) { .menu-nav a { font-size: 4.5rem; } }
+.menu-bottom { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; padding-top: 2rem; border-top: 1px solid rgb(255 255 255 / 0.15); }
+@media (min-width: 640px) { .menu-bottom { flex-direction: row; justify-content: space-between; align-items: center; } }
+.social a { font-size: 0.875rem; color: rgb(255 255 255 / 0.7); text-decoration: none; transition: color 0.2s; }
+.social a:hover { color: #fff; }
+
+.modal { z-index: 90; display: flex; align-items: flex-end; justify-content: center; padding: 0.75rem; }
+@media (min-width: 640px) { .modal { align-items: center; padding: 1.5rem; } }
+.modal-bg { position: absolute; inset: 0; background: rgb(15 47 99 / 0.4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); opacity: 0; }
+.modal-panel {
+  position: relative; width: 100%; max-height: 92svh; overflow-y: auto;
+  border-radius: var(--radius-card-lg); background: var(--surface-card); color: var(--ink);
+  padding: 1.5rem; box-shadow: 0 2rem 5rem rgb(15 47 99 / 0.35); opacity: 0;
+}
+@media (min-width: 640px) { .modal-panel { max-width: 32rem; padding: 2rem; } }
+.modal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.modal-head .stack-title { font-size: 2.25rem; margin-top: 0.75rem; }
+@media (min-width: 640px) { .modal-head .stack-title { font-size: 3rem; } }
+.modal .round-btn { background: var(--surface); color: var(--ink); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.modal .round-btn:hover { background: var(--hairline); }
+.form { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+.form label { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-label { font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-soft); }
+.form input, .form textarea {
+  width: 100%; border-radius: 0.75rem; border: 1px solid var(--hairline); background: var(--background);
+  padding: 0.75rem 1rem; font: inherit; font-size: 0.875rem; color: var(--ink); resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form input::placeholder, .form textarea::placeholder { color: var(--ink-soft); }
+.form input:focus, .form textarea:focus { outline: none; border-color: var(--brand-light); box-shadow: 0 0 0 3px rgb(87 144 230 / 0.3); }
+.submit {
+  margin-top: 0.5rem; align-self: flex-start;
+  border: 0; border-radius: var(--radius-pill); background: var(--ink); color: #fff;
+  padding: 0.875rem 1.75rem; font-size: 0.875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.025em;
+  transition: background-color 0.25s, opacity 0.25s;
+}
+.submit:hover:not(:disabled) { background: var(--brand-deep); }
+.submit:disabled { opacity: 0.6; cursor: default; }
+.success { margin-top: 2rem; border-radius: var(--radius-card); background: var(--surface); padding: 1.5rem; text-align: center; }
+.success-ico { width: 3rem; height: 3rem; margin: 0 auto; display: grid; place-items: center; border-radius: var(--radius-pill); background: var(--brand); color: #fff; }
+.success-ico svg { width: 1.375rem; height: 1.375rem; }
+.success h3 { margin-top: 1rem; font-size: 1.125rem; font-weight: 500; }
+.success p { margin-top: 0.375rem; font-size: 0.875rem; color: var(--ink-soft); }
+.success .submit { align-self: center; margin-top: 1.25rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .loader, .loader-fill, .rv-inner, .dot i { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-mark">
+    <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/></svg>
+    <span>LemonadeX</span>
+  </div>
+  <div class="loader-track"><div class="loader-fill"></div></div>
+</div>
+
+<main>
+  <!-- Hero -->
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero-plate">
+      <div class="hero-plate-inner" id="hero-plate">
+        <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/hero/hero-court.webp" alt="Player lunging for a shot on a hard court" fetchpriority="high" loading="eager" decoding="async" />
+      </div>
+      <div class="hero-shade"></div>
+    </div>
+
+    <header class="site-header">
+      <nav class="nav-left" aria-label="Primary">
+        <a href="#programs">Programs &amp; Coaches</a>
+        <a href="#facilities">Club &amp; Events</a>
+      </nav>
+      <a class="brand" href="#hero" aria-label="LemonadeX home">
+        <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/></svg>
+        <span>LemonadeX</span>
+      </a>
+      <div class="header-right">
+        <button class="text-btn" type="button" data-open-modal>Book a Visit</button>
+        <button class="round-btn burger" type="button" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
+      </div>
+    </header>
+
+    <div class="hero-title-wrap">
+      <h1 id="hero-title" class="hero-title" data-words data-reveal data-gate data-stagger="140" data-dur="1100">Own The Court</h1>
+    </div>
+
+    <div class="hero-bottom">
+      <p class="tagline" data-lines data-reveal data-gate data-base="350" data-stagger="110" data-dur="900"><span>Show Up,</span><span>Level Up</span></p>
+
+      <div class="hero-cluster">
+        <div class="collection" data-inview='{"opacity":0,"y":28}' data-cfg="200,26" data-delay="650" data-gate>
+          <div class="coll-stage" id="coll-stage"></div>
+          <div class="dots light" id="coll-dots" role="group" aria-label="Collections"></div>
+        </div>
+
+        <article class="glass member" data-inview='{"opacity":0,"y":28}' data-cfg="200,26" data-delay="780" data-gate>
+          <div class="member-info">
+            <p class="member-value">9K+</p>
+            <div class="avatars" aria-hidden="true">
+              <i style="background:#5790e6"></i><i style="background:#c2e029"></i><i style="background:#0b6e97"></i><i style="background:#ffffff"></i>
+            </div>
+            <p class="member-cap">Members on court</p>
+          </div>
+          <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp" alt="Player waiting to return on a clay court" loading="lazy" width="64" height="85" />
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust -->
+  <section class="trust" id="trust" aria-labelledby="trust-title">
+    <div class="trust-top">
+      <div class="pct" data-inview='{"opacity":0,"scale":0.9}' data-cfg="220,22">
+        <strong>100%</strong>
+        <span>Coaching built around your game</span>
+      </div>
+      <article class="badge" data-inview='{"opacity":0,"y":24}' data-cfg="200,26" data-delay="120">
+        <span class="badge-idx">#01</span>
+        <div>
+          <h3>Trusted by serious players</h3>
+          <p>From first-timers to nationally ranked juniors, players train here because the progress shows up on the scoreboard.</p>
+        </div>
+      </article>
+    </div>
+
+    <h2 id="trust-title" class="ghost" data-reveal>
+      <span class="ghost-row">
+        <span class="ghost-word" data-px="-3,3"><span class="rv-clip"><span class="rv-inner" style="--dur:700ms;--delay:0ms">Expert</span></span></span>
+        <span class="ghost-word" data-px="3,-3"><span class="rv-clip"><span class="rv-inner" style="--dur:700ms;--delay:70ms">Result-</span></span></span>
+      </span>
+      <span class="ghost-row">
+        <span class="ghost-word ink" data-px="-2,4"><span class="rv-clip"><span class="rv-inner" style="--dur:700ms;--delay:140ms">Driven</span></span></span>
+        <span class="ghost-word" data-px="4,-3"><span class="rv-clip"><span class="rv-inner" style="--dur:700ms;--delay:210ms">Coaching</span></span></span>
+      </span>
+    </h2>
+
+    <div class="coach-pos">
+      <div class="coach-rot">
+        <figure class="coach" id="coach" data-inview='{"opacity":0,"y":60,"scale":0.92}' data-cfg="170,26">
+          <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/5.webp" alt="Head coach set in a ready stance on clay" loading="lazy" />
+          <figcaption class="glass-cap">
+            <p class="cap-name" id="coach-name">Marco Vidal</p>
+            <p class="cap-role" id="coach-role">Head Coach</p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="trust-controls">
+      <button class="arrow-btn prev" type="button" id="trust-prev" aria-label="Previous coach"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+      <div class="dots" id="trust-dots" role="group" aria-label="Coaches"></div>
+      <button class="arrow-btn solid" type="button" id="trust-next" aria-label="Next coach"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+    </div>
+  </section>
+
+  <!-- Programs -->
+  <section class="programs" id="programs" aria-labelledby="programs-title">
+    <span class="eyebrow">Training programs</span>
+    <h2 id="programs-title" class="stack-title" data-lines data-reveal><span>Built for</span><span>every level</span></h2>
+    <ul class="program-list" id="program-list"></ul>
+  </section>
+
+  <!-- Facilities -->
+  <section class="facilities" id="facilities" aria-labelledby="facilities-title">
+    <div class="fac-grid">
+      <div class="fac-intro">
+        <img class="fac-icon" src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/3.webp" alt="Player stretching for a forehand on clay" loading="lazy" width="64" height="64" data-inview='{"opacity":0,"scale":0.85}' data-cfg="240,20" />
+        <h2 id="facilities-title" class="stack-title" data-lines data-reveal data-stagger="120"><span>Tour Our</span><span>World-Class</span><span>Courts</span></h2>
+        <p class="fac-body" data-words="fade" data-reveal data-base="250" data-stagger="28" data-dur="700">Reserve a court for focused practice, squad drills, or private sessions — and train in the same conditions you'll compete in.</p>
+      </div>
+      <div class="fac-cards">
+        <div data-inview='{"opacity":0,"y":48}' data-cfg="180,26" data-delay="0">
+          <figure class="court clay">
+            <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/1.webp" alt="Player on the baseline of an outdoor clay court" loading="lazy" />
+            <figcaption class="glass-cap"><p class="cap-name">Redline Clay</p><p class="cap-role">A fast outdoor clay court tuned for long, physical rallies.</p></figcaption>
+          </figure>
+        </div>
+        <div data-inview='{"opacity":0,"y":48}' data-cfg="180,26" data-delay="140">
+          <figure class="court blue">
+            <img src="https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/4.webp" alt="Player following through on a blue hard court" loading="lazy" />
+            <figcaption class="glass-cap"><p class="cap-name">Harbor Court</p><p class="cap-role">A sheltered hard court built for precision and night play.</p></figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats" aria-labelledby="stats-title">
+    <span class="eyebrow light">By the numbers</span>
+    <h2 id="stats-title" class="stack-title" data-lines data-reveal><span>A club that</span><span>keeps score</span></h2>
+    <dl class="stat-grid">
+      <div class="stat" data-inview='{"opacity":0,"y":30}' data-cfg="180,24" data-delay="0"><dt class="sr-only">Certified coaches</dt><dd class="stat-value">24</dd><dd class="stat-label" aria-hidden="true">Certified coaches</dd></div>
+      <div class="stat" data-inview='{"opacity":0,"y":30}' data-cfg="180,24" data-delay="110"><dt class="sr-only">Championship courts</dt><dd class="stat-value">12</dd><dd class="stat-label" aria-hidden="true">Championship courts</dd></div>
+      <div class="stat" data-inview='{"opacity":0,"y":30}' data-cfg="180,24" data-delay="220"><dt class="sr-only">Members training</dt><dd class="stat-value">9K+</dd><dd class="stat-label" aria-hidden="true">Members training</dd></div>
+      <div class="stat" data-inview='{"opacity":0,"y":30}' data-cfg="180,24" data-delay="330"><dt class="sr-only">Years on the baseline</dt><dd class="stat-value">15</dd><dd class="stat-label" aria-hidden="true">Years on the baseline</dd></div>
+    </dl>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials" id="testimonials" aria-labelledby="testimonials-title">
+    <span class="eyebrow">What players say</span>
+    <h2 id="testimonials-title" class="stack-title" data-lines data-reveal><span>Loved by</span><span>the locker room</span></h2>
+    <ul class="quote-grid" id="quote-grid"></ul>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="footer-cta">
+      <div>
+        <span class="eyebrow light">Get started</span>
+        <p class="stack-title" data-lines data-reveal><span>Ready to</span><span>play?</span></p>
+      </div>
+      <div data-inview='{"opacity":0,"y":20}' data-cfg="200,24" data-delay="150">
+        <button class="pill pill-light" type="button" data-open-modal><span>Book a Visit</span><span class="pill-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+      </div>
+    </div>
+
+    <div class="footer-cols">
+      <div class="footer-brand">
+        <a class="brand" href="#hero">
+          <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/></svg>
+          <span>LemonadeX</span>
+        </a>
+        <p class="footer-blurb">A members' tennis club and academy where focused coaching meets championship courts.</p>
+        <address>
+          <a href="mailto:play@baseline.club">play@baseline.club</a>
+          <a href="tel:+12125550148">+1 (212) 555-0148</a>
+          <span>120 Court Lane, New York</span>
+        </address>
+      </div>
+      <nav class="footer-nav" aria-label="Programs">
+        <h3>Programs</h3>
+        <ul><li><a href="#junior">Junior Development</a></li><li><a href="#performance">Performance Squad</a></li><li><a href="#adult">Adult Clinics</a></li><li><a href="#private">Private Coaching</a></li></ul>
+      </nav>
+      <nav class="footer-nav" aria-label="Club">
+        <h3>Club</h3>
+        <ul><li><a href="#membership">Membership</a></li><li><a href="#facilities">Facilities</a></li><li><a href="#club">Events</a></li><li><a href="/shop/">Pro Shop</a></li></ul>
+      </nav>
+      <nav class="footer-nav" aria-label="Company">
+        <h3>Company</h3>
+        <ul><li><a href="#about">About</a></li><li><a href="#programs">Coaches</a></li><li><a href="#careers">Careers</a></li><li><a href="#contact">Contact</a></li></ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 LemonadeX Tennis Club. All rights reserved.</p>
+      <nav class="inline-nav" aria-label="Social"><a href="#instagram">Instagram</a><a href="#x">X</a><a href="#youtube">YouTube</a><a href="#linkedin">LinkedIn</a></nav>
+      <nav class="inline-nav" aria-label="Legal"><a href="#privacy">Privacy</a><a href="#terms">Terms</a></nav>
+    </div>
+  </footer>
+</main>
+
+<!-- Fullscreen menu -->
+<div class="overlay menu" id="menu" inert>
+  <div class="menu-bg" id="menu-bg"></div>
+  <div class="menu-panel" id="menu-panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="menu-inner">
+      <div class="menu-top">
+        <span class="brand">
+          <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M4.8 5.6A9 9 0 0 0 4.8 18.4"/><path d="M19.2 5.6a9 9 0 0 1 0 12.8"/></svg>
+          <span>LemonadeX</span>
+        </span>
+        <button class="round-btn" type="button" id="menu-close" aria-label="Close menu"><span class="x-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></button>
+      </div>
+      <nav class="menu-nav" aria-label="Menu">
+        <a href="#programs">Programs</a>
+        <a href="#facilities">Facilities</a>
+        <a href="#testimonials">Reviews</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="menu-bottom">
+        <button class="pill pill-light" type="button" data-open-modal><span>Book a Visit</span><span class="pill-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+        <nav class="inline-nav social" aria-label="Social"><a href="#instagram">Instagram</a><a href="#x">X</a><a href="#youtube">YouTube</a><a href="#linkedin">LinkedIn</a></nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact modal -->
+<div class="overlay modal" id="modal" inert>
+  <div class="modal-bg" id="modal-bg"></div>
+  <div class="modal-panel" id="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title" data-lenis-prevent>
+    <div class="modal-head">
+      <div>
+        <span class="eyebrow">Book a visit</span>
+        <h2 id="modal-title" class="stack-title" data-lines data-stagger="90" data-dur="800"><span>Come see</span><span>the courts</span></h2>
+      </div>
+      <button class="round-btn" type="button" id="modal-close" aria-label="Close"><span class="x-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span></button>
+    </div>
+
+    <form class="form" id="visit-form" novalidate>
+      <label><span class="form-label">Full name</span><input id="f-name" name="name" type="text" placeholder="Alex Rivera" autocomplete="name" /></label>
+      <label><span class="form-label">Email</span><input name="email" type="email" placeholder="you@email.com" autocomplete="email" /></label>
+      <label><span class="form-label">What would you like to play?</span><textarea name="message" rows="3" placeholder="I'd love to try a private lesson on the clay courts…"></textarea></label>
+      <button class="submit" type="submit" id="f-submit">Request a visit</button>
+    </form>
+
+    <div class="success" id="visit-success" hidden>
+      <div class="success-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></div>
+      <h3>Request received</h3>
+      <p id="success-msg" role="status"></p>
+      <button class="submit" type="button" id="success-done">Done</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+const A = 'https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000';
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const html = document.documentElement;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+/* Adaptive rem: above 1920px scale the root font up, below it the media queries drive. */
+const FONT_BASE = 16, BASE_W = 1920, COEF = 0.6666;
+function fitRoot() {
+  const reduction = ((BASE_W - innerWidth) / BASE_W) * 100 * COEF;
+  const size = FONT_BASE - (FONT_BASE * reduction) / 100;
+  if (size > FONT_BASE) html.style.fontSize = size + 'px';
+  else html.style.removeProperty('font-size');
+}
+fitRoot();
+addEventListener('resize', fitRoot);
+
+/* Scroll lock shared by loader, menu and modal; Lenis (npm, bundled by Vite) attaches when its chunk loads. */
+let lenis = null;
+let locks = 0;
+function lock() { locks++; html.classList.add('locked'); lenis?.stop(); }
+function unlock() {
+  locks = Math.max(0, locks - 1);
+  if (!locks) { html.classList.remove('locked'); lenis?.start(); }
+}
+import('lenis').then(({ default: Lenis }) => {
+  lenis = new Lenis({ smoothWheel: true });
+  if (locks) lenis.stop();
+}).catch(() => { /* Native scrolling still works without Lenis. */ });
+
+/* Spring helper: react-spring's {tension, friction} model, mass 1, integrated in fixed sub-steps. */
+const DEF = { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 };
+const states = new Map();
+const running = new Set();
+function stateOf(el) {
+  let s = states.get(el);
+  if (!s) {
+    s = { v: { ...DEF }, vel: { opacity: 0, x: 0, y: 0, scale: 0, rotate: 0 }, t: { ...DEF }, cfg: { tension: 170, friction: 26 } };
+    states.set(el, s);
+  }
+  return s;
+}
+function paint(el, s) {
+  const { x, y, scale, rotate, opacity } = s.v;
+  el.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale}) rotate(${rotate}deg)`;
+  el.style.opacity = opacity;
+}
+function springSet(el, vals) {
+  const s = stateOf(el);
+  Object.assign(s.v, vals);
+  Object.assign(s.t, vals);
+  for (const k in vals) s.vel[k] = 0;
+  running.delete(el);
+  paint(el, s);
+}
+function springTo(el, vals, cfg) {
+  const s = stateOf(el);
+  if (cfg) s.cfg = cfg;
+  Object.assign(s.t, vals);
+  if (REDUCE) { Object.assign(s.v, vals); paint(el, s); return; }
+  running.add(el);
+}
+function tick(dt) {
+  for (const el of running) {
+    const s = states.get(el);
+    const k = s.cfg.tension, c = s.cfg.friction;
+    let moving = false;
+    for (const key in s.t) {
+      let x = s.v[key], v = s.vel[key];
+      const target = s.t[key];
+      for (let left = dt; left > 0; left -= 1 / 240) {
+        const h = Math.min(left, 1 / 240);
+        v += (-k * (x - target) - c * v) * h;
+        x += v * h;
+      }
+      const prec = key === 'opacity' || key === 'scale' ? 0.0005 : 0.01;
+      if (Math.abs(x - target) < prec && Math.abs(v) < prec * 10) { x = target; v = 0; } else moving = true;
+      s.v[key] = x;
+      s.vel[key] = v;
+    }
+    paint(el, s);
+    if (!moving) running.delete(el);
+  }
+}
+const cfg = (t, f) => ({ tension: t, friction: f });
+
+/* Scroll-progress parallax: 0 when the section's top meets the viewport bottom, 1 when its bottom meets the top. */
+const parallax = [];
+function addParallax(el, section, axis, from, to, unit) { parallax.push({ el, section, axis, from, to, unit }); }
+function updateParallax() {
+  if (REDUCE) return;
+  const vh = innerHeight;
+  for (const p of parallax) {
+    const r = p.section.getBoundingClientRect();
+    if (r.bottom < -vh || r.top > vh * 2) continue;
+    const prog = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    const val = p.from + (p.to - p.from) * prog;
+    p.el.style.transform = p.axis === 'x' ? `translate3d(${val}${p.unit}, 0, 0)` : `translate3d(0, ${val}${p.unit}, 0)`;
+  }
+}
+
+let last = performance.now();
+function frame(t) {
+  const dt = Math.min((t - last) / 1000, 1 / 30);
+  last = t;
+  lenis?.raf(t);
+  tick(dt);
+  updateParallax();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* Text reveal preparation */
+function prepLines(el) {
+  const base = +(el.dataset.base ?? 0), stagger = +(el.dataset.stagger ?? 120), dur = +(el.dataset.dur ?? 950);
+  [...el.children].forEach((child, i) => {
+    const clip = document.createElement('span');
+    clip.className = 'rv-clip rv-line';
+    child.replaceWith(clip);
+    clip.append(child);
+    child.classList.add('rv-inner');
+    child.style.setProperty('--delay', base + i * stagger + 'ms');
+    child.style.setProperty('--dur', dur + 'ms');
+  });
+}
+function prepWords(el) {
+  const fade = el.dataset.words === 'fade';
+  const base = +(el.dataset.base ?? 0), stagger = +(el.dataset.stagger ?? 60), dur = +(el.dataset.dur ?? 900);
+  const words = el.textContent.trim().split(/\s+/);
+  el.textContent = '';
+  words.forEach((word, i) => {
+    const box = document.createElement('span');
+    box.className = fade ? 'rv-fade' : 'rv-clip';
+    const inner = document.createElement('span');
+    inner.className = 'rv-inner';
+    inner.textContent = word;
+    inner.style.setProperty('--delay', base + i * stagger + 'ms');
+    inner.style.setProperty('--dur', dur + 'ms');
+    box.append(inner);
+    el.append(box);
+    if (i < words.length - 1) el.append(' ');
+  });
+}
+function replay(el) {
+  el.classList.add('rv-reset');
+  el.classList.remove('rv-on');
+  void el.offsetWidth;
+  el.classList.remove('rv-reset');
+  el.classList.add('rv-on');
+}
+$$('[data-lines]').forEach(prepLines);
+$$('[data-words]').forEach(prepWords);
+
+/* Hover springs (disabled on viewports at or below 768px) */
+const hoverOk = () => innerWidth > 768;
+function hover(trigger, target, from, to, c) {
+  springSet(target, from);
+  const enter = () => { if (hoverOk()) springTo(target, to, c); };
+  const leave = () => springTo(target, from, c);
+  trigger.addEventListener('pointerenter', enter);
+  trigger.addEventListener('pointerleave', leave);
+  trigger.addEventListener('focusin', enter);
+  trigger.addEventListener('focusout', leave);
+}
+
+/* Dynamic content */
+const PROGRAMS = [
+  ['01', 'Junior Development', 'Fundamentals, footwork, and match play for ages 6–14.', '#junior'],
+  ['02', 'Performance Squad', 'High-volume training for competitive and ranked players.', '#performance'],
+  ['03', 'Adult Clinics', 'Small-group sessions to sharpen technique and fitness.', '#adult'],
+  ['04', 'Private Coaching', 'One-to-one sessions tailored to your goals and schedule.', '#private'],
+];
+$('#program-list').innerHTML = PROGRAMS.map(([idx, name, desc, href], i) => `
+  <li><a class="program" href="${href}">
+    <div class="program-row" data-inview='{"opacity":0,"y":26}' data-cfg="190,26" data-delay="${i * 90}">
+      <span class="program-idx">${idx}</span>
+      <span class="program-text"><span class="program-name" style="display:block">${name}</span><span class="program-desc" style="display:block">${desc}</span></span>
+      <span class="program-go"><span>${ARROW}</span></span>
+    </div>
+  </a></li>`).join('');
+
+const QUOTES = [
+  ['I added a level to my serve in one season. The coaching is detailed and it actually sticks.', 'Priya Anand', 'Performance Squad'],
+  ['Best courts in the city and a team that treats every member like a competitor.', 'Lukas Brenner', 'Adult Clinics'],
+  ['My daughter went from shy beginner to club champion. Worth every minute.', 'Dana Okafor', 'Parent, Junior Development'],
+];
+$('#quote-grid').innerHTML = QUOTES.map(([text, name, role], i) => `
+  <li data-inview='{"opacity":0,"y":40}' data-cfg="180,26" data-delay="${i * 120}">
+    <figure class="quote">
+      <div>
+        <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+        <blockquote>${text}</blockquote>
+      </div>
+      <figcaption><p class="quote-name">${name}</p><p class="quote-role">${role}</p></figcaption>
+    </figure>
+  </li>`).join('');
+
+/* Hover wiring */
+$$('.program').forEach((a) => hover(a, $('.program-go > span', a), { x: 0, opacity: 0.55 }, { x: 8, opacity: 1 }, cfg(300, 20)));
+$$('.court').forEach((fig) => hover(fig, $('img', fig), { scale: 1 }, { scale: 1.03 }, cfg(300, 22)));
+$$('.quote').forEach((q) => hover(q, q, { y: 0 }, { y: -8 }, cfg(300, 22)));
+$$('.pill').forEach((p) => hover(p, $('.pill-arrow', p), { x: 0 }, { x: 5 }, cfg(320, 20)));
+$$('.arrow-btn').forEach((b) => hover(b, $('.ico', b), { scale: 1 }, { scale: 1.15 }, cfg(320, 18)));
+$$('.x-ico').forEach((x) => hover(x.closest('button'), x, { rotate: 0 }, { rotate: 90 }, cfg(300, 18)));
+
+/* Parallax wiring */
+addParallax($('#hero-plate'), $('#hero'), 'y', 0, 12, '%');
+$$('.ghost-word').forEach((w) => {
+  const [from, to] = w.dataset.px.split(',').map(Number);
+  addParallax(w, $('#trust'), 'x', from, to, '%');
+});
+
+/* In-view reveals (play once). Gated elements wait for the loader. */
+let ready = false;
+const waiting = [];
+function fire(el) {
+  if (el.hasAttribute('data-gate') && !ready) { waiting.push(el); return; }
+  if (el.hasAttribute('data-reveal')) el.classList.add('rv-on');
+  if (el.dataset.inview) {
+    const from = JSON.parse(el.dataset.inview);
+    const to = {};
+    for (const k in from) to[k] = k === 'opacity' || k === 'scale' ? 1 : 0;
+    const [t, f] = (el.dataset.cfg || '170,26').split(',').map(Number);
+    setTimeout(() => springTo(el, to, cfg(t, f)), +(el.dataset.delay || 0));
+  }
+}
+const io = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    io.unobserve(entry.target);
+    fire(entry.target);
+  }
+}, { threshold: 0.15 });
+$$('[data-inview]').forEach((el) => springSet(el, JSON.parse(el.dataset.inview)));
+$$('[data-inview], main [data-reveal]').forEach((el) => io.observe(el));
+
+/* Carousel dots */
+function renderDots(box, count, active, onPick, label) {
+  box.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dot';
+    b.setAttribute('aria-label', `${label} ${i + 1}`);
+    if (i === active) b.setAttribute('aria-current', 'true');
+    b.innerHTML = '<i></i>';
+    b.addEventListener('click', () => onPick(i));
+    box.append(b);
+  }
+}
+
+/* Hero collection slider */
+const COLL = [
+  { img: `${A}/2.webp`, brand: 'LemonadeX Pro', title: 'Featured Gear', cta: 'Shop the kit', alt: 'Player driving a backhand on a hard court' },
+  { img: `${A}/3.webp`, brand: 'Court Series', title: 'Summer Drop', cta: 'View the line', alt: 'Player stretching for a forehand on clay' },
+  { img: `${A}/5.webp`, brand: 'Academy Kit', title: 'Junior Range', cta: 'Browse juniors', alt: 'Player set in a ready stance on clay' },
+];
+const collStage = $('#coll-stage');
+const collDots = $('#coll-dots');
+const COLL_OUT = { opacity: 0, y: 16, scale: 0.96 };
+let collIndex = 0;
+let collCard = null;
+let collTimer = 0;
+function collCardFor(d) {
+  const card = document.createElement('div');
+  card.className = 'glass coll-card';
+  card.innerHTML = `<img src="${d.img}" alt="${d.alt}" width="56" height="56" loading="lazy" />
+    <div><p class="coll-brand">${d.brand}</p><p class="coll-title">${d.title}</p><a class="coll-cta" href="/shop/">${d.cta} &rarr;</a></div>`;
+  return card;
+}
+function showColl(i, animate = true) {
+  collIndex = (i + COLL.length) % COLL.length;
+  const next = collCardFor(COLL[collIndex]);
+  if (collCard && animate) {
+    const old = collCard;
+    old.classList.add('out');
+    springTo(old, COLL_OUT, cfg(210, 24));
+    setTimeout(() => old.remove(), 700);
+    springSet(next, COLL_OUT);
+    collStage.append(next);
+    springTo(next, { opacity: 1, y: 0, scale: 1 }, cfg(210, 24));
+  } else {
+    collCard?.remove();
+    collStage.append(next);
+  }
+  collCard = next;
+  renderDots(collDots, COLL.length, collIndex, pickColl, 'Collection');
+}
+function pickColl(i) { if (i !== collIndex) showColl(i); startCollAutoplay(); }
+function startCollAutoplay() {
+  clearInterval(collTimer);
+  if (ready && !REDUCE) collTimer = setInterval(() => showColl(collIndex + 1), 3800);
+}
+showColl(0, false);
+
+/* Trust coach carousel */
+const SLIDES = [
+  { words: ['Expert', 'Result-', 'Driven', 'Coaching'], img: `${A}/5.webp`, name: 'Marco Vidal', role: 'Head Coach', alt: 'Head coach set in a ready stance on clay' },
+  { words: ['Sharper', 'Faster', 'Stronger', 'Player'], img: `${A}/4.webp`, name: 'Elena Sokolova', role: 'Performance Coach', alt: 'Performance coach following through on a serve' },
+  { words: ['Future', 'Champions', 'Start', 'Here'], img: `${A}/1.webp`, name: 'James Okoro', role: 'Juniors Lead', alt: 'Juniors lead waiting to return on clay' },
+];
+const ghost = $('#trust-title');
+const ghostInners = $$('.rv-inner', ghost);
+const coach = $('#coach');
+const trustDots = $('#trust-dots');
+let slide = 0;
+function showSlide(i) {
+  slide = (i + SLIDES.length) % SLIDES.length;
+  const s = SLIDES[slide];
+  ghostInners.forEach((inner, w) => { inner.textContent = s.words[w]; });
+  if (ghost.classList.contains('rv-on')) replay(ghost);
+
+  const oldImg = $('img', coach);
+  const img = document.createElement('img');
+  img.src = s.img;
+  img.alt = s.alt;
+  oldImg.after(img);
+  springSet(img, { opacity: 0 });
+  springTo(img, { opacity: 1 }, cfg(260, 26));
+  setTimeout(() => oldImg.remove(), 600);
+  $('#coach-name').textContent = s.name;
+  $('#coach-role').textContent = s.role;
+  renderDots(trustDots, SLIDES.length, slide, (n) => { if (n !== slide) showSlide(n); }, 'Coach');
+}
+renderDots(trustDots, SLIDES.length, 0, (n) => { if (n !== slide) showSlide(n); }, 'Coach');
+$('#trust-prev').addEventListener('click', () => showSlide(slide - 1));
+$('#trust-next').addEventListener('click', () => showSlide(slide + 1));
+
+/* Anchor links scroll smoothly through Lenis when it is available. */
+function scrollToHash(hash) {
+  const target = document.querySelector(hash);
+  if (!target) return;
+  if (lenis) lenis.scrollTo(target, { force: true });
+  else target.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth' });
+}
+document.addEventListener('click', (event) => {
+  const a = event.target.closest('a[href^="#"]');
+  if (!a) return;
+  const hash = a.getAttribute('href');
+  if (hash.length < 2 || !document.querySelector(hash)) return;
+  event.preventDefault();
+  if (a.closest('#menu')) closeMenu(false);
+  scrollToHash(hash);
+});
+
+/* Fullscreen menu */
+const menu = $('#menu'), menuBg = $('#menu-bg'), menuPanel = $('#menu-panel');
+const menuLinks = $$('.menu-nav a');
+const burger = $('#burger');
+let menuOpen = false;
+springSet(menuBg, { opacity: 0 });
+springSet(menuPanel, { opacity: 0, y: -24 });
+function openMenu() {
+  if (menuOpen) return;
+  menuOpen = true;
+  menu.inert = false;
+  menu.classList.add('open');
+  burger.setAttribute('aria-expanded', 'true');
+  lock();
+  springTo(menuBg, { opacity: 1 }, cfg(260, 30));
+  springTo(menuPanel, { opacity: 1, y: 0 }, cfg(220, 28));
+  menuLinks.forEach((link, i) => {
+    springSet(link, { opacity: 0, y: 28 });
+    setTimeout(() => { if (menuOpen) springTo(link, { opacity: 1, y: 0 }, cfg(200, 26)); }, 120 + i * 70);
+  });
+  setTimeout(() => $('#menu-close').focus(), 60);
+}
+function closeMenu(restoreFocus = true) {
+  if (!menuOpen) return;
+  menuOpen = false;
+  menu.classList.remove('open');
+  menu.inert = true;
+  burger.setAttribute('aria-expanded', 'false');
+  unlock();
+  springTo(menuBg, { opacity: 0 }, cfg(260, 30));
+  springTo(menuPanel, { opacity: 0, y: -24 }, cfg(220, 28));
+  if (restoreFocus) burger.focus();
+}
+burger.addEventListener('click', openMenu);
+$('#menu-close').addEventListener('click', () => closeMenu());
+menuBg.addEventListener('click', () => closeMenu());
+
+/* Contact modal (submit is a local stub, no network) */
+const modal = $('#modal'), modalBg = $('#modal-bg'), modalPanel = $('#modal-panel');
+const modalTitle = $('#modal-title');
+const form = $('#visit-form'), submit = $('#f-submit'), success = $('#visit-success');
+let modalOpen = false;
+let modalOpener = null;
+let resetTimer = 0;
+springSet(modalBg, { opacity: 0 });
+springSet(modalPanel, { opacity: 0, y: 28, scale: 0.96 });
+function openModal(opener) {
+  if (modalOpen) return;
+  clearTimeout(resetTimer);
+  modalOpen = true;
+  modalOpener = opener;
+  modal.inert = false;
+  modal.classList.add('open');
+  lock();
+  springTo(modalBg, { opacity: 1 }, cfg(240, 30));
+  springTo(modalPanel, { opacity: 1, y: 0, scale: 1 }, cfg(240, 26));
+  replay(modalTitle);
+  setTimeout(() => $('#f-name').focus(), 120);
+}
+function closeModal() {
+  if (!modalOpen) return;
+  modalOpen = false;
+  modal.classList.remove('open');
+  modal.inert = true;
+  unlock();
+  springTo(modalBg, { opacity: 0 }, cfg(240, 30));
+  springTo(modalPanel, { opacity: 0, y: 28, scale: 0.96 }, cfg(240, 26));
+  if (modalOpener && document.contains(modalOpener) && !modalOpener.closest('#menu')) modalOpener.focus();
+  resetTimer = setTimeout(() => {
+    form.reset();
+    form.hidden = false;
+    success.hidden = true;
+    submit.disabled = false;
+    submit.textContent = 'Request a visit';
+  }, 350);
+}
+$$('[data-open-modal]').forEach((btn) => btn.addEventListener('click', () => {
+  if (btn.closest('#menu')) closeMenu(false);
+  openModal(btn);
+}));
+$('#modal-close').addEventListener('click', closeModal);
+modalBg.addEventListener('click', closeModal);
+$('#success-done').addEventListener('click', closeModal);
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  submit.disabled = true;
+  submit.textContent = 'Sending…';
+  setTimeout(() => {
+    const first = form.elements.name.value.trim().split(/\s+/)[0] || 'there';
+    $('#success-msg').textContent = `Thanks, ${first} — our team will be in touch to lock in your visit.`;
+    form.hidden = true;
+    success.hidden = false;
+    $('#success-done').focus();
+  }, 700);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  if (modalOpen) closeModal();
+  else if (menuOpen) closeMenu();
+});
+
+/* Intro loader: hold at least MIN_VISIBLE after window load, never past MAX_VISIBLE, then slide up. */
+const MIN_VISIBLE_MS = REDUCE ? 200 : 1400;
+const MAX_VISIBLE_MS = 2600;
+const EXIT_MS = REDUCE ? 0 : 850;
+const loader = $('#loader');
+const loaderMark = $('.loader-mark', loader);
+lock();
+springSet(loaderMark, { opacity: 0, y: 16 });
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  springTo(loaderMark, { opacity: 1, y: 0 }, cfg(200, 22));
+  loader.classList.add('go');
+}));
+let countdown = false;
+let finished = false;
+function startCountdown() {
+  if (countdown) return;
+  countdown = true;
+  setTimeout(finish, MIN_VISIBLE_MS);
+}
+function finish() {
+  if (finished) return;
+  finished = true;
+  ready = true;
+  waiting.splice(0).forEach(fire);
+  startCollAutoplay();
+  unlock();
+  loader.classList.add('exit');
+  setTimeout(() => loader.remove(), EXIT_MS);
+}
+if (document.readyState === 'complete') startCountdown();
+else addEventListener('load', startCountdown, { once: true });
+setTimeout(finish, MAX_VISIBLE_MS);
+</script>
+</body>
+</html>

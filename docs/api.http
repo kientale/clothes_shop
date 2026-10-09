@@ -50,3 +50,554 @@ Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
 
 ### Public health endpoint
 GET {{baseUrl}}/actuator/health
+
+### List administrator accounts; requires ACCOUNT_READ
+GET {{baseUrl}}/api/v1/admin/admin-accounts?page=0&size=20&status=ACTIVE
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Available permissions; copy IDs for role requests
+GET {{baseUrl}}/api/v1/admin/permissions
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### List roles; find the ADMIN role ID for administrator requests
+# @name roleList
+GET {{baseUrl}}/api/v1/admin/roles?page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Create a custom role; its code must be unique
+# @name createdRole
+POST {{baseUrl}}/api/v1/admin/roles
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Support team","code":"SUPPORT_TEAM","permissionIds":[]}
+
+### Update custom role; copy permission UUIDs from the permission catalog
+PUT {{baseUrl}}/api/v1/admin/roles/{{createdRole.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Customer support team","permissionIds":[]}
+
+### Create an administrator; replace adminRoleId using roleList response
+@adminRoleId = REPLACE_WITH_ADMIN_ROLE_UUID
+# @name createdAdmin
+POST {{baseUrl}}/api/v1/admin/admin-accounts
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"email":"manager@example.com","password":"Password-1234","fullName":"Manager","phone":"0901234567","roleIds":["{{adminRoleId}}"]}
+
+### Administrator details
+GET {{baseUrl}}/api/v1/admin/admin-accounts/{{createdAdmin.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Update administrator
+PUT {{baseUrl}}/api/v1/admin/admin-accounts/{{createdAdmin.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"email":"manager@example.com","fullName":"Updated Manager","phone":"0901234567","status":"ACTIVE","roleIds":["{{adminRoleId}}"]}
+
+### Reset administrator password
+PUT {{baseUrl}}/api/v1/admin/admin-accounts/{{createdAdmin.response.body.$.data.id}}/password
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"password":"Changed-5678"}
+
+### Create guest customer
+# @name createdCustomer
+POST {{baseUrl}}/api/v1/admin/customers
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"fullName":"Trần Bình","phone":"0912345678","gender":"MALE","dateOfBirth":"1995-05-20","status":"ACTIVE"}
+
+### Search customers
+GET {{baseUrl}}/api/v1/admin/customers?page=0&size=20&status=ACTIVE&search=0912345678
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Customer details
+GET {{baseUrl}}/api/v1/admin/customers/{{createdCustomer.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Update customer; accountId is immutable and not accepted
+PUT {{baseUrl}}/api/v1/admin/customers/{{createdCustomer.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"fullName":"Trần Bình Updated","phone":"0912345678","gender":"MALE","dateOfBirth":"1995-05-20","status":"ACTIVE"}
+
+### Customer counts by status
+GET {{baseUrl}}/api/v1/admin/customers/summary
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Customer accounts that can be linked to a new profile
+GET {{baseUrl}}/api/v1/admin/customers/linkable-accounts?search=example.com&size=10
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Upload an avatar (multipart); put data.url into avatarUrl
+POST {{baseUrl}}/api/v1/admin/uploads/avatars
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: multipart/form-data; boundary=avatar
+
+--avatar
+Content-Disposition: form-data; name="file"; filename="avatar.png"
+Content-Type: image/png
+
+< ./avatar.png
+--avatar--
+
+### Soft-delete customer profile
+DELETE {{baseUrl}}/api/v1/admin/customers/{{createdCustomer.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete administrator account and profile
+DELETE {{baseUrl}}/api/v1/admin/admin-accounts/{{createdAdmin.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete unassigned custom role
+DELETE {{baseUrl}}/api/v1/admin/roles/{{createdRole.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Catalog picker options; requires PRODUCT_READ
+GET {{baseUrl}}/api/v1/admin/catalog/options
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Create product category; use unique names/codes when repeating this workflow
+# @name createdCategory
+POST {{baseUrl}}/api/v1/admin/categories
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Áo thun LemonadeX","parentId":null,"slug":null,"description":"Danh mục áo thun","status":"ACTIVE"}
+
+### Create brand
+# @name createdBrand
+POST {{baseUrl}}/api/v1/admin/brands
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"LemonadeX Studio","slug":null,"logoUrl":null,"description":null,"status":"ACTIVE"}
+
+### Create color
+# @name createdColor
+POST {{baseUrl}}/api/v1/admin/colors
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Đỏ","code":"RED","hexCode":"#FF0000","status":"ACTIVE"}
+
+### Create size
+# @name createdSize
+POST {{baseUrl}}/api/v1/admin/sizes
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"M","code":"M","sortOrder":2,"status":"ACTIVE"}
+
+### Create product with ordered images; the first image is primary
+# @name createdProduct
+POST {{baseUrl}}/api/v1/admin/products
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{
+  "productCode":"TEE-001",
+  "name":"Áo thun LemonadeX",
+  "slug":null,
+  "description":"Áo cotton mặc hằng ngày",
+  "shortDescription":"Cotton 100%",
+  "brandId":"{{createdBrand.response.body.$.data.id}}",
+  "categoryId":"{{createdCategory.response.body.$.data.id}}",
+  "material":"Cotton",
+  "gender":"UNISEX",
+  "basePrice":199000,
+  "status":"ACTIVE",
+  "images":[{"url":"https://example.com/front.png","altText":"Mặt trước"}]
+}
+
+### Search/filter products
+GET {{baseUrl}}/api/v1/admin/products?page=0&size=20&search=TEE&status=ACTIVE&brandId={{createdBrand.response.body.$.data.id}}&categoryId={{createdCategory.response.body.$.data.id}}&gender=UNISEX
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Product details with variant counts and price range
+GET {{baseUrl}}/api/v1/admin/products/{{createdProduct.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Create a variant; null SKU is generated from product/color/size codes
+# @name createdVariant
+POST {{baseUrl}}/api/v1/admin/product-variants
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{
+  "productId":"{{createdProduct.response.body.$.data.id}}",
+  "colorId":"{{createdColor.response.body.$.data.id}}",
+  "sizeId":"{{createdSize.response.body.$.data.id}}",
+  "sku":null,
+  "price":199000,
+  "compareAtPrice":249000,
+  "status":"ACTIVE"
+}
+
+### Create missing combinations; returns [] if the above variant already exists
+POST {{baseUrl}}/api/v1/admin/product-variants/bulk
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{
+  "productId":"{{createdProduct.response.body.$.data.id}}",
+  "colorIds":["{{createdColor.response.body.$.data.id}}"],
+  "sizeIds":["{{createdSize.response.body.$.data.id}}"],
+  "price":199000,
+  "compareAtPrice":249000,
+  "status":"ACTIVE"
+}
+
+### Update variant; its product/color/size are immutable
+PUT {{baseUrl}}/api/v1/admin/product-variants/{{createdVariant.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"sku":"TEE-001-RED-M","price":179000,"compareAtPrice":249000,"status":"ACTIVE"}
+
+### Filter variants by product/color/size
+GET {{baseUrl}}/api/v1/admin/product-variants?page=0&size=20&productId={{createdProduct.response.body.$.data.id}}&colorId={{createdColor.response.body.$.data.id}}&sizeId={{createdSize.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Create collection with ordered product IDs
+# @name createdCollection
+POST {{baseUrl}}/api/v1/admin/collections
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{
+  "name":"LemonadeX Thu Đông 2026",
+  "slug":null,
+  "description":"Bộ sưu tập mùa mới",
+  "imageUrl":null,
+  "startAt":"2026-10-01T00:00:00+07:00",
+  "endAt":"2026-12-31T23:59:59+07:00",
+  "status":"ACTIVE",
+  "productIds":["{{createdProduct.response.body.$.data.id}}"]
+}
+
+### Collection details including products in display order
+GET {{baseUrl}}/api/v1/admin/collections/{{createdCollection.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Upload a catalog image; put returned data.url into images/logoUrl/imageUrl
+POST {{baseUrl}}/api/v1/admin/uploads/images
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: multipart/form-data; boundary=catalog-image
+
+--catalog-image
+Content-Disposition: form-data; name="file"; filename="product.png"
+Content-Type: image/png
+
+< ./product.png
+--catalog-image--
+
+### Soft-delete collection (keeps its products)
+DELETE {{baseUrl}}/api/v1/admin/collections/{{createdCollection.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete product together with its variants; frees taxonomy references
+DELETE {{baseUrl}}/api/v1/admin/products/{{createdProduct.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete unused color
+DELETE {{baseUrl}}/api/v1/admin/colors/{{createdColor.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete unused size
+DELETE {{baseUrl}}/api/v1/admin/sizes/{{createdSize.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete unused brand
+DELETE {{baseUrl}}/api/v1/admin/brands/{{createdBrand.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Soft-delete category after products/children are removed
+DELETE {{baseUrl}}/api/v1/admin/categories/{{createdCategory.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Warehouse/order workflow: create NEW catalog fixtures above, and run this section before deleting them
+# Existing catalog fixtures must be ACTIVE. Obtain a customer UUID from GET /admin/customers.
+@orderCustomerId = REPLACE_WITH_ACTIVE_CUSTOMER_UUID
+
+### Create a warehouse
+# @name createdWarehouse
+POST {{baseUrl}}/api/v1/admin/warehouses
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Kho TP. Hồ Chí Minh","address":"123 Nguyễn Trãi, TP. Hồ Chí Minh","status":"ACTIVE"}
+
+### Initialize stock for a warehouse/variant; starts at zero
+# @name createdStock
+POST {{baseUrl}}/api/v1/admin/inventory
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"warehouseId":"{{createdWarehouse.response.body.$.data.id}}","productVariantId":"{{createdVariant.response.body.$.data.id}}"}
+
+### Receive stock; ISSUE uses the same body with transactionType ISSUE
+POST {{baseUrl}}/api/v1/admin/inventory/transactions
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"warehouseId":"{{createdWarehouse.response.body.$.data.id}}","productVariantId":"{{createdVariant.response.body.$.data.id}}","transactionType":"RECEIPT","quantity":20,"note":"Nhập hàng nhà cung cấp"}
+
+### Warehouse inventory with available/reserved/on-hand quantities
+GET {{baseUrl}}/api/v1/admin/inventory?warehouseId={{createdWarehouse.response.body.$.data.id}}&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Record a physical stock count
+POST {{baseUrl}}/api/v1/admin/inventory/{{createdStock.response.body.$.data.id}}/adjustments
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"quantityOnHand":19,"reason":"Kiểm kê thực tế"}
+
+### Adjustment history (read-only)
+GET {{baseUrl}}/api/v1/admin/inventory/history?warehouseId={{createdWarehouse.response.body.$.data.id}}&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### All movements, including reservations, shipment issues and returns
+GET {{baseUrl}}/api/v1/admin/inventory/transactions?warehouseId={{createdWarehouse.response.body.$.data.id}}&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Create order and atomically reserve stock; prices come from the backend variant
+# @name createdOrder
+POST {{baseUrl}}/api/v1/admin/orders
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{
+  "customerId":"{{orderCustomerId}}",
+  "warehouseId":"{{createdWarehouse.response.body.$.data.id}}",
+  "recipientName":"Nguyễn An",
+  "recipientPhone":"0901234567",
+  "shippingAddress":"123 Nguyễn Trãi, TP. Hồ Chí Minh",
+  "note":"Giao giờ hành chính",
+  "discountAmount":0,
+  "shippingFee":20000,
+  "items":[{"productVariantId":"{{createdVariant.response.body.$.data.id}}","quantity":2,"discountAmount":0}]
+}
+
+### Search/filter orders
+GET {{baseUrl}}/api/v1/admin/orders?customerId={{orderCustomerId}}&status=PLACED&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Confirm the order
+PUT {{baseUrl}}/api/v1/admin/orders/{{createdOrder.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"CONFIRMED","note":"Đã xác nhận với khách"}
+
+### Enabled manual payment methods
+GET {{baseUrl}}/api/v1/admin/payments/methods
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Create pending payment for the exact order total
+# @name createdPayment
+POST {{baseUrl}}/api/v1/admin/payments
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"orderId":"{{createdOrder.response.body.$.data.id}}","paymentMethod":"BANK_TRANSFER","amount":{{createdOrder.response.body.$.data.totalAmount}}}
+
+### Record verified payment; no bank/provider is called by this API
+PUT {{baseUrl}}/api/v1/admin/payments/{{createdPayment.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"PAID","providerTransactionId":null}
+
+### Create shipment for the confirmed order
+# @name createdShipment
+POST {{baseUrl}}/api/v1/admin/shipments
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"orderId":"{{createdOrder.response.body.$.data.id}}","shippingProvider":"Giao hàng nội bộ","trackingCode":null,"shippingFee":20000}
+
+### Dispatch shipment and deduct reserved stock exactly once
+PUT {{baseUrl}}/api/v1/admin/shipments/{{createdShipment.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"SHIPPED","description":"Đã bàn giao vận chuyển"}
+
+### Record delivery
+PUT {{baseUrl}}/api/v1/admin/shipments/{{createdShipment.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"DELIVERED","description":"Khách đã nhận hàng"}
+
+### Shipment history across all carriers
+GET {{baseUrl}}/api/v1/admin/shipments/history?shipmentId={{createdShipment.response.body.$.data.id}}&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Complete a delivered, fully paid order
+PUT {{baseUrl}}/api/v1/admin/orders/{{createdOrder.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"COMPLETED","note":"Đơn hoàn tất"}
+
+### Return one purchased item; replacementVariantId is required instead for EXCHANGE
+# @name createdReturn
+POST {{baseUrl}}/api/v1/admin/returns
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{
+  "orderId":"{{createdOrder.response.body.$.data.id}}",
+  "requestType":"RETURN",
+  "reason":"Khách muốn trả một áo",
+  "images":[],
+  "items":[{"orderItemId":"{{createdOrder.response.body.$.data.items[0].id}}","quantity":1,"reason":"Không vừa size"}]
+}
+
+### Approve the return
+PUT {{baseUrl}}/api/v1/admin/returns/{{createdReturn.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"APPROVED","note":"Đồng ý nhận hàng trả"}
+
+### Complete after physically receiving the goods; replenishes stock once
+PUT {{baseUrl}}/api/v1/admin/returns/{{createdReturn.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"COMPLETED","note":"Đã nhận và kiểm tra hàng"}
+
+### Create a pending merchandise refund (shipping fees are excluded)
+# @name createdRefund
+POST {{baseUrl}}/api/v1/admin/refunds
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"returnRequestId":"{{createdReturn.response.body.$.data.id}}","paymentId":"{{createdPayment.response.body.$.data.id}}","amount":{{createdReturn.response.body.$.data.refundableAmount}},"refundMethod":"BANK_TRANSFER","reason":"Hoàn giá trị hàng trả"}
+
+### Record refund success; no actual bank transfer is executed by this API
+PUT {{baseUrl}}/api/v1/admin/refunds/{{createdRefund.response.body.$.data.id}}/status
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"SUCCEEDED"}
+
+### Read order snapshots and aggregate payment/refund totals
+GET {{baseUrl}}/api/v1/admin/orders/{{createdOrder.response.body.$.data.id}}
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Order status audit trail
+GET {{baseUrl}}/api/v1/admin/orders/{{createdOrder.response.body.$.data.id}}/history
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Khách hàng / Marketing: thay các UUID bằng dữ liệu catalog và kho đã tạo
+@marketingCustomerId = 00000000-0000-0000-0000-000000000001
+@marketingProductId = 00000000-0000-0000-0000-000000000002
+@marketingVariantId = 00000000-0000-0000-0000-000000000003
+@marketingWarehouseId = 00000000-0000-0000-0000-000000000004
+@marketingOrderItemId = 00000000-0000-0000-0000-000000000005
+@marketingCouponId = 00000000-0000-0000-0000-000000000006
+@marketingNotificationId = 00000000-0000-0000-0000-000000000007
+@marketingInboxId = 00000000-0000-0000-0000-000000000008
+@marketingReviewId = 00000000-0000-0000-0000-000000000009
+@customerToken = replace-with-customer-access-token
+
+### Tìm khách hàng / tổng hợp
+GET {{baseUrl}}/api/v1/admin/customers?search=An&status=ACTIVE&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Danh sách đánh giá cần duyệt
+GET {{baseUrl}}/api/v1/admin/product-reviews?status=PENDING&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Khách gửi đánh giá dòng đã giao (không gửi customerId/productId)
+POST {{baseUrl}}/api/v1/me/product-reviews
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{"orderItemId":"{{marketingOrderItemId}}","rating":5,"comment":"Vải đẹp, vừa size","images":[]}
+
+### Duyệt đánh giá
+PUT {{baseUrl}}/api/v1/admin/product-reviews/{{marketingReviewId}}/moderation
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"APPROVED","note":"Đã kiểm tra nội dung"}
+
+### Tạo mã giảm giá (điều chỉnh thời gian trước khi chạy)
+POST {{baseUrl}}/api/v1/admin/coupons
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"code":"WELCOME10","name":"Ưu đãi khách mới","discountType":"PERCENTAGE","discountValue":10,"maxDiscount":50000,"minimumOrderValue":100000,"usageLimit":100,"usageLimitPerCustomer":1,"startAt":"2026-10-01T00:00:00Z","endAt":"2026-12-31T23:59:59Z","status":"ACTIVE"}
+
+### Lịch sử dùng mã
+GET {{baseUrl}}/api/v1/admin/coupons/{{marketingCouponId}}/usages?page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Khuyến mãi cho sản phẩm
+POST {{baseUrl}}/api/v1/admin/promotions
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Ưu đãi bộ sưu tập","description":"Giảm 15%","promotionType":"PRODUCT_DISCOUNT","discountType":"PERCENTAGE","discountValue":15,"startAt":"2026-10-01T00:00:00Z","endAt":"2026-12-31T23:59:59Z","priority":1,"status":"ACTIVE","productIds":["{{marketingProductId}}"],"categoryIds":[]}
+
+### Flash Sale (giá flash phải thấp hơn giá biến thể hiện tại)
+POST {{baseUrl}}/api/v1/admin/flash-sales
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"name":"Flash Sale tháng 10","startAt":"2026-10-01T00:00:00Z","endAt":"2026-10-31T23:59:59Z","status":"ACTIVE","items":[{"productVariantId":"{{marketingVariantId}}","flashPrice":99000,"quantityLimit":20}]}
+
+### Tạo đơn có ưu đãi tự động và coupon
+POST {{baseUrl}}/api/v1/admin/orders
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"customerId":"{{marketingCustomerId}}","warehouseId":"{{marketingWarehouseId}}","recipientName":"Nguyễn An","recipientPhone":"0901234567","shippingAddress":"Hồ Chí Minh","discountAmount":0,"shippingFee":20000,"applyMarketing":true,"couponCode":"WELCOME10","items":[{"productVariantId":"{{marketingVariantId}}","quantity":2,"discountAmount":0}]}
+
+### Banner
+POST {{baseUrl}}/api/v1/admin/banners
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"title":"Bộ sưu tập mới","imageUrl":"https://example.com/banner.jpg","linkUrl":"/products","position":"HOME","sortOrder":0,"status":"ACTIVE"}
+
+### Danh sách banner theo vị trí
+GET {{baseUrl}}/api/v1/admin/banners?position=HOME&status=ACTIVE&page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Tạo nháp thông báo cho khách đã chọn
+POST {{baseUrl}}/api/v1/admin/notifications
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"title":"Ưu đãi tháng 10","content":"Bộ sưu tập mới đã ra mắt","notificationType":"PROMOTION","targetType":"SELECTED","customerIds":["{{marketingCustomerId}}"]}
+
+### Phát hành thông báo (gọi lại không gửi trùng)
+POST {{baseUrl}}/api/v1/admin/notifications/{{marketingNotificationId}}/publish
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Người nhận và trạng thái đọc
+GET {{baseUrl}}/api/v1/admin/notifications/{{marketingNotificationId}}/recipients?page=0&size=20
+Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
+
+### Hộp thư khách hàng
+GET {{baseUrl}}/api/v1/me/notifications?read=false&page=0&size=20
+Authorization: Bearer {{customerToken}}
+
+### Đánh dấu đã đọc bằng ID dòng hộp thư
+PUT {{baseUrl}}/api/v1/me/notifications/{{marketingInboxId}}/read
+Authorization: Bearer {{customerToken}}

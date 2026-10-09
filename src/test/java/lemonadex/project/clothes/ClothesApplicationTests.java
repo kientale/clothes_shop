@@ -17,7 +17,7 @@ class ClothesApplicationTests extends PostgresTestSupport {
 	void contextLoads() {
 
         assertThat(jdbc.queryForObject("select count(*) from flyway_schema_history where success", Integer.class))
-                .isEqualTo(3);
+                .isEqualTo(12);
         assertThat(jdbc.queryForList("select code from roles where deleted = false order by code", String.class))
                 .containsExactly("ADMIN", "CUSTOMER");
 	}

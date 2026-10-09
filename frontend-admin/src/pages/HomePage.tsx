@@ -1,49 +1,26 @@
-import {
-  ArrowUpIcon,
-  CheckCircleIcon,
-  PackageIcon,
-  PlusIcon,
-  TagIcon,
-  TruckIcon,
-  type Icon,
-} from '@phosphor-icons/react'
+import { ArrowRightIcon, ArrowUpIcon, CheckCircleIcon, PlusIcon, TruckIcon } from '@phosphor-icons/react'
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { accessErrorMessage } from '../api/access'
 import { api } from '../api/client'
-import type { CategoryResponse, OrderResponse, Page, ProductResponse } from '../api/types'
-import { useAuth } from '../auth/AuthContext'
-import { ErrorBanner } from '../components/common'
-import { formatMoney } from '../format'
+import { catalog } from '../api/catalog'
+import { ORDER_STATUS, inventory, orders } from '../api/commerce'
+import { reviews } from '../api/marketing'
+import { reports } from '../api/reports'
+import { BarChart, StatePill, countOf, isoDay, rangeQuery, useCan, vndOf, whenOf } from '../components/kit'
 import { useAsync } from '../hooks'
+import { bucketLabel } from './reports/ReportFilters'
 
-/** How many recent orders the home page inspects for its counters. */
-const RECENT_ORDERS = 50
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+// Same photo set as the storefront homepage, so the admin opens on the brand's own imagery.
+const HERO_IMAGE = 'https://api.getlayers.ai/storage/v1/object/public/public/assets/baseline-88535e4000/4.webp'
 
-interface Overview {
-  productCount: number
-  /** Real catalog photos for the setup-card artwork; empty until products have images. */
-  photos: string[]
-  categories: CategoryResponse[]
-  orders: Page<OrderResponse>
+interface StoreConfiguration {
+  ordersEnabled: boolean
+  paymentMethods: { code: string; name: string }[]
+  shippingMethods: { code: string; name: string; baseFee: number }[]
 }
 
-async function loadOverview(): Promise<Overview> {
-  const [products, categories, orders] = await Promise.all([
-    api.get<Page<ProductResponse>>('/products', { page: 0, size: 8 }),
-    api.get<CategoryResponse[]>('/categories'),
-    api.get<Page<OrderResponse>>('/admin/orders', { page: 0, size: RECENT_ORDERS }),
-  ])
-  const photos = products.content.flatMap((product) => product.images.slice(0, 1))
-  return { productCount: products.totalElements, photos, categories, orders }
-}
-
-function greeting(now = new Date()) {
-  const hour = now.getHours()
-  if (hour < 11) return 'Chào buổi sáng'
-  if (hour < 18) return 'Chào buổi chiều'
-  return 'Chào buổi tối'
-}
 
 /** Inline skeleton used while counters load, sized like the text it replaces. */
 function Skel({ w = '4ch' }: { w?: string }) {
@@ -51,28 +28,22 @@ function Skel({ w = '4ch' }: { w?: string }) {
 }
 
 /**
- * Fanned photo stack with a floating placeholder card, mirroring the setup-card artwork.
+ * Two fanned photos, like the tilted court cards on the storefront.
  * Uses the store's own product photos when it has them, otherwise seeded placeholders.
  */
-function StackArt({ photos, seeds, icon: Glyph }: { photos: (string | undefined)[]; seeds: [string, string]; icon: Icon }) {
+function StackArt({ photos, seeds }: { photos: (string | undefined)[]; seeds: [string, string] }) {
   const src = (index: 0 | 1) => photos[index] ?? `https://picsum.photos/seed/${seeds[index]}/240/300`
   return (
     <div className="stack-art" aria-hidden>
       <img className="stack-photo left" src={src(0)} alt="" loading="lazy" />
       <img className="stack-photo right" src={src(1)} alt="" loading="lazy" />
-      <div className="stack-card">
-        <div className="stack-slot">
-          <Glyph size={28} weight="regular" />
-        </div>
-        <div className="stack-bar" />
-      </div>
     </div>
   )
 }
 
-function Tile({ title, done, children }: { title: string; done?: boolean; children: ReactNode }) {
+function Tile({ title, done, wide, children }: { title: string; done?: boolean; wide?: boolean; children: ReactNode }) {
   return (
-    <div className="tile">
+    <div className={wide ? 'tile tile-wide' : 'tile'}>
       <h3 className="tile-title">
         {done && <CheckCircleIcon size={18} weight="fill" className="tile-check" aria-label="Đã hoàn tất" />}
         {title}
@@ -82,150 +53,292 @@ function Tile({ title, done, children }: { title: string; done?: boolean; childr
   )
 }
 
-export default function HomePage() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
-  const overview = useAsync(loadOverview, [])
-  const [command, setCommand] = useState('')
+function Stat({ to, label, value, note }: { to: string; label: string; value: ReactNode; note?: ReactNode }) {
+  return (
+    <Link to={to} className="kpi kpi-link">
+      <span className="kpi-label">
+        {label} <ArrowRightIcon size={12} weight="bold" aria-hidden />
+      </span>
+      <span className="kpi-value">{value}</span>
+      {note && <span className="kpi-note">{note}</span>}
+    </Link>
+  )
+}
 
-  const data = overview.data
-  const recent = data?.orders.content ?? []
-  const placed = recent.filter((order) => order.status === 'PLACED')
-  const shipping = recent.filter((order) => order.status === 'SHIPPED')
-  const pendingValue = placed.reduce((sum, order) => sum + order.total, 0)
-  const hasProducts = (data?.productCount ?? 0) > 0
-  const hasCategories = (data?.categories.length ?? 0) > 0
-  const photos = data?.photos ?? []
+export default function HomePage() {
+  const navigate = useNavigate()
+  const [command, setCommand] = useState('')
+  const canOrders = useCan('ORDER_READ')
+  const canProducts = useCan('PRODUCT_READ')
+  const canInventory = useCan('INVENTORY_READ')
+  const canReviews = useCan('REVIEW_READ')
+  const canRevenue = useCan('REPORT_REVENUE_READ')
+
+  const data = useAsync(async () => {
+    // Each block loads on its own: a failure leaves that block empty and surfaces the first error
+    // in a banner, instead of blanking the whole dashboard.
+    const errors: unknown[] = []
+    const soft = <T,>(enabled: boolean, load: () => Promise<T>) =>
+      enabled
+        ? load().catch((error: unknown) => {
+            errors.push(error)
+            return undefined
+          })
+        : Promise.resolve(undefined)
+    const last30 = rangeQuery({ from: isoDay(-29), to: isoDay(0) })
+    const [placed, recent, products, options, lowStock, pendingReviews, revenue, config] = await Promise.all([
+      soft(canOrders, () => orders.list({ status: 'PLACED', page: 0, size: 1 })),
+      soft(canOrders, () => orders.list({ page: 0, size: 6 })),
+      soft(canProducts, () => catalog.products.list({ page: 0, size: 4 })),
+      soft(canProducts, () => catalog.options()),
+      soft(canInventory, () => inventory.list({ lowStock: true, page: 0, size: 1 })),
+      soft(canReviews, () => reviews.list({ status: 'PENDING', page: 0, size: 1 })),
+      soft(canRevenue, () => reports.revenue({ ...last30, groupBy: 'DAY', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone })),
+      soft(true, () => api.get<StoreConfiguration>('/store/configuration')),
+    ])
+    return { placed, recent, products, options, lowStock, pendingReviews, revenue, config, error: errors[0] }
+  }, [canOrders, canProducts, canInventory, canReviews, canRevenue])
+
+  const d = data.data
+  const loading = !d
+  const photos = d?.products?.content.flatMap((p) => p.images.slice(0, 1).map((i) => i.url)) ?? []
+  const productCount = d?.products?.totalElements ?? 0
+  const categories = d?.options?.categories ?? []
+  const placedCount = d?.placed?.totalElements ?? 0
 
   const runCommand = (event: FormEvent) => {
     event.preventDefault()
     const term = command.trim()
     if (!term) return
-    navigate(UUID.test(term) ? `/orders/${term}` : `/products?search=${encodeURIComponent(term)}`)
+    if (UUID.test(term)) navigate(`/orders/${term}`)
+    else if (/^[A-Z]{1,10}-/i.test(term) || /^\+?\d{8,}$/.test(term)) navigate(`/orders?search=${encodeURIComponent(term)}`)
+    else navigate(`/products?search=${encodeURIComponent(term)}`)
   }
 
   return (
     <div className="page home">
-      <div className="home-head">
-        <h1>
-          {greeting()}
-          {user ? `, ${user.displayName}` : ''}. Bắt đầu thôi.
-        </h1>
-        <Link to="/orders" className="head-link">
-          Đơn chờ xử lý: <strong>{data ? placed.length : <Skel w="2ch" />}</strong>
-        </Link>
+      <section className="home-hero" aria-labelledby="home-title">
+        <div className="home-hero-plate" aria-hidden>
+          <img src={HERO_IMAGE} alt="" decoding="async" />
+        </div>
+
+        <div className="home-hero-foot">
+          <div className="home-search">
+            <h1 id="home-title" className="home-title">
+              Chúc một ngày đắt hàng
+            </h1>
+            <form className="command" onSubmit={runCommand}>
+              <label htmlFor="command" className="sr-only">
+                Tìm sản phẩm, mã đơn hoặc số điện thoại
+              </label>
+              <input
+                id="command"
+                placeholder="Tìm sản phẩm, mã đơn hoặc số điện thoại khách..."
+                value={command}
+                onChange={(event) => setCommand(event.target.value)}
+                autoComplete="off"
+              />
+              <Link to="/products" className="icon-btn ghost" aria-label="Quản lý sản phẩm" title="Quản lý sản phẩm">
+                <PlusIcon size={16} />
+              </Link>
+              <button className="icon-btn round" disabled={!command.trim()} aria-label="Tìm">
+                <ArrowUpIcon size={16} weight="bold" />
+              </button>
+            </form>
+          </div>
+
+          {canOrders && (
+            <Link to="/orders?status=PLACED" className="home-stat">
+              <span className="home-stat-value">{loading ? <Skel w="2ch" /> : placedCount}</span>
+              <span className="home-stat-label">
+                Đơn chờ xác nhận <ArrowRightIcon size={12} weight="bold" aria-hidden />
+              </span>
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {d?.error ? (
+        <div className="banner banner-error" role="alert">
+          {accessErrorMessage(d.error)}{' '}
+          <button type="button" className="link-btn" onClick={data.reload}>
+            Thử lại
+          </button>
+        </div>
+      ) : null}
+
+      <div className="kpis home-kpis">
+        {canRevenue && (
+          <Stat to="/reports/revenue" label="Thực nhận 30 ngày" value={loading ? <Skel w="8ch" /> : vndOf(d?.revenue?.netReceivedAmount)} note={d?.revenue && `Đã thu ${vndOf(d.revenue.paidAmount)}`} />
+        )}
+        {canProducts && <Stat to="/products" label="Sản phẩm" value={loading ? <Skel /> : countOf(productCount)} note={`${categories.length} danh mục`} />}
+        {canInventory && (
+          <Stat to="/inventory" label="SKU sắp hết hàng" value={loading ? <Skel w="2ch" /> : countOf(d?.lowStock?.totalElements ?? 0)} note="Còn 5 sản phẩm trở xuống" />
+        )}
+        {canReviews && <Stat to="/reviews" label="Đánh giá chờ duyệt" value={loading ? <Skel w="2ch" /> : countOf(d?.pendingReviews?.totalElements ?? 0)} />}
       </div>
 
-      <form className="command" onSubmit={runCommand}>
-        <label htmlFor="command" className="sr-only">
-          Tìm sản phẩm hoặc mở đơn theo mã
-        </label>
-        <input
-          id="command"
-          placeholder="Tìm sản phẩm, hoặc dán mã đơn hàng để mở..."
-          value={command}
-          onChange={(event) => setCommand(event.target.value)}
-          autoComplete="off"
-        />
-        <div className="command-row">
-          <span className="command-mark" aria-hidden>
-            L
-          </span>
-          <div className="command-actions">
-            <Link to="/products/new" className="icon-btn ghost" aria-label="Thêm sản phẩm">
-              <PlusIcon size={16} />
+      <div className="home-grid">
+        <section className="panel">
+          <div className="section-head">
+            <h2 className="panel-title flush">Đơn hàng mới</h2>
+            <Link to="/orders" className="btn btn-plain btn-sm">
+              Tất cả đơn <ArrowRightIcon size={13} />
             </Link>
-            <button className="icon-btn round" disabled={!command.trim()} aria-label="Thực hiện">
-              <ArrowUpIcon size={14} weight="bold" />
-            </button>
           </div>
-        </div>
-      </form>
+          {loading ? (
+            Array.from({ length: 4 }, (_, i) => <span key={i} className="skel skel-row" />)
+          ) : d?.recent?.content.length ? (
+            <ul className="recent-orders">
+              {d.recent.content.map((o) => (
+                <li key={o.id}>
+                  <Link to={`/orders/${o.id}`}>
+                    <span className="person-text">
+                      <span className="mono-strong">{o.orderCode}</span>
+                      <span className="person-sub">
+                        {o.recipientName} | {whenOf(o.placedAt)}
+                      </span>
+                    </span>
+                    <strong className="money">{vndOf(o.totalAmount)}</strong>
+                    <StatePill map={ORDER_STATUS} value={o.orderStatus} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted small">{canOrders ? 'Chưa có đơn hàng nào.' : 'Bạn chưa có quyền xem đơn hàng.'}</p>
+          )}
+        </section>
 
-      <ErrorBanner error={overview.error} />
+        <section className="panel">
+          <div className="section-head">
+            <h2 className="panel-title flush">Thực nhận 30 ngày</h2>
+            {canRevenue && (
+              <Link to="/reports/revenue" className="btn btn-plain btn-sm">
+                Báo cáo <ArrowRightIcon size={13} />
+              </Link>
+            )}
+          </div>
+          {!canRevenue ? (
+            <p className="muted small">Bạn chưa có quyền xem báo cáo doanh thu.</p>
+          ) : d?.revenue ? (
+            <BarChart
+              label="Tiền thực nhận theo ngày trong 30 ngày qua"
+              format={vndOf}
+              points={(d.revenue.series ?? []).map((p) => ({ key: p.bucketStart, label: bucketLabel(p.bucketStart, 'DAY'), value: p.netReceivedAmount }))}
+            />
+          ) : (
+            <div className="chart-skel skel" />
+          )}
+        </section>
+      </div>
 
       <section className="panel">
         <h2 className="panel-title">LemonadeX Clothes</h2>
 
         <div className="feature-grid">
           <article className="feature">
-            <StackArt photos={[photos[0], photos[1]]} seeds={['lemonadex-linen-shirt', 'lemonadex-denim-rack']} icon={TagIcon} />
-            <h3>{hasProducts ? 'Thêm sản phẩm mới' : 'Thêm sản phẩm đầu tiên'}</h3>
+            <StackArt photos={[photos[0], photos[1]]} seeds={['lemonadex-linen-shirt', 'lemonadex-denim-rack']} />
+            <h3>{productCount > 0 ? 'Thêm sản phẩm mới' : 'Thêm sản phẩm đầu tiên'}</h3>
             <p>
-              {data === undefined ? (
+              {loading ? (
                 <Skel w="22ch" />
-              ) : hasProducts ? (
-                <>Cửa hàng đang bán {data.productCount} sản phẩm. Thêm mẫu mới với size, màu và giá cho từng SKU.</>
+              ) : productCount > 0 ? (
+                <>Cửa hàng có {productCount} sản phẩm. Thêm mẫu mới, rồi tạo biến thể size và màu cho từng SKU.</>
               ) : (
                 <>
-                  Bắt đầu bằng một sản phẩm và vài thông tin chính. Chưa có danh mục?{' '}
-                  <Link to="/categories">Tạo danh mục trước</Link>
+                  Bắt đầu bằng một sản phẩm và vài thông tin chính. Chưa có danh mục? <Link to="/categories">Tạo danh mục trước</Link>
                 </>
               )}
             </p>
             <div className="actions">
-              <Link to="/products/new" className="btn btn-primary">
-                Thêm sản phẩm
+              <Link to="/products" className="btn btn-primary">
+                Quản lý sản phẩm
               </Link>
-              <Link to="/products" className="btn btn-plain">
-                Xem danh sách
+              <Link to="/product-variants" className="btn btn-plain">
+                Biến thể
               </Link>
             </div>
           </article>
 
           <article className="feature">
-            <StackArt photos={[photos[2], photos[3]]} seeds={['lemonadex-parcel-desk', 'lemonadex-folded-tees']} icon={PackageIcon} />
+            <StackArt photos={[photos[2], photos[3]]} seeds={['lemonadex-parcel-desk', 'lemonadex-folded-tees']} />
             <h3>Xử lý đơn hàng mới</h3>
             <p>
-              {data === undefined ? (
+              {loading ? (
                 <Skel w="26ch" />
-              ) : placed.length > 0 ? (
-                <>
-                  {placed.length} đơn đang chờ xác nhận, tổng {formatMoney(pendingValue)}. Xác nhận sớm để giữ
-                  hàng cho khách.
-                </>
+              ) : placedCount > 0 ? (
+                <>{placedCount} đơn đang chờ xác nhận. Xác nhận sớm để giữ hàng và tạo vận đơn cho khách.</>
               ) : (
                 <>Không có đơn nào chờ xác nhận. Đơn mới từ khách sẽ hiện ở đây.</>
               )}
             </p>
             <div className="actions">
-              <Link to="/orders" className="btn btn-secondary">
-                Xem đơn hàng
+              <Link to="/orders?status=PLACED" className="btn btn-secondary">
+                Xem đơn chờ xác nhận
               </Link>
             </div>
           </article>
         </div>
 
         <div className="tile-grid">
-          <Tile title="Thanh toán khi nhận hàng" done>
+          <Tile title="Thanh toán" done={(d?.config?.paymentMethods?.length ?? 0) > 0}>
             <div className="chips">
-              <span className="chip chip-dark">COD</span>
-              <span className="chip">VND</span>
-            </div>
-            <p className="tile-note">Đang bật. Đơn chuyển sang đã thanh toán khi giao thành công.</p>
-          </Tile>
-
-          <Tile title="Phí vận chuyển">
-            <div className="chips">
-              <span className="chip chip-icon">
-                <TruckIcon size={16} /> Miễn phí
-              </span>
-            </div>
-            <p className="tile-note">Mọi đơn đang áp dụng phí giao hàng 0đ.</p>
-          </Tile>
-
-          <Tile title={hasCategories ? 'Đã có danh mục' : 'Tạo danh mục'} done={hasCategories}>
-            <div className="field-box">
-              {data === undefined ? (
-                <Skel w="12ch" />
-              ) : hasCategories ? (
-                <span className="truncate">{data.categories.map((category) => category.name).join(', ')}</span>
+              {loading ? (
+                <Skel w="10ch" />
+              ) : d?.config?.paymentMethods?.length ? (
+                d.config.paymentMethods.map((m, i) => (
+                  <span key={m.code} className={`chip${i === 0 ? ' chip-dark' : ''}`}>
+                    {m.name}
+                  </span>
+                ))
               ) : (
-                <span className="muted">Chưa có danh mục nào</span>
+                <span className="chip chip-muted">Chưa bật phương thức nào</span>
+              )}
+            </div>
+            <Link to="/settings/payments" className="btn btn-secondary btn-sm">
+              Cài đặt thanh toán
+            </Link>
+          </Tile>
+
+          <Tile title="Giao hàng" done={(d?.config?.shippingMethods?.length ?? 0) > 0}>
+            <div className="chips">
+              {loading ? (
+                <Skel w="10ch" />
+              ) : d?.config?.shippingMethods?.length ? (
+                d.config.shippingMethods.slice(0, 2).map((m) => (
+                  <span key={m.code} className="chip chip-icon">
+                    <TruckIcon size={16} /> {m.name}
+                  </span>
+                ))
+              ) : (
+                <span className="chip chip-muted">Phí nhập tay theo đơn</span>
+              )}
+            </div>
+            <Link to="/settings/shipping" className="btn btn-secondary btn-sm">
+              Cài đặt giao hàng
+            </Link>
+          </Tile>
+
+          <Tile title={categories.length > 0 ? 'Danh mục' : 'Tạo danh mục'} done={categories.length > 0} wide>
+            <div className="chips">
+              {loading ? (
+                <Skel w="12ch" />
+              ) : categories.length > 0 ? (
+                <>
+                  {categories.slice(0, 8).map((c) => (
+                    <span key={c.id} className="chip">
+                      {c.name}
+                    </span>
+                  ))}
+                  {categories.length > 8 && <span className="chip chip-muted">+{categories.length - 8} danh mục</span>}
+                </>
+              ) : (
+                <span className="chip chip-muted">Chưa có danh mục nào</span>
               )}
             </div>
             <Link to="/categories" className="btn btn-secondary btn-sm">
-              {hasCategories ? 'Quản lý danh mục' : 'Tạo danh mục'}
+              {categories.length > 0 ? 'Quản lý danh mục' : 'Tạo danh mục'}
             </Link>
           </Tile>
         </div>
@@ -236,7 +349,7 @@ export default function HomePage() {
             <img src="https://picsum.photos/seed/lemonadex-stockroom/320/240" alt="Kệ hàng trong kho" loading="lazy" />
             <div>
               <h3>Kiểm tra tồn kho</h3>
-              <p>Điều chỉnh số lượng theo SKU và ghi lại lý do cho mỗi lần nhập, xuất.</p>
+              <p>Nhập, xuất và kiểm kê theo SKU. Mỗi lần thay đổi được ghi vào sổ kho kèm lý do.</p>
               <Link to="/inventory" className="btn btn-secondary btn-sm">
                 Mở tồn kho
               </Link>
@@ -245,27 +358,15 @@ export default function HomePage() {
           <article className="media-card">
             <img src="https://picsum.photos/seed/lemonadex-courier/320/240" alt="Đơn hàng đang được giao" loading="lazy" />
             <div>
-              <h3>Theo dõi đơn đang giao</h3>
-              <p>
-                {data === undefined ? (
-                  <Skel w="20ch" />
-                ) : shipping.length > 0 ? (
-                  <>{shipping.length} đơn đang trên đường. Đánh dấu đã giao khi thu tiền COD xong.</>
-                ) : (
-                  <>Chưa có đơn nào đang giao. Đơn đã xác nhận sẽ chuyển sang bước giao hàng.</>
-                )}
-              </p>
-              <Link to="/orders?status=SHIPPED" className="btn btn-secondary btn-sm">
-                Xem đơn giao
+              <h3>Theo dõi vận đơn</h3>
+              <p>Cập nhật trạng thái theo hãng vận chuyển. Đơn tự chuyển sang đã giao khi vận đơn giao thành công.</p>
+              <Link to="/shipments" className="btn btn-secondary btn-sm">
+                Xem giao hàng
               </Link>
             </div>
           </article>
         </div>
       </section>
-
-      {data && data.orders.totalElements > RECENT_ORDERS && (
-        <p className="footnote">Số liệu đơn hàng tính trên {RECENT_ORDERS} đơn gần nhất.</p>
-      )}
     </div>
   )
 }

@@ -29,7 +29,7 @@ export function RequireAdmin({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth()
   const location = useLocation()
   if (loading) return <div className="boot" aria-busy="true" />
-  if (!user || user.role !== 'ADMIN') {
+  if (!user || !user.roles.includes('ADMIN')) {
     return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
   }
   return <>{children}</>

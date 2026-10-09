@@ -1,0 +1,84 @@
+@baseUrl = http://localhost:8080
+@articleId = 00000000-0000-0000-0000-000000000001
+@policyId = 00000000-0000-0000-0000-000000000002
+@warehouseId = 00000000-0000-0000-0000-000000000003
+
+### Đăng nhập admin
+# @name contentAdminLogin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{"email":"admin","password":"admin123"}
+
+### Tạo nháp Lookbook; lấy data.id thay vào articleId
+POST {{baseUrl}}/api/v1/admin/articles
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"title":"Lookbook mùa thu","slug":"lookbook-mua-thu","thumbnailUrl":"https://example.com/lookbook.jpg","content":"Bộ sưu tập mùa thu","articleType":"LOOKBOOK","images":["https://example.com/lookbook.jpg"]}
+
+### Danh sách bài nháp
+GET {{baseUrl}}/api/v1/admin/articles?articleType=LOOKBOOK&status=DRAFT&page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Xuất bản
+PUT {{baseUrl}}/api/v1/admin/articles/{{articleId}}/status
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"PUBLISHED"}
+
+### Đọc công khai bài đã xuất bản
+GET {{baseUrl}}/api/v1/content/articles/lookbook-mua-thu
+
+### Danh sách công khai Lookbook
+GET {{baseUrl}}/api/v1/content/articles?articleType=LOOKBOOK&page=0&size=20
+
+### Tạo phiên bản chính sách mới; lấy data.id thay vào policyId
+POST {{baseUrl}}/api/v1/admin/store-policies
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"policyType":"RETURN_EXCHANGE","title":"Chính sách đổi trả","content":"Điều kiện và hướng dẫn đổi trả hàng tại cửa hàng."}
+
+### Kích hoạt phiên bản; tự lưu phiên bản ACTIVE cũ vào ARCHIVED
+PUT {{baseUrl}}/api/v1/admin/store-policies/{{policyId}}/status
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+Content-Type: application/json
+
+{"status":"ACTIVE"}
+
+### Lịch sử phiên bản
+GET {{baseUrl}}/api/v1/admin/store-policies?policyType=RETURN_EXCHANGE&page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Chính sách đang áp dụng: đọc công khai
+GET {{baseUrl}}/api/v1/content/store-policies/RETURN_EXCHANGE
+
+### Doanh thu thu tiền theo ngày, múi giờ Việt Nam
+GET {{baseUrl}}/api/v1/admin/reports/revenue?from=2026-10-01T00:00:00%2B07:00&to=2026-11-01T00:00:00%2B07:00&timezone=Asia/Ho_Chi_Minh&groupBy=DAY
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Đơn hàng theo tuần
+GET {{baseUrl}}/api/v1/admin/reports/orders?from=2026-10-01T00:00:00Z&to=2026-11-01T00:00:00Z&groupBy=WEEK
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Sản phẩm bán chạy trong 30 ngày gần nhất
+GET {{baseUrl}}/api/v1/admin/reports/bestsellers?page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Tồn kho hiện tại của kho đã chọn, chỉ các biến thể sắp hết
+GET {{baseUrl}}/api/v1/admin/reports/inventory?warehouseId={{warehouseId}}&lowStock=true&threshold=5&page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Khách hàng mua nhiều
+GET {{baseUrl}}/api/v1/admin/reports/customers?page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Đổi/trả đã hoàn tất
+GET {{baseUrl}}/api/v1/admin/reports/returns?status=COMPLETED&requestType=RETURN&page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}
+
+### Hiệu quả coupon
+GET {{baseUrl}}/api/v1/admin/reports/promotions?campaignType=COUPON&page=0&size=20
+Authorization: Bearer {{contentAdminLogin.response.body.$.data.accessToken}}

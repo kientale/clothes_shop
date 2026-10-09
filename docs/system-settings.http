@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:8080
+@token = REPLACE_WITH_ADMIN_JWT
+
+### Lấy revision và cấu hình
+GET {{baseUrl}}/api/v1/admin/settings/store
+Authorization: Bearer {{token}}
+
+### Thay expectedRevision bằng revision lấy từ GET
+PUT {{baseUrl}}/api/v1/admin/settings/store
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "expectedRevision": 0,
+  "configuration": {
+    "storeName": "LemonadeX",
+    "legalName": null,
+    "taxCode": null,
+    "supportEmail": "support@example.com",
+    "supportPhone": "0901234567",
+    "address": "Thành phố Hồ Chí Minh",
+    "logoUrl": null,
+    "websiteUrl": "https://example.com",
+    "businessHours": "09:00–21:00"
+  }
+}
+
+### Thanh toán
+GET {{baseUrl}}/api/v1/admin/settings/payment
+Authorization: Bearer {{token}}
+
+### Giao hàng
+GET {{baseUrl}}/api/v1/admin/settings/shipping
+Authorization: Bearer {{token}}
+
+### Đơn hàng
+GET {{baseUrl}}/api/v1/admin/settings/order
+Authorization: Bearer {{token}}
+
+### Thông báo
+GET {{baseUrl}}/api/v1/admin/settings/notification
+Authorization: Bearer {{token}}
+
+### Hệ thống chung
+GET {{baseUrl}}/api/v1/admin/settings/general
+Authorization: Bearer {{token}}
+
+### Phương thức thanh toán
+GET {{baseUrl}}/api/v1/admin/settings/payment-methods
+Authorization: Bearer {{token}}
+
+### Tạo phương thức giao hàng
+POST {{baseUrl}}/api/v1/admin/settings/shipping-methods
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"code":"STANDARD","name":"Giao hàng tiêu chuẩn","provider":"Manual carrier","baseFee":30000,"estimatedDays":3,"enabled":true}
+
+### Báo giá giao hàng
+GET {{baseUrl}}/api/v1/admin/settings/shipping/quote?methodCode=STANDARD&merchandiseAmount=200000
+Authorization: Bearer {{token}}
+
+### Lịch sử
+GET {{baseUrl}}/api/v1/admin/settings/store/history?page=0&size=20
+Authorization: Bearer {{token}}
+
+### Cấu hình công khai
+GET {{baseUrl}}/api/v1/store/configuration

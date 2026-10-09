@@ -3,7 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LemonadeX — Thời trang</title>
+    <meta name="description" content="LemonadeX - thời trang nam nữ: áo, quần, váy và phụ kiện. Đặt hàng online, giao tận nơi." />
+    <meta name="theme-color" content="#0f2f63" />
+    <title>LemonadeX - Thời trang</title>
+    <script>
+      // Apply the saved or system theme before styles load, so pages never flash the wrong theme.
+      try {
+        const saved = localStorage.getItem('lemonadex.theme')
+        const dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+      } catch {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

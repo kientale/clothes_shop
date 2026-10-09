@@ -1,4 +1,4 @@
-// Mirrors the schemas in docs/openapi.json. Money is a decimal VND amount.
+// Auth types mirror docs/openapi.json; commerce types describe the existing UI.
 
 export type Role = 'CUSTOMER' | 'ADMIN'
 export type OrderStatus = 'PLACED' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
@@ -6,28 +6,52 @@ export type PaymentStatus = 'PENDING' | 'PAID' | 'VOID'
 export type PaymentMethod = 'COD'
 
 export interface Problem {
-  type?: string
-  title?: string
-  status: number
-  detail: string
-  instance?: string
+  success: false
+  message: string
   code: string
   requestId: string
   errors?: Record<string, string>
 }
 
-export interface UserResponse {
+export interface ApiResponse<T> {
+  success: boolean
+  code: string
+  message: string
+  data: T
+  timestamp: string
+  requestId: string
+  errors?: Record<string, string>
+}
+
+export interface AccountResponse {
   id: string
   email: string
+  status: 'ACTIVE' | 'INACTIVE' | 'LOCKED' | 'SUSPENDED'
+  roles: string[]
+  permissions: string[]
+  customer: {
+    id: string
+    fullName: string
+    phone: string | null
+    dateOfBirth: string | null
+  } | null
+  avatarUrl?: string | null
+  lastLoginAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+/** Account data with a display label for the UI; roles remain the server's full list. */
+export interface UserResponse extends AccountResponse {
   displayName: string
-  role: Role
+  avatarUrl?: string | null
 }
 
 export interface TokenResponse {
   accessToken: string
   tokenType: 'Bearer'
   expiresIn: number
-  user: UserResponse
+  account: AccountResponse
 }
 
 export interface LoginRequest {
@@ -36,7 +60,10 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest extends LoginRequest {
-  displayName: string
+  fullName: string
+  confirmPassword: string
+  phone?: string | null
+  dateOfBirth?: string | null
 }
 
 export interface CategoryRequest {
@@ -162,5 +189,116 @@ export interface OrderResponse {
   shippingAddress: ShippingAddress
   customerNote: string | null
   items: OrderItemResponse[]
+  createdAt: string
+}
+
+// Administrator and role management (mirrors /api/v1/admin/admin-accounts, /roles, /permissions).
+
+export type AccountStatus = AccountResponse['status']
+
+export interface AdminAccountResponse {
+  id: string
+  email: string
+  status: AccountStatus
+  fullName: string | null
+  phone: string | null
+  avatarUrl: string | null
+  /** Role codes, sorted by code. */
+  roles: string[]
+  roleIds: string[]
+  lastLoginAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AdminAccountCreateRequest {
+  email: string
+  password: string
+  fullName: string
+  phone: string | null
+  avatarUrl: string | null
+  roleIds: string[]
+}
+
+export interface AdminAccountUpdateRequest {
+  email: string
+  fullName: string
+  phone: string | null
+  avatarUrl: string | null
+  status: AccountStatus
+  roleIds: string[]
+}
+
+export interface PermissionResponse {
+  id: string
+  name: string
+  code: string
+  module: string
+}
+
+export interface RoleResponse {
+  id: string
+  name: string
+  code: string
+  permissions: PermissionResponse[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface RoleCreateRequest {
+  name: string
+  code: string
+  permissionIds: string[]
+}
+
+export interface RoleUpdateRequest {
+  name: string
+  permissionIds: string[]
+}
+
+// Customer management (mirrors /api/v1/admin/customers).
+
+export type CustomerStatus = 'ACTIVE' | 'INACTIVE' | 'BLOCKED'
+export type Gender = 'MALE' | 'FEMALE' | 'OTHER'
+
+export interface CustomerResponse {
+  id: string
+  accountId: string | null
+  /** Login email of the linked account; null for guests or a soft-deleted account. */
+  email: string | null
+  fullName: string
+  phone: string | null
+  gender: Gender | null
+  /** yyyy-MM-dd */
+  dateOfBirth: string | null
+  avatarUrl: string | null
+  status: CustomerStatus
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CustomerUpdateRequest {
+  fullName: string
+  phone: string | null
+  gender: Gender | null
+  dateOfBirth: string | null
+  avatarUrl: string | null
+  status: CustomerStatus
+}
+
+export interface CustomerCreateRequest extends CustomerUpdateRequest {
+  accountId: string | null
+}
+
+export interface CustomerSummaryResponse {
+  total: number
+  active: number
+  inactive: number
+  blocked: number
+}
+
+export interface LinkableAccountResponse {
+  id: string
+  email: string
   createdAt: string
 }

@@ -1,12 +1,25 @@
 spring:
   application:
     name: clothes
+  # Local secrets (DB credentials, JWT secret) live in an untracked .env file next to pom.xml.
+  # Real environment variables still take precedence over it.
+  config:
+    import: optional:file:.env[.properties]
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5432/clothes}
     username: ${DB_USERNAME:clothes}
     password: ${DB_PASSWORD}
     hikari:
       maximum-pool-size: ${DB_POOL_SIZE:10}
+      # A pooled cloud database (Supabase Supavisor) can refuse or drop a new connection for a moment.
+      # Keep retrying for up to a minute at startup instead of failing on the first attempt.
+      initialization-fail-timeout: ${DB_INIT_FAIL_TIMEOUT:60000}
+      connection-timeout: 30000
+      validation-timeout: 5000
+      # Ping idle connections and recycle them before the pooler or a NAT closes them.
+      keepalive-time: 120000
+      idle-timeout: 300000
+      max-lifetime: 900000
   jpa:
     open-in-view: false
     hibernate:
@@ -16,16 +29,42 @@ spring:
         jdbc.time_zone: UTC
   flyway:
     enabled: true
+    # Add classpath:db/seed (FLYWAY_LOCATIONS in .env) to load the demo data in db/seed/R__demo_seed.sql.
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
+    # Switching the demo seed off again must not fail validation of the already applied repeatable migration.
+    ignore-migration-patterns: "*:future,repeatable:missing"
   mvc:
     problemdetails:
       enabled: false
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+  mail:
+    # Leave MAIL_HOST empty to log emails instead of sending them (local development).
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${MAIL_SMTP_AUTH:true}
+      mail.smtp.starttls.enable: ${MAIL_STARTTLS:true}
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+  servlet:
+    multipart:
+      # Slightly above app.uploads.max-image-size so the service can answer with FILE_TOO_LARGE.
+      max-file-size: 6MB
+      max-request-size: 7MB
 
 server:
   port: ${PORT:8080}
   shutdown: graceful
+  # Behind nginx/Cloudflare set FORWARD_HEADERS_STRATEGY=native so rate limits see the real client address.
+  forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}
+  tomcat:
+    # Read (and discard) oversized uploads so the client receives the 413 JSON instead of a reset connection.
+    max-swallow-size: 10MB
   error:
     include-message: never
     include-stacktrace: never
@@ -37,7 +76,53 @@ app:
     secret: ${JWT_SECRET}
     access-token-ttl: 15m
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:3001}
+  mail:
+    from: ${MAIL_FROM:no-reply@lemonadex.vn}
+    from-name: ${MAIL_FROM_NAME:LemonadeX}
+    # Public address of the shop, used in email links (password reset, order).
+    storefront-url: ${STOREFRONT_URL:http://localhost:3000}
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
+  # Google / Facebook sign-in; a button appears in the shop only when its keys are set.
+  social:
+    google-client-id: ${GOOGLE_CLIENT_ID:}
+    facebook-app-id: ${FACEBOOK_APP_ID:}
+    facebook-app-secret: ${FACEBOOK_APP_SECRET:}
+  # Online payments. Also switch the VNPAY / MOMO method on in the admin payment settings.
+  payments:
+    # Public origin of this backend (MoMo calls <origin>/api/v1/payments/momo/ipn).
+    callback-base-url: ${PAYMENT_CALLBACK_BASE_URL:}
+    vnpay:
+      tmn-code: ${VNPAY_TMN_CODE:}
+      hash-secret: ${VNPAY_HASH_SECRET:}
+      pay-url: ${VNPAY_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+    momo:
+      partner-code: ${MOMO_PARTNER_CODE:}
+      access-key: ${MOMO_ACCESS_KEY:}
+      secret-key: ${MOMO_SECRET_KEY:}
+      endpoint: ${MOMO_ENDPOINT:https://test-payment.momo.vn/v2/gateway/api/create}
+  # Giao Hàng Tiết Kiệm. Without GHTK_TOKEN the GHTK method charges its fixed fee and shipments are entered by hand.
+  carriers:
+    ghtk:
+      token: ${GHTK_TOKEN:}
+      base-url: ${GHTK_BASE_URL:https://services-staging.ghtklab.com}
+      webhook-secret: ${GHTK_WEBHOOK_SECRET:}
+      pick-name: ${GHTK_PICK_NAME:}
+      pick-tel: ${GHTK_PICK_TEL:}
+      pick-address: ${GHTK_PICK_ADDRESS:}
+      pick-province: ${GHTK_PICK_PROVINCE:}
+      pick-district: ${GHTK_PICK_DISTRICT:}
+      pick-ward: ${GHTK_PICK_WARD:}
+      item-weight-grams: ${GHTK_ITEM_WEIGHT_GRAMS:300}
+  # How often back-in-stock emails are checked.
+  stock-alerts:
+    interval: ${STOCK_ALERT_INTERVAL:PT5M}
+  uploads:
+    max-avatar-size: 2MB
+    max-image-size: 5MB
+    # Origin put in returned file URLs; empty uses the upload request's origin.
+    public-base-url: ${UPLOADS_PUBLIC_BASE_URL:}
 
 management:
   endpoints:

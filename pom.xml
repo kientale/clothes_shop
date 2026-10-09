@@ -12,7 +12,7 @@
     <artifactId>clothes</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>LemonadeX Clothes</name>
-    <description>Fashion commerce backend using Spring MVC</description>
+    <description>Fashion commerce backend organized by feature using Spring MVC</description>
     <properties>
         <java.version>25</java.version>
         <archunit.version>1.4.1</archunit.version>
@@ -61,6 +61,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

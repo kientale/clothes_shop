@@ -1,14 +1,25 @@
 spring:
   datasource:
+    # Never inherit DB_URL from .env (it may point at production); PostgresTestSupport sets the real URL.
+    url: jdbc:postgresql://localhost:5432/clothes_test_unset
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
   jpa:
     hibernate:
       ddl-auto: validate
+  flyway:
+    # Never inherit FLYWAY_LOCATIONS from .env: the demo seed would change settings other tests rely on.
+    locations: classpath:db/migration
 app:
   security:
     secret: test-only-secret-at-least-32-bytes-do-not-deploy
+  # Tests sign in many times from one address; RateLimitIntegrationTests switches it back on.
+  rate-limit:
+    enabled: false
+  # Background jobs would race the tests; tests call them directly.
+  scheduling:
+    enabled: false
 logging:
   level:
     root: WARN

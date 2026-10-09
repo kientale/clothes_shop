@@ -69,3 +69,11 @@ File `fashion_schema_assertions.sql` đối chiếu **đúng các cột V1**, n�
 `V3__seed_admin_account.sql` tạo account admin@example.com với mật khẩu admin123 đã băm BCrypt (cost 12), liên kết role ADMIN và admin profile. Có thể đăng nhập bằng alias admin. Flyway chạy V3 sau V2 khi ứng dụng kết nối PostgreSQL.
 
 SQL seed có thể chạy lại mà không tạo account/profile/role link trùng. Email của account khác không bị ghi đè hoặc tự nâng quyền; nếu trùng, SQL báo lỗi và rollback. Các test auth kiểm tra đăng nhập bằng alias/email và truy cập route admin.
+
+## V8: Khách hàng và Marketing
+
+`V8__customer_reviews_and_marketing.sql` bổ sung xóa mềm/timestamp cho các bảng chiến dịch, thông tin duyệt đánh giá, nháp/phát hành thông báo, tập người nhận và thời điểm đọc, trạng thái hoàn hạn mức coupon và bảng `order_marketing_lines` chụp ưu đãi theo dòng đơn. Notification đã có người nhận từ trước được chuyển PUBLISHED. Migration giữ toàn bộ bản ghi V1–V7 và cấp 12 quyền mới cho role ADMIN. Không sửa các migration đã phát hành; Flyway chạy V8 khi ứng dụng kết nối database.
+
+## V9: Nội dung và báo cáo
+
+`V9__content_and_reports.sql` bổ sung xóa mềm/timestamp cho bài viết và chính sách, thời điểm kích hoạt phiên bản chính sách, chỉ mục thời điểm đặt đơn/thu tiền/hoàn tiền và 11 quyền nội dung/báo cáo. Unique index chỉ cho phép một chính sách ACTIVE chưa xóa mỗi loại. Báo cáo đọc các bảng nghiệp vụ hiện có, không tạo bản sao số liệu. Các migration V1–V8 được giữ nguyên.
