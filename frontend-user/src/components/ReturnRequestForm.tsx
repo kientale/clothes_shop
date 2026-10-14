@@ -1,3 +1,4 @@
+import { ValidatedForm } from './ValidatedForm'
 import { useState, type FormEvent } from 'react'
 import { me } from '../api/store'
 import type { ExchangeOption, Order, ReturnRequest, ReturnType } from '../api/types'
@@ -78,7 +79,7 @@ export function ReturnRequestForm({ order, claimed, onDone, onCancel }: {
   }
 
   return (
-    <form className="return-form" onSubmit={submit}>
+    <ValidatedForm className="return-form" onSubmit={submit}>
       <fieldset className="option-cards return-type">
         <legend className="field-label">Bạn muốn</legend>
         {(
@@ -157,7 +158,7 @@ export function ReturnRequestForm({ order, claimed, onDone, onCancel }: {
       </fieldset>
 
       <Field label="Lý do" hint="Ví dụ: chật ở vai, màu khác ảnh, đường may lỗi">
-        <textarea rows={3} maxLength={2000} value={reason} onChange={(e) => setReason(e.target.value)} />
+        <textarea required rows={3} maxLength={2000} value={reason} onChange={(e) => setReason(e.target.value)} />
       </Field>
       <div className="field">
         <span className="field-label">Ảnh sản phẩm (nên có nếu hàng lỗi)</span>
@@ -172,6 +173,6 @@ export function ReturnRequestForm({ order, claimed, onDone, onCancel }: {
           Để sau
         </button>
       </div>
-    </form>
+    </ValidatedForm>
   )
 }

@@ -5,6 +5,7 @@ import { catalog, type SizeChart } from '../../api/catalog'
 import { useCan } from '../../components/kit'
 import { useToast } from '../../components/Toast'
 import { useAsync } from '../../hooks'
+import { ValidatedForm } from '../../components/ValidatedForm'
 
 const TEMPLATE: SizeChart = {
   columns: ['Size', 'Ngực (cm)', 'Eo (cm)', 'Dài áo (cm)'],
@@ -98,14 +99,14 @@ export function SizeChartPanel({ productId, sizeNames }: { productId: string; si
           )}
         </div>
       ) : (
-        <>
+        <ValidatedForm onSubmit={(event) => { event.preventDefault(); void save() }}>
           <div className="size-chart-editor">
             <table>
               <thead>
                 <tr>
                   {chart.columns.map((heading, column) => (
                     <th key={column} scope="col">
-                      <input aria-label={`Tên cột ${column + 1}`} value={heading} maxLength={40} disabled={!canWrite}
+                      <input required aria-label={`Tên cột ${column + 1}`} value={heading} maxLength={40} disabled={!canWrite || busy}
                         onChange={(e) => setColumn(column, e.target.value)} />
                       {canWrite && column > 0 && chart.columns.length > 2 && (
                         <button type="button" className="icon-btn" onClick={() => removeColumn(column)} aria-label={`Bỏ cột ${heading}`} title="Bỏ cột">
@@ -128,7 +129,7 @@ export function SizeChartPanel({ productId, sizeNames }: { productId: string; si
                   <tr key={r}>
                     {row.map((cell, column) => (
                       <td key={column}>
-                        <input aria-label={`${chart.columns[column] || 'Ô'} dòng ${r + 1}`} value={cell} maxLength={40} disabled={!canWrite}
+                        <input required={column === 0} aria-label={`${chart.columns[column] || 'Ô'} dòng ${r + 1}`} value={cell} maxLength={40} disabled={!canWrite || busy}
                           className={column === 0 ? 'strong' : undefined} onChange={(e) => setCell(r, column, e.target.value)} />
                       </td>
                     ))}
@@ -163,7 +164,7 @@ export function SizeChartPanel({ productId, sizeNames }: { productId: string; si
           )}
           {canWrite && (
             <div className="row-actions">
-              <button type="button" className="btn btn-primary btn-sm" onClick={save} disabled={busy || !dirty}>
+              <button type="submit" className="btn btn-primary btn-sm" disabled={busy || !dirty}>
                 {busy ? 'Đang lưu...' : 'Lưu bảng size'}
               </button>
               {dirty && (
@@ -173,7 +174,7 @@ export function SizeChartPanel({ productId, sizeNames }: { productId: string; si
               )}
             </div>
           )}
-        </>
+        </ValidatedForm>
       )}
     </section>
   )

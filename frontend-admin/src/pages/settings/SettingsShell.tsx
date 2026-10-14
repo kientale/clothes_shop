@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../../components/ValidatedForm'
 import { ClockCounterClockwiseIcon, FloppyDiskIcon } from '@phosphor-icons/react'
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { accessErrorMessage, fieldErrors } from '../../api/access'
@@ -7,6 +8,7 @@ import { ListPanel, PageHead, useCan, whenOf } from '../../components/kit'
 import { useToast } from '../../components/Toast'
 import { Modal } from '../../components/ui'
 import { useAsync } from '../../hooks'
+import { parseWholeMoney } from '../../../../frontend-shared/validation'
 
 const GROUP_PERMISSION: Record<SettingsGroup, string> = {
   store: 'SETTINGS_STORE',
@@ -116,7 +118,7 @@ export function SettingsShell<G extends SettingsGroup, F extends object>({
         </div>
       ) : null}
 
-      <form className="panel settings-panel" onSubmit={save} noValidate>
+      <ValidatedForm className="panel settings-panel" onSubmit={save} noValidate>
         {!form ? (
           <div aria-busy="true">
             {Array.from({ length: 4 }, (_, i) => (
@@ -164,7 +166,7 @@ export function SettingsShell<G extends SettingsGroup, F extends object>({
             </footer>
           </>
         )}
-      </form>
+      </ValidatedForm>
 
       {aside}
 
@@ -241,7 +243,6 @@ export function SettingsSection({ title, children }: { title: string; children: 
 }
 
 /** Optional whole-number fields (VND amounts, counts): '' means null; thousand separators are ignored. */
-const digitsOf = (value: string) => value.replace(/[.\s,₫đ]/g, '')
 export const numText = (value: number | null | undefined) => (value === null || value === undefined ? '' : String(value))
-export const numOrNull = (value: string) => (value.trim() === '' ? null : Number(digitsOf(value)))
-export const badNumber = (value: string) => value.trim() !== '' && !/^\d+$/.test(digitsOf(value))
+export const numOrNull = (value: string) => (value.trim() === '' ? null : parseWholeMoney(value))
+export const badNumber = (value: string) => value.trim() !== '' && Number.isNaN(parseWholeMoney(value))

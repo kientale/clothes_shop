@@ -214,7 +214,7 @@ function PaymentMethodForm({ open, item, onClose, onSaved }: { open: boolean; it
       )}
     >
       <Field label="Mã" htmlFor={`${id}-code`} error={errors.code} hint={item ? 'Mã không đổi được.' : undefined}>
-        <input {...bind(id, 'code', errors)} className="mono-input" disabled={Boolean(item)} maxLength={50} value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'code', errors)} className="mono-input" disabled={Boolean(item)} maxLength={50} value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} />
       </Field>
       <Field label="Tên hiển thị" htmlFor={`${id}-name`} error={errors.name}>
         <input {...bind(id, 'name', errors)} maxLength={100} value={form.name} onChange={(e) => set('name', e.target.value)} />
@@ -246,7 +246,7 @@ function PaymentMethodForm({ open, item, onClose, onSaved }: { open: boolean; it
             <input {...bind(id, 'bankName', errors)} maxLength={100} value={form.bankName} onChange={(e) => set('bankName', e.target.value)} />
           </Field>
           <Field label="Số tài khoản" htmlFor={`${id}-accountNumber`} error={errors.accountNumber}>
-            <input {...bind(id, 'accountNumber', errors)} className="mono-input" maxLength={50} value={form.accountNumber} onChange={(e) => set('accountNumber', e.target.value)} />
+            <input pattern="[A-Za-z0-9-]{1,50}" {...bind(id, 'accountNumber', errors)} className="mono-input" maxLength={50} value={form.accountNumber} onChange={(e) => set('accountNumber', e.target.value)} />
           </Field>
           <Field label="Chủ tài khoản" htmlFor={`${id}-accountHolder`} error={errors.accountHolder} wide>
             <input {...bind(id, 'accountHolder', errors)} maxLength={150} value={form.accountHolder} onChange={(e) => set('accountHolder', e.target.value.toUpperCase())} />
@@ -344,7 +344,7 @@ function ShippingMethodForm({ open, item, onClose, onSaved }: { open: boolean; i
       )}
     >
       <Field label="Mã" htmlFor={`${id}-code`} error={errors.code} hint={item ? 'Mã không đổi được.' : undefined}>
-        <input {...bind(id, 'code', errors)} className="mono-input" disabled={Boolean(item)} maxLength={50} value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'code', errors)} className="mono-input" disabled={Boolean(item)} maxLength={50} value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} />
       </Field>
       <Field label="Tên hiển thị" htmlFor={`${id}-name`} error={errors.name}>
         <input {...bind(id, 'name', errors)} maxLength={100} placeholder="Giao hàng tiêu chuẩn" value={form.name} onChange={(e) => set('name', e.target.value)} />
@@ -353,10 +353,10 @@ function ShippingMethodForm({ open, item, onClose, onSaved }: { open: boolean; i
         <input {...bind(id, 'provider', errors)} maxLength={100} value={form.provider} onChange={(e) => set('provider', e.target.value)} />
       </Field>
       <Field label="Phí" htmlFor={`${id}-baseFee`} error={errors.baseFee}>
-        <input {...bind(id, 'baseFee', errors)} inputMode="numeric" value={form.baseFee} onChange={(e) => set('baseFee', e.target.value)} />
+        <input data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'baseFee', errors)} inputMode="numeric" value={form.baseFee} onChange={(e) => set('baseFee', e.target.value)} />
       </Field>
       <Field label="Thời gian dự kiến (ngày)" htmlFor={`${id}-estimatedDays`} error={errors.estimatedDays} optional>
-        <input {...bind(id, 'estimatedDays', errors)} inputMode="numeric" value={form.estimatedDays} onChange={(e) => set('estimatedDays', e.target.value)} />
+        <input data-validation="integer" min={0} max={365} maxLength={32} {...bind(id, 'estimatedDays', errors)} inputMode="numeric" value={form.estimatedDays} onChange={(e) => set('estimatedDays', e.target.value)} />
       </Field>
       <label className="check">
         <input type="checkbox" checked={form.enabled} onChange={(e) => set('enabled', e.target.checked)} />

@@ -65,7 +65,7 @@ export function ProductCombobox({
       {open ? (
         <label className="combo-input">
           <MagnifyingGlassIcon size={15} aria-hidden />
-          <input
+          <input maxLength={100}
             id={inputId}
             autoFocus
             role="combobox"

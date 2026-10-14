@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../components/ValidatedForm'
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ApiError } from '../api/client'
@@ -61,7 +62,7 @@ export function LoginPage() {
 
   return (
     <AuthShell title="Đăng nhập" lede="Chào mừng bạn quay lại LemonadeX.">
-    <form className="form-stack" onSubmit={submit}>
+    <ValidatedForm className="form-stack" onSubmit={submit}>
       <Field label="Email">
         <input type="email" required maxLength={254} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </Field>
@@ -90,7 +91,7 @@ export function LoginPage() {
           Tạo tài khoản
         </Link>
       </p>
-    </form>
+    </ValidatedForm>
     </AuthShell>
   )
 }
@@ -131,7 +132,7 @@ export function RegisterPage() {
 
   return (
     <AuthShell title="Tạo tài khoản" lede="Chỉ mất một phút để bắt đầu mua sắm.">
-    <form className="form-stack" onSubmit={submit}>
+    <ValidatedForm className="form-stack" onSubmit={submit}>
       <Field label="Họ tên" error={fieldErrors.fullName}>
         <input
           required
@@ -163,7 +164,7 @@ export function RegisterPage() {
         />
       </Field>
       <Field label="Xác nhận mật khẩu" error={fieldErrors.confirmPassword}>
-        <input type="password" required minLength={8} maxLength={72} autoComplete="new-password"
+        <input data-match="new-password" type="password" required minLength={8} maxLength={72} autoComplete="new-password"
           value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />
       </Field>
       <ErrorBanner error={error} />
@@ -177,7 +178,7 @@ export function RegisterPage() {
           Đăng nhập
         </Link>
       </p>
-    </form>
+    </ValidatedForm>
     </AuthShell>
   )
 }
@@ -215,7 +216,7 @@ export function ForgotPasswordPage() {
           </Link>
         </div>
       ) : (
-        <form className="form-stack" onSubmit={submit}>
+        <ValidatedForm className="form-stack" onSubmit={submit}>
           <Field label="Email">
             <input type="email" required maxLength={254} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </Field>
@@ -226,7 +227,7 @@ export function ForgotPasswordPage() {
           <p className="muted small center">
             Nhớ ra rồi? <Link to="/shop/login">Đăng nhập</Link>
           </p>
-        </form>
+        </ValidatedForm>
       )}
     </AuthShell>
   )
@@ -283,13 +284,13 @@ export function ResetPasswordPage() {
           </Link>
         </div>
       ) : (
-        <form className="form-stack" onSubmit={submit}>
+        <ValidatedForm className="form-stack" onSubmit={submit}>
           <Field label="Mật khẩu mới (8-72 ký tự)">
             <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })} />
           </Field>
           <Field label="Xác nhận mật khẩu mới">
-            <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={form.confirmPassword}
+            <input data-match="new-password" type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={form.confirmPassword}
               onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />
           </Field>
           <ErrorBanner error={error} />
@@ -301,7 +302,7 @@ export function ResetPasswordPage() {
           <button className="btn btn-primary btn-block btn-lg" disabled={busy}>
             {busy ? 'Đang lưu...' : 'Đặt mật khẩu mới'}
           </button>
-        </form>
+        </ValidatedForm>
       )}
     </AuthShell>
   )

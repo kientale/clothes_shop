@@ -26,7 +26,7 @@ export default function BannersPage() {
       filters={
         <label className="filter-input">
           <span className="sr-only">Vị trí</span>
-          <input placeholder="Vị trí, ví dụ HOME_HERO" value={position} onChange={(e) => setPosition(e.target.value)} />
+          <input maxLength={50} placeholder="Vị trí, ví dụ HOME_HERO" value={position} onChange={(e) => setPosition(e.target.value)} />
         </label>
       }
       filterKey={term}
@@ -142,10 +142,10 @@ function BannerForm({ open, item, onClose, onSaved }: FormSlot<Banner>) {
         <input {...bind(id, 'linkUrl', errors)} maxLength={2048} value={form.linkUrl} onChange={(e) => set('linkUrl', e.target.value)} />
       </Field>
       <Field label="Vị trí" htmlFor={`${id}-position`} error={errors.position}>
-        <input {...bind(id, 'position', errors)} className="mono-input" maxLength={50} value={form.position} onChange={(e) => set('position', e.target.value.toUpperCase())} />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'position', errors)} className="mono-input" maxLength={50} value={form.position} onChange={(e) => set('position', e.target.value.toUpperCase())} />
       </Field>
       <Field label="Thứ tự" htmlFor={`${id}-sortOrder`} error={errors.sortOrder} hint="Số nhỏ hiện trước.">
-        <input {...bind(id, 'sortOrder', errors)} inputMode="numeric" value={form.sortOrder} onChange={(e) => set('sortOrder', e.target.value)} />
+        <input data-validation="integer" min={0} max={2147483647} maxLength={32} {...bind(id, 'sortOrder', errors)} inputMode="numeric" value={form.sortOrder} onChange={(e) => set('sortOrder', e.target.value)} />
       </Field>
       <PeriodFields id={id} startAt={form.startAt} endAt={form.endAt} errors={errors} onChange={(key, value) => set(key, value)} />
       <MarketingStatusField id={id} value={form.status} onChange={(s) => set('status', s)} />

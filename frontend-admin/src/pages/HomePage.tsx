@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../components/ValidatedForm'
 import { ArrowRightIcon, ArrowUpIcon, CheckCircleIcon, PlusIcon, TruckIcon } from '@phosphor-icons/react'
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -127,11 +128,11 @@ export default function HomePage() {
             <h1 id="home-title" className="home-title">
               Chúc một ngày đắt hàng
             </h1>
-            <form className="command" onSubmit={runCommand}>
+            <ValidatedForm className="command" onSubmit={runCommand}>
               <label htmlFor="command" className="sr-only">
                 Tìm sản phẩm, mã đơn hoặc số điện thoại
               </label>
-              <input
+              <input maxLength={255}
                 id="command"
                 placeholder="Tìm sản phẩm, mã đơn hoặc số điện thoại khách..."
                 value={command}
@@ -144,7 +145,7 @@ export default function HomePage() {
               <button className="icon-btn round" disabled={!command.trim()} aria-label="Tìm">
                 <ArrowUpIcon size={16} weight="bold" />
               </button>
-            </form>
+            </ValidatedForm>
           </div>
 
           {canOrders && (

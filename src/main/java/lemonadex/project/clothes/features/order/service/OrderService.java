@@ -15,11 +15,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service @RequiredArgsConstructor @Transactional(readOnly = true)
 public class OrderService {
+    private static final ZoneId VIETNAM = ZoneId.of("Asia/Ho_Chi_Minh");
+    private static final DateTimeFormatter CODE_DATE = DateTimeFormatter.ofPattern("yyMMdd");
+    /** No 0/O, 1/I/L: codes are read aloud on the phone and typed into bank transfer notes. */
+    private static final char[] CODE_CHARS = "23456789ABCDEFGHJKMNPQRSTUVWXYZ".toCharArray();
+    private static final SecureRandom RANDOM = new SecureRandom();
     private final OrderRepository orders;
     private final OrderHistoryRepository histories;
     private final PaymentRepository payments;
@@ -55,7 +64,7 @@ public class OrderService {
             throw new BadRequestException("ORDER_ITEM_LIMIT", "The order exceeds configured item or quantity limits");
         orders.lockActiveCustomer(request.customerId()).orElseThrow(() -> new ResourceNotFoundException("Active customer"));
         PurchaseOrder order = new PurchaseOrder();
-        order.setOrderCode(configuration.orderCodePrefix() + "-" + UUID.randomUUID().toString().replace("-", "").toUpperCase(Locale.ROOT));
+        order.setOrderCode(newOrderCode(configuration.orderCodePrefix()));
         order.setCustomerId(request.customerId()); order.setWarehouseId(request.warehouseId());
         order.setOrderStatus(OrderStatus.PLACED); order.setShippingStatus(ShippingStatus.NOT_SHIPPED);
         order.setRecipientName(request.recipientName().strip()); order.setRecipientPhone(request.recipientPhone());
@@ -208,6 +217,15 @@ public class OrderService {
                 o.getSubtotal(), o.getDiscountAmount(), o.getShippingFee(), o.getTotalAmount(), paid(o), refunds.refundedByOrder(o.getId()),
                 o.getRecipientName(), o.getRecipientPhone(), o.getShippingAddress(), o.getNote(), o.getShippingMethodCode(), o.getContactEmail(), items, o.getPlacedAt(), o.getConfirmedAt(),
                 o.getCompletedAt(), o.getCancelledAt(), o.getCreatedAt(), o.getUpdatedAt());
+    }
+    /** PREFIX-yyMMdd-XXXXX, e.g. LX-261014-7KQ3P. Callers hold the commerce lock, so the existence check cannot race. */
+    private String newOrderCode(String prefix) {
+        String day = prefix + "-" + LocalDate.now(VIETNAM).format(CODE_DATE) + "-";
+        while (true) {
+            StringBuilder code = new StringBuilder(day);
+            for (int i = 0; i < 5; i++) code.append(CODE_CHARS[RANDOM.nextInt(CODE_CHARS.length)]);
+            if (!orders.existsByOrderCode(code.toString())) return code.toString();
+        }
     }
     static String text(String value) { return value == null || value.isBlank() ? null : value.strip(); }
     static BigDecimal money(BigDecimal value) {

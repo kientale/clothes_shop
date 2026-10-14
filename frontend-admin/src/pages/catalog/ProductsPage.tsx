@@ -209,7 +209,7 @@ export function ProductForm({ open, item, onClose, onSaved, options }: FormSlot<
         <input {...bind(id, 'name', errors)} value={form.name} onChange={(e) => set('name', e.target.value)} maxLength={255} placeholder="Áo thun cotton cổ tròn" />
       </Field>
       <Field label="Mã sản phẩm" htmlFor={`${id}-productCode`} error={errors.productCode} hint="Lưu thành chữ hoa, dùng làm tiền tố SKU.">
-        <input {...bind(id, 'productCode', errors)} className="mono" value={form.productCode} onChange={(e) => set('productCode', e.target.value.toUpperCase())} maxLength={80} placeholder="TEE-001" />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'productCode', errors)} className="mono" value={form.productCode} onChange={(e) => set('productCode', e.target.value.toUpperCase())} maxLength={80} placeholder="TEE-001" />
       </Field>
       <Field label="Slug" htmlFor={`${id}-slug`} optional error={errors.slug} hint={`Để trống sẽ dùng: ${slugify(form.name) || '...'}`}>
         <input {...bind(id, 'slug', errors)} className="mono" value={form.slug} onChange={(e) => set('slug', slugify(e.target.value))} maxLength={300} />
@@ -237,7 +237,7 @@ export function ProductForm({ open, item, onClose, onSaved, options }: FormSlot<
         </select>
       </Field>
       <Field label="Giá cơ bản (VND)" htmlFor={`${id}-basePrice`} error={errors.basePrice} hint="Giá tham khảo. Giá bán thực tế đặt ở từng biến thể.">
-        <input {...bind(id, 'basePrice', errors)} type="number" min={0} step={1000} inputMode="numeric" value={form.basePrice} onChange={(e) => set('basePrice', e.target.value)} placeholder="199000" />
+        <input max={Number.MAX_SAFE_INTEGER} {...bind(id, 'basePrice', errors)} type="number" min={0} step={0.01} inputMode="decimal" value={form.basePrice} onChange={(e) => set('basePrice', e.target.value)} placeholder="199000" />
       </Field>
       <Field label="Giới tính" htmlFor={`${id}-gender`}>
         <select id={`${id}-gender`} value={form.gender} onChange={(e) => set('gender', e.target.value as ProductGender)}>

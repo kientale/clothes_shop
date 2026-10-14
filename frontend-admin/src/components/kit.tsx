@@ -68,7 +68,7 @@ export function SearchBox({ value, onChange, placeholder }: { value: string; onC
     <label className="search-box">
       <MagnifyingGlassIcon size={16} aria-hidden />
       <span className="sr-only">{placeholder}</span>
-      <input type="search" placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} />
+      <input maxLength={254} type="search" placeholder={placeholder} value={value} onChange={(event) => onChange(event.target.value)} />
     </label>
   )
 }
@@ -155,19 +155,28 @@ export function rangeQuery(range: DateRangeValue) {
 
 export function DateRange({ value, onChange }: { value: DateRangeValue; onChange: (value: DateRangeValue) => void }) {
   const id = useId()
+  const [draft, setDraft] = useState(value)
+  useEffect(() => setDraft(value), [value.from, value.to])
+  const invalid = Boolean(draft.from && draft.to && draft.from > draft.to)
+  const change = (next: DateRangeValue) => {
+    setDraft(next)
+    if (next.from && next.to && next.from > next.to) return
+    onChange(next)
+  }
   return (
     <div className="date-range" role="group" aria-label="Khoảng thời gian">
       <label htmlFor={`${id}-from`} className="sr-only">
         Từ ngày
       </label>
-      <input id={`${id}-from`} type="date" value={value.from} max={value.to || undefined} onChange={(e) => onChange({ ...value, from: e.target.value })} />
+      <input id={`${id}-from`} type="date" value={draft.from} max={draft.to || undefined} aria-invalid={invalid} aria-describedby={invalid ? `${id}-error` : undefined} onChange={(e) => change({ ...draft, from: e.target.value })} />
       <span aria-hidden>đến</span>
       <label htmlFor={`${id}-to`} className="sr-only">
         Đến ngày
       </label>
-      <input id={`${id}-to`} type="date" value={value.to} min={value.from || undefined} onChange={(e) => onChange({ ...value, to: e.target.value })} />
-      {(value.from || value.to) && (
-        <button type="button" className="icon-btn" onClick={() => onChange({ from: '', to: '' })} aria-label="Bỏ lọc ngày" title="Bỏ lọc ngày">
+      <input id={`${id}-to`} type="date" value={draft.to} min={draft.from || undefined} aria-invalid={invalid} aria-describedby={invalid ? `${id}-error` : undefined} onChange={(e) => change({ ...draft, to: e.target.value })} />
+      {invalid && <span id={`${id}-error`} className="field-error" role="alert">Ngày kết thúc phải từ ngày bắt đầu trở đi.</span>}
+      {(draft.from || draft.to) && (
+        <button type="button" className="icon-btn" onClick={() => change({ from: '', to: '' })} aria-label="Bỏ lọc ngày" title="Bỏ lọc ngày">
           <XIcon size={14} />
         </button>
       )}
@@ -509,7 +518,7 @@ export function SearchPicker({
       {open ? (
         <label className="combo-input">
           <MagnifyingGlassIcon size={15} aria-hidden />
-          <input
+          <input maxLength={100}
             id={inputId}
             autoFocus
             role="combobox"

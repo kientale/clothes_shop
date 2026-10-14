@@ -167,7 +167,7 @@ export function ProductImagesField({
 
       <div className="image-url-row">
         <LinkSimpleIcon size={15} aria-hidden />
-        <input
+        <input type="url" maxLength={2048}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => {

@@ -131,7 +131,7 @@ export function ResourcePage<T extends { id: string }>({
             <label className="search-box">
               <MagnifyingGlassIcon size={16} aria-hidden />
               <span className="sr-only">{searchPlaceholder}</span>
-              <input type="search" placeholder={searchPlaceholder} value={search} onChange={(event) => setSearch(event.target.value)} />
+              <input maxLength={254} type="search" placeholder={searchPlaceholder} value={search} onChange={(event) => setSearch(event.target.value)} />
             </label>
           )}
           {statusLabels && (

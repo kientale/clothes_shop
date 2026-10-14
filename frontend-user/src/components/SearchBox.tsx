@@ -1,3 +1,4 @@
+import { ValidatedForm } from './ValidatedForm'
 import { MagnifyingGlassIcon, TShirtIcon, XIcon } from '@phosphor-icons/react'
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -81,12 +82,12 @@ export function SearchBox({ onClose }: { onClose: () => void }) {
   const empty = found && options.length === 0
 
   return (
-    <form ref={box} className="header-search search-box" onSubmit={submit} role="search">
+    <ValidatedForm ref={box} className="header-search search-box" onSubmit={submit} role="search">
       <MagnifyingGlassIcon size={18} aria-hidden />
       <label htmlFor="site-search" className="sr-only">
         Tìm sản phẩm
       </label>
-      <input
+      <input maxLength={100}
         id="site-search"
         autoFocus
         autoComplete="off"
@@ -138,6 +139,6 @@ export function SearchBox({ onClose }: { onClose: () => void }) {
           )}
         </div>
       )}
-    </form>
+    </ValidatedForm>
   )
 }

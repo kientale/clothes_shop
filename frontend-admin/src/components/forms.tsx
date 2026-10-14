@@ -1,4 +1,5 @@
-import { useEffect, useId, useState, type DependencyList, type FormEvent, type ReactNode } from 'react'
+import { ValidatedForm } from './ValidatedForm'
+import { Children, cloneElement, isValidElement, useEffect, useId, useState, type DependencyList, type FormEvent, type ReactNode, type InputHTMLAttributes } from 'react'
 import { accessErrorMessage, fieldErrors } from '../api/access'
 import { Modal } from './ui'
 
@@ -95,14 +96,14 @@ export function FormDialog({
         </>
       }
     >
-      <form id={`${id}-form`} className="form-grid" onSubmit={onSubmit} noValidate>
+      <ValidatedForm id={`${id}-form`} className="form-grid" onSubmit={onSubmit} noValidate>
         {error ? (
           <div className="banner banner-error span-2" role="alert">
             {accessErrorMessage(error)}
           </div>
         ) : null}
         {children}
-      </form>
+      </ValidatedForm>
     </Modal>
   )
 }
@@ -126,14 +127,23 @@ export function Field({
   wide?: boolean
   children: ReactNode
 }) {
+  const errorId = useId()
   return (
     <div className={`field${wide ? ' span-2' : ''}`}>
       <label className="field-label" htmlFor={htmlFor}>
         {label} {optional && <span className="optional">(không bắt buộc)</span>}
       </label>
-      {children}
+      {Children.map(children, (child) => {
+        if (!isValidElement<InputHTMLAttributes<HTMLInputElement>>(child) || !['input', 'textarea', 'select'].includes(String(child.type))) return child
+        if (['checkbox', 'radio', 'file'].includes(child.props.type ?? '') || child.props.role === 'combobox') return child
+        return cloneElement(child, {
+          required: child.props.required ?? !optional,
+          'aria-invalid': error ? true : child.props['aria-invalid'],
+          'aria-describedby': error ? errorId : child.props['aria-describedby'],
+        })
+      })}
       {error ? (
-        <span className="field-error" role="alert">
+        <span id={errorId} className="field-error" role="alert">
           {error}
         </span>
       ) : hint ? (

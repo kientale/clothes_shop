@@ -1,5 +1,5 @@
 import { CaretLeftIcon, CaretRightIcon } from '@phosphor-icons/react'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { Children, cloneElement, isValidElement, useEffect, useId, useRef, type ReactNode, type InputHTMLAttributes } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { ApiError, errorMessage } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
@@ -69,11 +69,19 @@ interface FieldProps {
 
 /** Label above the control, then the error or the hint below it. */
 export function Field({ label, error, hint, children }: FieldProps) {
+  const id = useId()
   return (
     <label className="field">
-      <span className="field-label">{label}</span>
-      {children}
-      {error ? <span className="field-error">{error}</span> : hint ? <span className="field-hint">{hint}</span> : null}
+      <span id={`${id}-label`} className="field-label">{label}</span>
+      {Children.map(children, (child) => {
+        if (!isValidElement<InputHTMLAttributes<HTMLInputElement>>(child) || !['input', 'textarea', 'select'].includes(String(child.type))) return child
+        return cloneElement(child, {
+          'aria-labelledby': `${id}-label`,
+          'aria-invalid': error ? true : child.props['aria-invalid'],
+          'aria-describedby': error ? `${id}-error` : child.props['aria-describedby'],
+        })
+      })}
+      {error ? <span id={`${id}-error`} className="field-error" role="alert">{error}</span> : hint ? <span className="field-hint">{hint}</span> : null}
     </label>
   )
 }

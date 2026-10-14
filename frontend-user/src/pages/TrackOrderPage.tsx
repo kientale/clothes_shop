@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../components/ValidatedForm'
 import { CheckCircleIcon, MagnifyingGlassIcon, PackageIcon } from '@phosphor-icons/react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -35,6 +36,10 @@ export default function TrackOrderPage() {
   }
 
   const lookup = async () => {
+    if (!form.orderCode.trim() || form.orderCode.trim().length > 80 || !/^\+?[0-9]{8,15}$/.test(form.phone.trim())) {
+      setError(new Error('Nhập mã đơn tối đa 80 ký tự và số điện thoại gồm 8–15 chữ số.'))
+      return
+    }
     setBusy(true)
     setError(undefined)
     setOrder(null)
@@ -63,7 +68,7 @@ export default function TrackOrderPage() {
           </>
         )}
       </p>
-      <form className="track-form" onSubmit={submit}>
+      <ValidatedForm className="track-form" onSubmit={submit}>
         <Field label="Mã đơn hàng">
           <input required maxLength={80} value={form.orderCode} onChange={(e) => setForm({ ...form, orderCode: e.target.value })} autoCapitalize="characters" />
         </Field>
@@ -73,7 +78,7 @@ export default function TrackOrderPage() {
         <button className="btn btn-primary btn-lg" disabled={busy}>
           <MagnifyingGlassIcon size={18} aria-hidden /> {busy ? 'Đang tìm...' : 'Tra cứu'}
         </button>
-      </form>
+      </ValidatedForm>
       <ErrorBanner error={error} />
 
       {order && placed && order.orderStatus !== 'CANCELLED' && (

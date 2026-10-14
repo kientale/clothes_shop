@@ -188,7 +188,7 @@ function MovementDialog({
         </select>
       </Field>
       <Field label="Số lượng" htmlFor={`${id}-quantity`} error={errors.quantity}>
-        <input {...bind(id, 'quantity', errors)} inputMode="numeric" value={form.quantity} onChange={(e) => set('quantity', e.target.value)} />
+        <input data-validation="integer" min={1} max={1000000000} maxLength={32} {...bind(id, 'quantity', errors)} inputMode="numeric" value={form.quantity} onChange={(e) => set('quantity', e.target.value)} />
       </Field>
       <Field label="Biến thể sản phẩm" htmlFor={`${id}-variant`} error={errors.productVariantId} wide>
         <SearchPicker
@@ -201,7 +201,7 @@ function MovementDialog({
           invalid={Boolean(errors.productVariantId)}
         />
       </Field>
-      <Field label="Ghi chú" htmlFor={`${id}-note`} optional wide>
+      <Field label="Ghi chú" htmlFor={`${id}-note`} wide>
         <textarea id={`${id}-note`} rows={2} maxLength={500} value={form.note} onChange={(e) => set('note', e.target.value)} placeholder={receipt ? 'Ví dụ: nhập từ nhà cung cấp' : 'Ví dụ: xuất mẫu chụp hình'} />
       </Field>
     </FormDialog>

@@ -1,3 +1,4 @@
+import { ValidatedForm } from './ValidatedForm'
 import { StarIcon } from '@phosphor-icons/react'
 import { useState, type FormEvent } from 'react'
 import { me } from '../api/store'
@@ -35,7 +36,7 @@ export function ReviewForm({ orderItemId, productName, onDone, onCancel }: {
   }
 
   return (
-    <form className="review-form" onSubmit={submit}>
+    <ValidatedForm className="review-form" onSubmit={submit}>
       <fieldset className="stars-input" onPointerLeave={() => setHover(0)}>
         <legend className="sr-only">Số sao cho {productName}</legend>
         {[1, 2, 3, 4, 5].map((n) => (
@@ -68,6 +69,6 @@ export function ReviewForm({ orderItemId, productName, onDone, onCancel }: {
           Để sau
         </button>
       </div>
-    </form>
+    </ValidatedForm>
   )
 }

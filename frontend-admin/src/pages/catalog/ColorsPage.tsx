@@ -96,17 +96,17 @@ function ColorForm({ open, item, onClose, onSaved }: FormSlot<Color>) {
         <input {...bind(id, 'name', errors)} value={form.name} onChange={(e) => set('name', e.target.value)} maxLength={100} placeholder="Xanh navy" />
       </Field>
       <Field label="Mã màu" htmlFor={`${id}-code`} error={errors.code} hint="Lưu thành chữ hoa, dùng trong SKU.">
-        <input {...bind(id, 'code', errors)} className="mono" value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} maxLength={50} placeholder="NAVY" />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'code', errors)} className="mono" value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} maxLength={50} placeholder="NAVY" />
       </Field>
       <Field label="Mã hex" htmlFor={`${id}-hexCode`} optional error={errors.hexCode}>
         <div className="color-input">
-          <input
+          <input pattern="#[A-Fa-f0-9]{6}"
             type="color"
             aria-label="Chọn màu"
             value={validHex ? form.hexCode : '#000000'}
             onChange={(e) => set('hexCode', e.target.value.toUpperCase())}
           />
-          <input
+          <input pattern="#[A-Fa-f0-9]{6}"
             {...bind(id, 'hexCode', errors)}
             className="mono"
             value={form.hexCode}

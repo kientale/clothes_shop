@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../../components/ValidatedForm'
 import { LinkIcon, MagnifyingGlassIcon, PencilSimpleIcon, PlusIcon, TrashIcon, UsersThreeIcon } from '@phosphor-icons/react'
 import { useEffect, useId, useState, type FormEvent } from 'react'
 import { accessErrorMessage, fieldErrors } from '../../api/access'
@@ -64,7 +65,7 @@ export default function CustomersPage() {
           <label className="search-box">
             <MagnifyingGlassIcon size={16} aria-hidden />
             <span className="sr-only">Tìm theo tên, số điện thoại hoặc email</span>
-            <input
+            <input maxLength={254}
               type="search"
               placeholder="Tìm theo tên, số điện thoại hoặc email"
               value={search}
@@ -359,7 +360,7 @@ function CustomerFormDialog({
         </>
       }
     >
-      <form id={`${id}-form`} className="form-grid" onSubmit={submit} noValidate>
+      <ValidatedForm id={`${id}-form`} className="form-grid" onSubmit={submit} noValidate>
         {error ? (
           <div className="banner banner-error span-2" role="alert">
             {accessErrorMessage(error)}
@@ -370,14 +371,14 @@ function CustomerFormDialog({
           <label className="field-label" htmlFor={`${id}-fullName`}>
             Họ tên
           </label>
-          <input {...field('fullName')} value={form.fullName} onChange={(e) => set('fullName', e.target.value)} maxLength={150} autoComplete="off" />
+          <input required={true} {...field('fullName')} value={form.fullName} onChange={(e) => set('fullName', e.target.value)} maxLength={150} autoComplete="off" />
           {fieldError('fullName')}
         </div>
         <div className="field">
           <label className="field-label" htmlFor={`${id}-phone`}>
             Số điện thoại <span className="optional">(không bắt buộc)</span>
           </label>
-          <input {...field('phone')} type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} placeholder="0912345678" />
+          <input maxLength={16} {...field('phone')} type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} placeholder="0912345678" />
           {fieldError('phone')}
         </div>
         <div className="field">
@@ -439,7 +440,7 @@ function CustomerFormDialog({
         ) : (
           dialog && <AccountPicker value={form.accountId} onChange={(value) => set('accountId', value)} />
         )}
-      </form>
+      </ValidatedForm>
     </Modal>
   )
 }
@@ -459,7 +460,7 @@ function AccountPicker({ value, onChange }: { value: string | null; onChange: (a
       <legend className="field-label">Tài khoản đăng nhập</legend>
       <label className="search-box picker-search" htmlFor={`${id}-search`}>
         <MagnifyingGlassIcon size={16} aria-hidden />
-        <input
+        <input maxLength={254}
           id={`${id}-search`}
           type="search"
           placeholder="Tìm tài khoản khách hàng chưa có hồ sơ theo email"

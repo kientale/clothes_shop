@@ -1,6 +1,7 @@
 import { CATALOG_STATUS_LABEL, type CatalogStatus } from '../../api/catalog'
 import { formatMoney } from '../../format'
 import { Field } from '../../components/forms'
+import { parseWholeMoney } from '../../../../frontend-shared/validation'
 
 const URL_PATTERN = /^https?:\/\/\S+$/
 
@@ -46,8 +47,7 @@ export function Swatch({ hex, size = 18 }: { hex: string | null; size?: number }
 
 /** Parses a VND amount typed with or without thousand separators; NaN when invalid. */
 export function parseMoney(value: string) {
-  const digits = value.replace(/[.\s,₫đ]/g, '')
-  return /^\d+$/.test(digits) ? Number(digits) : Number.NaN
+  return parseWholeMoney(value)
 }
 
 export function money(value: number | null | undefined) {

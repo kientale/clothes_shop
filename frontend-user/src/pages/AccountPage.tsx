@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../components/ValidatedForm'
 import { BellIcon, HeartIcon, MapPinIcon, PackageIcon, PencilSimpleIcon, PlusIcon, StarIcon, TrashIcon } from '@phosphor-icons/react'
 import { useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -9,6 +10,7 @@ import { useAuth } from '../auth/AuthContext'
 import { ErrorBanner, Field, Spinner, StatePill, useTitle } from '../components/common'
 import { RETURN_STATUS, formatAddress, formatDate } from '../format'
 import { useAsync } from '../hooks'
+import { pastDateMax } from '../../../frontend-shared/validation'
 
 const TABS = [
   ['profile', 'Hồ sơ'],
@@ -112,15 +114,15 @@ function ProfileForm({ initial, onSaved }: { initial: Profile; onSaved: () => Pr
   }
 
   return (
-    <form className="form-grid account-form" onSubmit={submit} noValidate>
+    <ValidatedForm className="form-grid account-form" onSubmit={submit} noValidate>
       <Field label="Họ tên" error={fieldErrors.fullName}>
         <input required maxLength={150} autoComplete="name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
       </Field>
       <Field label="Email" hint="Email đăng nhập không đổi được.">
-        <input value={initial.email} disabled readOnly />
+        <input maxLength={255} value={initial.email} disabled readOnly />
       </Field>
       <Field label="Số điện thoại" error={phoneInvalid ? 'Số điện thoại gồm 8-15 chữ số.' : fieldErrors.phone}>
-        <input type="tel" autoComplete="tel" maxLength={20} value={form.phone} aria-invalid={phoneInvalid}
+        <input data-normalize-phone="true" type="tel" autoComplete="tel" maxLength={20} value={form.phone} aria-invalid={phoneInvalid}
           onChange={(e) => setForm({ ...form, phone: e.target.value })} />
       </Field>
       <Field label="Giới tính">
@@ -132,7 +134,7 @@ function ProfileForm({ initial, onSaved }: { initial: Profile; onSaved: () => Pr
         </select>
       </Field>
       <Field label="Ngày sinh" error={fieldErrors.dateOfBirth}>
-        <input type="date" max={new Date().toISOString().slice(0, 10)} value={form.dateOfBirth}
+        <input type="date" max={pastDateMax()} value={form.dateOfBirth}
           onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })} />
       </Field>
       <div className="form-grid-full form-actions">
@@ -142,7 +144,7 @@ function ProfileForm({ initial, onSaved }: { initial: Profile; onSaved: () => Pr
           {busy ? 'Đang lưu...' : 'Lưu thay đổi'}
         </button>
       </div>
-    </form>
+    </ValidatedForm>
   )
 }
 
@@ -173,7 +175,7 @@ function PasswordSection() {
   }
 
   return (
-    <form className="form-stack account-narrow" onSubmit={submit}>
+    <ValidatedForm className="form-stack account-narrow" onSubmit={submit}>
       <Field label="Mật khẩu hiện tại">
         <input type="password" required maxLength={72} autoComplete="current-password" value={form.currentPassword}
           onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} />
@@ -183,7 +185,7 @@ function PasswordSection() {
           onChange={(e) => setForm({ ...form, newPassword: e.target.value })} />
       </Field>
       <Field label="Xác nhận mật khẩu mới">
-        <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={form.confirmPassword}
+        <input data-match="new-password" type="password" required minLength={8} maxLength={72} autoComplete="new-password" value={form.confirmPassword}
           onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />
       </Field>
       <ErrorBanner error={error} />
@@ -196,7 +198,7 @@ function PasswordSection() {
       <p className="muted small">
         Quên mật khẩu hiện tại? <Link to="/shop/forgot-password">Đặt lại qua email</Link>
       </p>
-    </form>
+    </ValidatedForm>
   )
 }
 
@@ -326,28 +328,28 @@ function AddressForm({ initial, first, onCancel, onSaved }: { initial: SavedAddr
   }
 
   return (
-    <form className="form-grid address-form" onSubmit={submit} noValidate>
+    <ValidatedForm className="form-grid address-form" onSubmit={submit} noValidate>
       <h2 className="form-grid-full section-title">{initial ? 'Sửa địa chỉ' : 'Địa chỉ mới'}</h2>
       <div className="form-grid-full">
         <AddressSearch onPick={(p) => setForm((f) => ({ ...f, addressLine: p.line || f.addressLine, ward: p.ward, district: '', province: p.province || f.province }))} />
       </div>
       <Field label="Người nhận" error={errors.recipientName}>
-        <input maxLength={150} autoComplete="name" value={form.recipientName} onChange={(e) => set('recipientName', e.target.value)} />
+        <input required={true} maxLength={150} autoComplete="name" value={form.recipientName} onChange={(e) => set('recipientName', e.target.value)} />
       </Field>
       <Field label="Số điện thoại" error={errors.phone}>
-        <input type="tel" maxLength={20} autoComplete="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} />
+        <input required={true} data-normalize-phone="true" type="tel" maxLength={20} autoComplete="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} />
       </Field>
       <Field label="Số nhà, tên đường" error={errors.addressLine}>
-        <input maxLength={500} autoComplete="address-line1" value={form.addressLine} onChange={(e) => set('addressLine', e.target.value)} />
+        <input required={true} maxLength={500} autoComplete="address-line1" value={form.addressLine} onChange={(e) => set('addressLine', e.target.value)} />
       </Field>
       <Field label="Phường/xã" error={errors.ward}>
-        <input maxLength={100} value={form.ward} onChange={(e) => set('ward', e.target.value)} />
+        <input required={true} maxLength={100} value={form.ward} onChange={(e) => set('ward', e.target.value)} />
       </Field>
       <Field label="Quận/huyện" hint="Bỏ trống nếu địa chỉ mới không còn quận/huyện">
         <input maxLength={100} value={form.district ?? ''} onChange={(e) => set('district', e.target.value)} />
       </Field>
       <Field label="Tỉnh/thành phố" error={errors.province}>
-        <input maxLength={100} autoComplete="address-level1" value={form.province} onChange={(e) => set('province', e.target.value)} />
+        <input required={true} maxLength={100} autoComplete="address-level1" value={form.province} onChange={(e) => set('province', e.target.value)} />
       </Field>
       <label className="check form-grid-full">
         <input type="checkbox" checked={form.makeDefault} disabled={first || initial?.isDefault} onChange={(e) => set('makeDefault', e.target.checked)} />
@@ -364,7 +366,7 @@ function AddressForm({ initial, first, onCancel, onSaved }: { initial: SavedAddr
           </button>
         </div>
       </div>
-    </form>
+    </ValidatedForm>
   )
 }
 

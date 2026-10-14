@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 public interface OrderRepository extends JpaRepository<PurchaseOrder, UUID>, JpaSpecificationExecutor<PurchaseOrder> {
     @EntityGraph(attributePaths = {"items"})
     Optional<PurchaseOrder> findWithItemsById(UUID id);
+    boolean existsByOrderCode(String orderCode);
     @Query(value = "SELECT EXISTS (SELECT 1 FROM customers WHERE id = :id AND NOT deleted AND status = 'ACTIVE')", nativeQuery = true)
     boolean activeCustomer(@Param("id") UUID id);
     @Query(value = "SELECT id FROM customers WHERE id = :id AND NOT deleted AND status = 'ACTIVE' FOR SHARE", nativeQuery = true)

@@ -15,7 +15,7 @@ import { ListPanel, Pill, Ref, countOf, fromLocalInput, toLocalInput, useCan, vn
 import { ResourcePage, type FormSlot } from '../../components/ResourcePage'
 import { Modal } from '../../components/ui'
 import { parseMoney } from '../catalog/shared'
-import { MarketingStatusField, PeriodFields, checkPeriod, discountText } from './shared'
+import { MarketingStatusField, PeriodFields, checkPeriod, discountText, parseDiscount } from './shared'
 
 export default function CouponsPage() {
   const canWrite = useCan('COUPON_WRITE')
@@ -145,7 +145,7 @@ function CouponForm({ open, item, onClose, onSaved }: FormSlot<Coupon>) {
           const e: Record<string, string> = {}
           if (!/^[A-Za-z0-9_-]{1,80}$/.test(f.code.trim())) e.code = 'Mã gồm chữ, số, gạch ngang hoặc gạch dưới, tối đa 80 ký tự.'
           if (!f.name.trim()) e.name = 'Nhập tên hiển thị.'
-          const value = parseMoney(f.discountValue)
+          const value = parseDiscount(f.discountType, f.discountValue)
           if (Number.isNaN(value) || value <= 0) e.discountValue = 'Nhập mức giảm lớn hơn 0.'
           else if (f.discountType === 'PERCENTAGE' && value > 100) e.discountValue = 'Phần trăm tối đa 100.'
           if (f.maxDiscount.trim() && Number.isNaN(parseMoney(f.maxDiscount))) e.maxDiscount = 'Số tiền không hợp lệ.'
@@ -159,9 +159,9 @@ function CouponForm({ open, item, onClose, onSaved }: FormSlot<Coupon>) {
             code: f.code.trim().toUpperCase(),
             name: f.name.trim(),
             discountType: f.discountType,
-            discountValue: parseMoney(f.discountValue),
+            discountValue: parseDiscount(f.discountType, f.discountValue),
             maxDiscount: f.discountType === 'PERCENTAGE' ? optionalMoney(f.maxDiscount) : null,
-            minimumOrderValue: optionalMoney(f.minimumOrderValue),
+            minimumOrderValue: optionalMoney(f.minimumOrderValue) ?? 0,
             usageLimit: optionalInt(f.usageLimit),
             usageLimitPerCustomer: optionalInt(f.usageLimitPerCustomer),
             startAt: fromLocalInput(f.startAt)!,
@@ -175,7 +175,7 @@ function CouponForm({ open, item, onClose, onSaved }: FormSlot<Coupon>) {
       )}
     >
       <Field label="Mã" htmlFor={`${id}-code`} error={errors.code} hint="Tự chuyển thành chữ in hoa.">
-        <input {...bind(id, 'code', errors)} className="mono-input" maxLength={80} value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'code', errors)} className="mono-input" maxLength={80} value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} />
       </Field>
       <Field label="Tên hiển thị" htmlFor={`${id}-name`} error={errors.name}>
         <input {...bind(id, 'name', errors)} maxLength={150} value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Ví dụ: Chào bạn mới" />
@@ -190,21 +190,21 @@ function CouponForm({ open, item, onClose, onSaved }: FormSlot<Coupon>) {
         </select>
       </Field>
       <Field label={form.discountType === 'PERCENTAGE' ? 'Phần trăm giảm' : 'Số tiền giảm'} htmlFor={`${id}-discountValue`} error={errors.discountValue}>
-        <input {...bind(id, 'discountValue', errors)} inputMode="decimal" value={form.discountValue} onChange={(e) => set('discountValue', e.target.value)} />
+        <input min={0.01} max={form.discountType === 'PERCENTAGE' ? 100 : Number.MAX_SAFE_INTEGER} data-validation={form.discountType === 'PERCENTAGE' ? undefined : 'money'} maxLength={32} {...bind(id, 'discountValue', errors)} inputMode="decimal" value={form.discountValue} onChange={(e) => set('discountValue', e.target.value)} />
       </Field>
       {form.discountType === 'PERCENTAGE' && (
         <Field label="Giảm tối đa" htmlFor={`${id}-maxDiscount`} error={errors.maxDiscount} optional>
-          <input {...bind(id, 'maxDiscount', errors)} inputMode="numeric" value={form.maxDiscount} onChange={(e) => set('maxDiscount', e.target.value)} />
+          <input data-validation="money" min={1} max={9007199254740991} maxLength={32} {...bind(id, 'maxDiscount', errors)} inputMode="numeric" value={form.maxDiscount} onChange={(e) => set('maxDiscount', e.target.value)} />
         </Field>
       )}
       <Field label="Giá trị đơn tối thiểu" htmlFor={`${id}-minimumOrderValue`} error={errors.minimumOrderValue} optional>
-        <input {...bind(id, 'minimumOrderValue', errors)} inputMode="numeric" value={form.minimumOrderValue} onChange={(e) => set('minimumOrderValue', e.target.value)} />
+        <input data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'minimumOrderValue', errors)} inputMode="numeric" value={form.minimumOrderValue} onChange={(e) => set('minimumOrderValue', e.target.value)} />
       </Field>
       <Field label="Tổng lượt dùng" htmlFor={`${id}-usageLimit`} error={errors.usageLimit} optional hint="Để trống nếu không giới hạn.">
-        <input {...bind(id, 'usageLimit', errors)} inputMode="numeric" value={form.usageLimit} onChange={(e) => set('usageLimit', e.target.value)} />
+        <input data-validation="integer" min={1} max={2147483647} maxLength={32} {...bind(id, 'usageLimit', errors)} inputMode="numeric" value={form.usageLimit} onChange={(e) => set('usageLimit', e.target.value)} />
       </Field>
       <Field label="Lượt mỗi khách" htmlFor={`${id}-usageLimitPerCustomer`} error={errors.usageLimitPerCustomer}>
-        <input {...bind(id, 'usageLimitPerCustomer', errors)} inputMode="numeric" value={form.usageLimitPerCustomer} onChange={(e) => set('usageLimitPerCustomer', e.target.value)} />
+        <input data-validation="integer" min={1} max={2147483647} maxLength={32} {...bind(id, 'usageLimitPerCustomer', errors)} inputMode="numeric" value={form.usageLimitPerCustomer} onChange={(e) => set('usageLimitPerCustomer', e.target.value)} />
       </Field>
       <PeriodFields id={id} startAt={form.startAt} endAt={form.endAt} errors={errors} onChange={(key, value) => set(key, value)} required />
       <MarketingStatusField id={id} value={form.status} onChange={(s) => set('status', s)} />

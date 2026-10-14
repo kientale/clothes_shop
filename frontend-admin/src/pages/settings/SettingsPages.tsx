@@ -68,7 +68,7 @@ export function StoreSettingsPage() {
                 <input {...bind(id, 'storeName', errors)} maxLength={150} value={form.storeName} onChange={(e) => set('storeName', e.target.value)} />
               </Field>
               <Field label="Website" htmlFor={`${id}-websiteUrl`} error={errors.websiteUrl} optional>
-                <input {...bind(id, 'websiteUrl', errors)} maxLength={2048} placeholder="https://" value={form.websiteUrl} onChange={(e) => set('websiteUrl', e.target.value)} />
+                <input type="url" {...bind(id, 'websiteUrl', errors)} maxLength={2048} placeholder="https://" value={form.websiteUrl} onChange={(e) => set('websiteUrl', e.target.value)} />
               </Field>
               <Field label="Logo" htmlFor={`${id}-logoUrl-file`} optional wide>
                 <AvatarField
@@ -115,10 +115,10 @@ export function StoreSettingsPage() {
             <p className="muted small">Khách thấy nút chat ở góc màn hình, mở Zalo, Messenger hoặc gọi điện hỗ trợ. Bỏ trống để ẩn từng kênh.</p>
             <div className="form-grid">
               <Field label="Số Zalo" htmlFor={`${id}-zaloPhone`} error={errors.zaloPhone} optional>
-                <input {...bind(id, 'zaloPhone', errors)} inputMode="tel" maxLength={20} placeholder="0901234567" value={form.zaloPhone} onChange={(e) => set('zaloPhone', e.target.value)} />
+                <input data-normalize-phone="true" {...bind(id, 'zaloPhone', errors)} inputMode="tel" maxLength={20} placeholder="0901234567" value={form.zaloPhone} onChange={(e) => set('zaloPhone', e.target.value)} />
               </Field>
               <Field label="Link Messenger" htmlFor={`${id}-messengerUrl`} error={errors.messengerUrl} optional>
-                <input {...bind(id, 'messengerUrl', errors)} maxLength={2048} placeholder="https://m.me/lemonadex" value={form.messengerUrl} onChange={(e) => set('messengerUrl', e.target.value)} />
+                <input type="url" {...bind(id, 'messengerUrl', errors)} maxLength={2048} placeholder="https://m.me/lemonadex" value={form.messengerUrl} onChange={(e) => set('messengerUrl', e.target.value)} />
               </Field>
             </div>
           </SettingsSection>
@@ -145,8 +145,8 @@ export function PaymentSettingsPage() {
           <SwitchRow id={`${id}-enabled`} label="Nhận thanh toán mới" hint="Tắt sẽ chặn tạo thanh toán mới; khoản đang chờ vẫn xác nhận được." checked={form.paymentsEnabled} onChange={(v) => set('paymentsEnabled', v)} />
           <SwitchRow id={`${id}-partial`} label="Cho phép thanh toán từng phần" hint="Khi tắt, mỗi khoản phải bằng số tiền còn lại của đơn." checked={form.allowPartialPayments} onChange={(v) => set('allowPartialPayments', v)} />
           <div className="form-grid">
-            <Field label="Số tiền tối thiểu mỗi lần" htmlFor={`${id}-minimumPaymentAmount`} error={errors.minimumPaymentAmount} optional>
-              <input {...bind(id, 'minimumPaymentAmount', errors)} inputMode="numeric" value={form.minimumPaymentAmount} onChange={(e) => set('minimumPaymentAmount', e.target.value)} />
+            <Field label="Số tiền tối thiểu mỗi lần" htmlFor={`${id}-minimumPaymentAmount`} error={errors.minimumPaymentAmount}>
+              <input required={true} data-validation="money" min={1} max={9007199254740991} maxLength={32} {...bind(id, 'minimumPaymentAmount', errors)} inputMode="numeric" value={form.minimumPaymentAmount} onChange={(e) => set('minimumPaymentAmount', e.target.value)} />
             </Field>
           </div>
         </SettingsSection>
@@ -185,8 +185,8 @@ export function ShippingSettingsPage() {
           <SwitchRow id={`${id}-enabled`} label="Nhận giao hàng" hint="Tắt sẽ chặn đơn và vận đơn mới; vận đơn đang chạy vẫn cập nhật được." checked={form.shippingEnabled} onChange={(v) => set('shippingEnabled', v)} />
           <SwitchRow id={`${id}-configured`} label="Tự tính phí theo cấu hình" hint="Đơn mới dùng phí mặc định hoặc phí của phương thức, thay vì nhập tay." checked={form.useConfiguredFees} onChange={(v) => set('useConfiguredFees', v)} />
           <div className="form-grid">
-            <Field label="Phí mặc định" htmlFor={`${id}-defaultBaseFee`} error={errors.defaultBaseFee} optional>
-              <input {...bind(id, 'defaultBaseFee', errors)} inputMode="numeric" value={form.defaultBaseFee} onChange={(e) => set('defaultBaseFee', e.target.value)} />
+            <Field label="Phí mặc định" htmlFor={`${id}-defaultBaseFee`} error={errors.defaultBaseFee}>
+              <input required={true} data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'defaultBaseFee', errors)} inputMode="numeric" value={form.defaultBaseFee} onChange={(e) => set('defaultBaseFee', e.target.value)} />
             </Field>
             <Field
               label="Miễn phí cho đơn từ"
@@ -195,7 +195,7 @@ export function ShippingSettingsPage() {
               optional
               hint={form.freeShippingThreshold && !badNumber(form.freeShippingThreshold) ? `Tiền hàng sau giảm giá từ ${vndOf(numOrNull(form.freeShippingThreshold))}.` : 'Để trống nếu không áp dụng.'}
             >
-              <input {...bind(id, 'freeShippingThreshold', errors)} inputMode="numeric" value={form.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', e.target.value)} />
+              <input required={false} data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'freeShippingThreshold', errors)} inputMode="numeric" value={form.freeShippingThreshold} onChange={(e) => set('freeShippingThreshold', e.target.value)} />
             </Field>
           </div>
         </SettingsSection>
@@ -233,12 +233,13 @@ export function OrderSettingsPage() {
         enableMarketingByDefault: f.enableMarketingByDefault,
         allowCancellation: f.allowCancellation,
         allowReturns: f.allowReturns,
-        returnWindowDays: numOrNull(f.returnWindowDays),
+        returnWindowDays: f.allowReturns ? numOrNull(f.returnWindowDays) : null,
       })}
       validate={(f) => {
         const e: Record<string, string> = {}
-        if (!/^[A-Za-z0-9]{1,10}$/.test(f.orderCodePrefix.trim())) e.orderCodePrefix = 'Tiền tố gồm chữ và số, tối đa 10 ký tự.'
+        if (!/^[A-Za-z0-9]{1,12}$/.test(f.orderCodePrefix.trim())) e.orderCodePrefix = 'Tiền tố gồm chữ và số, tối đa 12 ký tự.'
         for (const key of ['minimumOrderAmount', 'maxItems', 'maxQuantityPerItem', 'returnWindowDays'] as const) if (badNumber(f[key])) e[key] = 'Nhập số nguyên hợp lệ.'
+        if (f.allowReturns && f.returnWindowDays.trim() && (Number(f.returnWindowDays) < 1 || Number(f.returnWindowDays) > 3650)) e.returnWindowDays = 'Thời hạn đổi/trả từ 1 đến 3650 ngày.'
         return e
       }}
     >
@@ -250,16 +251,16 @@ export function OrderSettingsPage() {
             <SwitchRow id={`${id}-marketing`} label="Áp dụng khuyến mãi mặc định" hint="Đơn tạo mới tự chọn khuyến mãi hoặc Flash Sale tốt nhất." checked={form.enableMarketingByDefault} onChange={(v) => set('enableMarketingByDefault', v)} />
             <div className="form-grid">
               <Field label="Tiền tố mã đơn" htmlFor={`${id}-orderCodePrefix`} error={errors.orderCodePrefix} hint={`Mã đơn có dạng ${form.orderCodePrefix.trim().toUpperCase() || 'LX'}-...`}>
-                <input {...bind(id, 'orderCodePrefix', errors)} className="mono-input" maxLength={10} value={form.orderCodePrefix} onChange={(e) => set('orderCodePrefix', e.target.value.toUpperCase())} />
+                <input pattern="[A-Z0-9]{1,12}" {...bind(id, 'orderCodePrefix', errors)} className="mono-input" maxLength={12} value={form.orderCodePrefix} onChange={(e) => set('orderCodePrefix', e.target.value.toUpperCase())} />
               </Field>
-              <Field label="Giá trị đơn tối thiểu" htmlFor={`${id}-minimumOrderAmount`} error={errors.minimumOrderAmount} optional>
-                <input {...bind(id, 'minimumOrderAmount', errors)} inputMode="numeric" value={form.minimumOrderAmount} onChange={(e) => set('minimumOrderAmount', e.target.value)} />
+              <Field label="Giá trị đơn tối thiểu" htmlFor={`${id}-minimumOrderAmount`} error={errors.minimumOrderAmount}>
+                <input required={true} data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'minimumOrderAmount', errors)} inputMode="numeric" value={form.minimumOrderAmount} onChange={(e) => set('minimumOrderAmount', e.target.value)} />
               </Field>
-              <Field label="Số dòng tối đa mỗi đơn" htmlFor={`${id}-maxItems`} error={errors.maxItems} optional>
-                <input {...bind(id, 'maxItems', errors)} inputMode="numeric" value={form.maxItems} onChange={(e) => set('maxItems', e.target.value)} />
+              <Field label="Số dòng tối đa mỗi đơn" htmlFor={`${id}-maxItems`} error={errors.maxItems}>
+                <input required={true} data-validation="integer" min={1} max={100} maxLength={32} {...bind(id, 'maxItems', errors)} inputMode="numeric" value={form.maxItems} onChange={(e) => set('maxItems', e.target.value)} />
               </Field>
-              <Field label="Số lượng tối đa mỗi dòng" htmlFor={`${id}-maxQuantityPerItem`} error={errors.maxQuantityPerItem} optional>
-                <input {...bind(id, 'maxQuantityPerItem', errors)} inputMode="numeric" value={form.maxQuantityPerItem} onChange={(e) => set('maxQuantityPerItem', e.target.value)} />
+              <Field label="Số lượng tối đa mỗi dòng" htmlFor={`${id}-maxQuantityPerItem`} error={errors.maxQuantityPerItem}>
+                <input required={true} data-validation="integer" min={1} max={1000000} maxLength={32} {...bind(id, 'maxQuantityPerItem', errors)} inputMode="numeric" value={form.maxQuantityPerItem} onChange={(e) => set('maxQuantityPerItem', e.target.value)} />
               </Field>
             </div>
           </SettingsSection>
@@ -269,7 +270,7 @@ export function OrderSettingsPage() {
             {form.allowReturns && (
               <div className="form-grid">
                 <Field label="Thời hạn đổi/trả (ngày)" htmlFor={`${id}-returnWindowDays`} error={errors.returnWindowDays} optional hint="Tính từ ngày giao. Để trống nếu không giới hạn.">
-                  <input {...bind(id, 'returnWindowDays', errors)} inputMode="numeric" value={form.returnWindowDays} onChange={(e) => set('returnWindowDays', e.target.value)} />
+                  <input required={false} data-validation="integer" min={1} max={3650} maxLength={32} {...bind(id, 'returnWindowDays', errors)} inputMode="numeric" value={form.returnWindowDays} onChange={(e) => set('returnWindowDays', e.target.value)} />
                 </Field>
               </div>
             )}
@@ -296,8 +297,8 @@ export function NotificationSettingsPage() {
           <SwitchRow id={`${id}-inapp`} label="Bật thông báo trong ứng dụng" checked={form.inAppEnabled} onChange={(v) => set('inAppEnabled', v)} />
           <SwitchRow id={`${id}-broadcast`} label="Cho phép gửi tới toàn bộ khách" hint="Tắt để chỉ gửi danh sách khách chọn lọc." checked={form.allowBroadcast} onChange={(v) => set('allowBroadcast', v)} />
           <div className="form-grid">
-            <Field label="Số người nhận tối đa mỗi lần" htmlFor={`${id}-maxRecipients`} error={errors.maxRecipients} optional hint="Vượt giới hạn thì lần phát bị hủy và thông báo giữ ở dạng nháp.">
-              <input {...bind(id, 'maxRecipients', errors)} inputMode="numeric" value={form.maxRecipients} onChange={(e) => set('maxRecipients', e.target.value)} />
+            <Field label="Số người nhận tối đa mỗi lần" htmlFor={`${id}-maxRecipients`} error={errors.maxRecipients} hint="Vượt giới hạn thì lần phát bị hủy và thông báo giữ ở dạng nháp.">
+              <input required={true} data-validation="integer" min={1} max={1000000} maxLength={32} {...bind(id, 'maxRecipients', errors)} inputMode="numeric" value={form.maxRecipients} onChange={(e) => set('maxRecipients', e.target.value)} />
             </Field>
           </div>
         </SettingsSection>

@@ -128,7 +128,7 @@ export function AddressSearch({ onPick }: { onPick: (parts: AddressParts) => voi
       <div className="address-search-row">
         <div className="address-search-box">
           <MagnifyingGlassIcon size={18} aria-hidden className="address-search-icon" />
-          <input
+          <input maxLength={100}
             id={`${id}-input`}
             type="search"
             role="combobox"

@@ -86,7 +86,7 @@ function SizeForm({ open, item, onClose, onSaved }: FormSlot<Size>) {
         <input {...bind(id, 'name', errors)} value={form.name} onChange={(e) => set('name', e.target.value)} maxLength={50} placeholder="XL" />
       </Field>
       <Field label="Mã size" htmlFor={`${id}-code`} error={errors.code} hint="Lưu thành chữ hoa, dùng trong SKU.">
-        <input {...bind(id, 'code', errors)} className="mono" value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} maxLength={50} placeholder="XL" />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'code', errors)} className="mono" value={form.code} onChange={(e) => set('code', e.target.value.toUpperCase())} maxLength={50} placeholder="XL" />
       </Field>
       <Field label="Thứ tự hiển thị" htmlFor={`${id}-sortOrder`} error={errors.sortOrder} hint="Số nhỏ hiện trước, ví dụ S = 1, M = 2, L = 3.">
         <input {...bind(id, 'sortOrder', errors)} type="number" min={0} max={100000} value={form.sortOrder} onChange={(e) => set('sortOrder', e.target.value)} />

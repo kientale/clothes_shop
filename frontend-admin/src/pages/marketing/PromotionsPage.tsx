@@ -18,8 +18,7 @@ import { useProductNames } from '../../components/pickers'
 import { ResourcePage, type FormSlot } from '../../components/ResourcePage'
 import { useAsync } from '../../hooks'
 import { ProductCombobox } from '../catalog/ProductCombobox'
-import { parseMoney } from '../catalog/shared'
-import { MarketingStatusField, PeriodFields, checkPeriod, discountText } from './shared'
+import { MarketingStatusField, PeriodFields, checkPeriod, discountText, parseDiscount } from './shared'
 
 export default function PromotionsPage() {
   return (
@@ -113,7 +112,7 @@ function PromotionForm({ open, item, onClose, onSaved }: FormSlot<Promotion>) {
         (f) => {
           const e: Record<string, string> = {}
           if (!f.name.trim()) e.name = 'Nhập tên chương trình.'
-          const value = parseMoney(f.discountValue)
+          const value = parseDiscount(f.discountType, f.discountValue)
           if (Number.isNaN(value) || value <= 0) e.discountValue = 'Nhập mức giảm lớn hơn 0.'
           else if (f.discountType === 'PERCENTAGE' && value > 100) e.discountValue = 'Phần trăm tối đa 100.'
           if (!/^-?\d+$/.test(f.priority.trim())) e.priority = 'Nhập số nguyên.'
@@ -127,7 +126,7 @@ function PromotionForm({ open, item, onClose, onSaved }: FormSlot<Promotion>) {
             description: f.description.trim() || null,
             promotionType: f.promotionType,
             discountType: f.discountType,
-            discountValue: parseMoney(f.discountValue),
+            discountValue: parseDiscount(f.discountType, f.discountValue),
             startAt: fromLocalInput(f.startAt)!,
             endAt: fromLocalInput(f.endAt)!,
             priority: Number(f.priority),
@@ -157,11 +156,11 @@ function PromotionForm({ open, item, onClose, onSaved }: FormSlot<Promotion>) {
         </select>
       </Field>
       <Field label={form.discountType === 'PERCENTAGE' ? 'Phần trăm giảm' : 'Số tiền giảm mỗi sản phẩm'} htmlFor={`${id}-discountValue`} error={errors.discountValue}>
-        <input {...bind(id, 'discountValue', errors)} inputMode="decimal" value={form.discountValue} onChange={(e) => set('discountValue', e.target.value)} />
+        <input min={0.01} max={form.discountType === 'PERCENTAGE' ? 100 : Number.MAX_SAFE_INTEGER} data-validation={form.discountType === 'PERCENTAGE' ? undefined : 'money'} maxLength={32} {...bind(id, 'discountValue', errors)} inputMode="decimal" value={form.discountValue} onChange={(e) => set('discountValue', e.target.value)} />
       </Field>
       <PeriodFields id={id} startAt={form.startAt} endAt={form.endAt} errors={errors} onChange={(key, value) => set(key, value)} required />
       <Field label="Độ ưu tiên" htmlFor={`${id}-priority`} error={errors.priority} hint="Số lớn hơn được chọn trước.">
-        <input {...bind(id, 'priority', errors)} inputMode="numeric" value={form.priority} onChange={(e) => set('priority', e.target.value)} />
+        <input data-validation="integer" min={0} max={2147483647} maxLength={32} {...bind(id, 'priority', errors)} inputMode="numeric" value={form.priority} onChange={(e) => set('priority', e.target.value)} />
       </Field>
       <MarketingStatusField id={id} value={form.status} onChange={(s) => set('status', s)} />
 

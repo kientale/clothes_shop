@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../components/ValidatedForm'
 import { ArrowRightIcon, EyeIcon, EyeSlashIcon, WarningIcon } from '@phosphor-icons/react'
 import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type KeyboardEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
@@ -108,7 +109,7 @@ export default function LoginPage() {
           <ThemeToggle className="signin-theme" />
         </div>
 
-        <form ref={formRef} className="signin-form" onSubmit={submit} aria-labelledby="signin-title">
+        <ValidatedForm ref={formRef} className="signin-form" onSubmit={submit} aria-labelledby="signin-title">
           <h1 id="signin-title" className="signin-title" style={order(0)}>
             Đăng nhập
             <br />
@@ -123,6 +124,7 @@ export default function LoginPage() {
             <input
               id={usernameId}
               type="text"
+              data-validation="username"
               required
               maxLength={254}
               autoComplete="username"
@@ -180,7 +182,7 @@ export default function LoginPage() {
             </button>
             <p className="signin-hint">Đăng nhập bằng tài khoản được cấp quyền quản trị.</p>
           </div>
-        </form>
+        </ValidatedForm>
 
         <footer className="signin-foot">© 2026 LemonadeX</footer>
       </main>

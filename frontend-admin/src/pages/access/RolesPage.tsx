@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../../components/ValidatedForm'
 import { EyeIcon, LockSimpleIcon, MagnifyingGlassIcon, PencilSimpleIcon, PlusIcon, ShieldCheckIcon, TrashIcon } from '@phosphor-icons/react'
 import { useEffect, useId, useMemo, useState, type FormEvent } from 'react'
 import { MODULE_LABEL, PERMISSION_LABEL, SYSTEM_ROLES, accessErrorMessage, fieldErrors, roles as roleApi } from '../../api/access'
@@ -54,7 +55,7 @@ export default function RolesPage() {
           <label className="search-box">
             <MagnifyingGlassIcon size={16} aria-hidden />
             <span className="sr-only">Tìm theo tên hoặc mã vai trò</span>
-            <input
+            <input maxLength={254}
               type="search"
               placeholder="Tìm theo tên hoặc mã vai trò"
               value={search}
@@ -312,7 +313,7 @@ function RoleFormDialog({
         )
       }
     >
-      <form id={`${id}-form`} className="form-grid" onSubmit={submit} noValidate>
+      <ValidatedForm id={`${id}-form`} className="form-grid" onSubmit={submit} noValidate>
         {error ? (
           <div className="banner banner-error span-2" role="alert">
             {accessErrorMessage(error)}
@@ -325,7 +326,7 @@ function RoleFormDialog({
               <label className="field-label" htmlFor={`${id}-name`}>
                 Tên vai trò
               </label>
-              <input
+              <input required={true}
                 id={`${id}-name`}
                 value={name}
                 onChange={(e) => {
@@ -347,7 +348,7 @@ function RoleFormDialog({
               <label className="field-label" htmlFor={`${id}-code`}>
                 Mã vai trò
               </label>
-              <input
+              <input pattern="[A-Z][A-Z0-9_]{1,49}" required={true}
                 id={`${id}-code`}
                 className="mono"
                 value={code}
@@ -413,7 +414,7 @@ function RoleFormDialog({
             </div>
           )}
         </fieldset>
-      </form>
+      </ValidatedForm>
     </Modal>
   )
 }

@@ -275,18 +275,18 @@ function VariantForm({
         hint={item ? 'Mã quản lý kho, lưu thành chữ hoa.' : `Để trống sẽ dùng: ${autoSku.toUpperCase()}`}
         wide
       >
-        <input {...bind(id, 'sku', errors)} className="mono" value={form.sku} onChange={(e) => set('sku', e.target.value.toUpperCase())} maxLength={100} />
+        <input pattern="[A-Za-z0-9_-]+" {...bind(id, 'sku', errors)} className="mono" value={form.sku} onChange={(e) => set('sku', e.target.value.toUpperCase())} maxLength={100} />
       </Field>
       <Field label="Giá bán (VND)" htmlFor={`${id}-price`} error={errors.price}>
-        <input {...bind(id, 'price', errors)} type="number" min={0} step={1000} inputMode="numeric" value={form.price} onChange={(e) => set('price', e.target.value)} placeholder="199000" />
+        <input max={Number.MAX_SAFE_INTEGER} {...bind(id, 'price', errors)} type="number" min={0} step={0.01} inputMode="decimal" value={form.price} onChange={(e) => set('price', e.target.value)} placeholder="199000" />
       </Field>
       <Field label="Giá so sánh (VND)" htmlFor={`${id}-compareAtPrice`} optional error={errors.compareAtPrice} hint="Giá gốc gạch ngang khi đang giảm giá.">
-        <input
+        <input max={Number.MAX_SAFE_INTEGER}
           {...bind(id, 'compareAtPrice', errors)}
           type="number"
           min={0}
-          step={1000}
-          inputMode="numeric"
+          step={0.01}
+          inputMode="decimal"
           value={form.compareAtPrice}
           onChange={(e) => set('compareAtPrice', e.target.value)}
           placeholder="249000"
@@ -402,10 +402,10 @@ function BulkDialog({
         </p>
       )}
       <Field label="Giá bán (VND)" htmlFor={`${id}-price`} error={errors.price}>
-        <input {...bind(id, 'price', errors)} type="number" min={0} step={1000} inputMode="numeric" value={form.price} onChange={(e) => set('price', e.target.value)} placeholder="199000" />
+        <input max={Number.MAX_SAFE_INTEGER} {...bind(id, 'price', errors)} type="number" min={0} step={0.01} inputMode="decimal" value={form.price} onChange={(e) => set('price', e.target.value)} placeholder="199000" />
       </Field>
       <Field label="Giá so sánh (VND)" htmlFor={`${id}-compareAtPrice`} optional error={errors.compareAtPrice}>
-        <input {...bind(id, 'compareAtPrice', errors)} type="number" min={0} step={1000} inputMode="numeric" value={form.compareAtPrice} onChange={(e) => set('compareAtPrice', e.target.value)} />
+        <input max={Number.MAX_SAFE_INTEGER} {...bind(id, 'compareAtPrice', errors)} type="number" min={0} step={0.01} inputMode="decimal" value={form.compareAtPrice} onChange={(e) => set('compareAtPrice', e.target.value)} />
       </Field>
       <StatusSelect id={id} value={form.status} onChange={(status) => set('status', status)} hint="Áp dụng cho mọi biến thể được tạo." />
     </FormDialog>

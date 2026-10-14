@@ -87,7 +87,7 @@ export function CreatePaymentDialog({ open, order, onClose, onSaved }: { open: b
         </select>
       </Field>
       <Field label="Số tiền" htmlFor={`${id}-amount`} error={errors.amount} hint={remaining !== null ? `Còn phải thu ${vndOf(remaining)}.` : undefined}>
-        <input {...bind(id, 'amount', errors)} inputMode="numeric" value={form.amount} onChange={(e) => set('amount', e.target.value)} />
+        <input data-validation="money" min={1} max={9007199254740991} maxLength={32} {...bind(id, 'amount', errors)} inputMode="numeric" value={form.amount} onChange={(e) => set('amount', e.target.value)} />
       </Field>
     </FormDialog>
   )
@@ -157,7 +157,7 @@ export function ShipmentDialog({
       </Field>
       {!editing && (
         <Field label="Phí vận chuyển thực tế" htmlFor={`${id}-shippingFee`} error={errors.shippingFee} hint="Đơn dùng phí cấu hình phải nhập đúng phí đã tính.">
-          <input {...bind(id, 'shippingFee', errors)} inputMode="numeric" value={form.fee} onChange={(e) => set('fee', e.target.value)} />
+          <input data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'shippingFee', errors)} inputMode="numeric" value={form.fee} onChange={(e) => set('fee', e.target.value)} />
         </Field>
       )}
     </FormDialog>
@@ -259,7 +259,7 @@ export function CreateReturnDialog({ open, order, onClose, onSaved }: { open: bo
                   {item.colorName} / {item.sizeName} | đã mua {item.quantity}
                 </span>
               </span>
-              <input
+              <input data-validation="integer" min={1} max={item.quantity} maxLength={32}
                 aria-label={`Số lượng trả ${item.productName}`}
                 inputMode="numeric"
                 placeholder="0"
@@ -342,12 +342,12 @@ export function CreateRefundDialog({ open, request, onClose, onSaved }: { open: 
         </select>
       </Field>
       <Field label="Số tiền hoàn" htmlFor={`${id}-amount`} error={errors.amount}>
-        <input {...bind(id, 'amount', errors)} inputMode="numeric" value={form.amount} onChange={(e) => set('amount', e.target.value)} />
+        <input data-validation="money" min={1} max={9007199254740991} maxLength={32} {...bind(id, 'amount', errors)} inputMode="numeric" value={form.amount} onChange={(e) => set('amount', e.target.value)} />
       </Field>
       <Field label="Hình thức hoàn" htmlFor={`${id}-refundMethod`} error={errors.refundMethod}>
         <input {...bind(id, 'refundMethod', errors)} maxLength={50} placeholder="Ví dụ: BANK_TRANSFER" value={form.method} onChange={(e) => set('method', e.target.value)} />
       </Field>
-      <Field label="Lý do" htmlFor={`${id}-reason`} optional wide>
+      <Field label="Lý do" htmlFor={`${id}-reason`} wide>
         <input id={`${id}-reason`} maxLength={500} value={form.reason} onChange={(e) => set('reason', e.target.value)} />
       </Field>
     </FormDialog>

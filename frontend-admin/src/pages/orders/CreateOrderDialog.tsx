@@ -159,8 +159,8 @@ export function CreateOrderDialog({ open, onClose, onCreated }: { open: boolean;
               placeholder={`Chọn sản phẩm ${index + 1}`}
               searchPlaceholder="Tìm theo SKU hoặc tên sản phẩm"
             />
-            <input aria-label={`Số lượng dòng ${index + 1}`} inputMode="numeric" value={line.quantity} onChange={(e) => updateLine(line.key, { quantity: e.target.value })} />
-            <input aria-label={`Giảm giá dòng ${index + 1}`} inputMode="numeric" placeholder="0" value={line.discount} onChange={(e) => updateLine(line.key, { discount: e.target.value })} />
+            <input required={Boolean(line.variant)} data-validation="integer" min={1} max={1000000} maxLength={32} aria-label={`Số lượng dòng ${index + 1}`} inputMode="numeric" value={line.quantity} onChange={(e) => updateLine(line.key, { quantity: e.target.value })} />
+            <input data-validation="money" min={0} max={9007199254740991} maxLength={32} aria-label={`Giảm giá dòng ${index + 1}`} inputMode="numeric" placeholder="0" value={line.discount} onChange={(e) => updateLine(line.key, { discount: e.target.value })} />
             <button
               type="button"
               className="icon-btn danger"
@@ -188,7 +188,7 @@ export function CreateOrderDialog({ open, onClose, onCreated }: { open: boolean;
         </div>
       </fieldset>
 
-      <Field label="Phương thức giao hàng" htmlFor={`${id}-method`} hint="Chọn phương thức để hệ thống tự tính phí, hoặc để trống và nhập phí tay.">
+      <Field label="Phương thức giao hàng" htmlFor={`${id}-method`} optional hint="Chọn phương thức để hệ thống tự tính phí, hoặc để trống và nhập phí tay.">
         <select id={`${id}-method`} value={form.shippingMethodCode} onChange={(e) => set('shippingMethodCode', e.target.value)}>
           <option value="">Nhập phí thủ công</option>
           {methods.map((m) => (
@@ -199,7 +199,7 @@ export function CreateOrderDialog({ open, onClose, onCreated }: { open: boolean;
         </select>
       </Field>
       <Field label="Phí giao hàng" htmlFor={`${id}-shippingFee`} error={errors.shippingFee} optional>
-        <input
+        <input data-validation="money" min={0} max={9007199254740991} maxLength={32}
           {...bind(id, 'shippingFee', errors)}
           inputMode="numeric"
           placeholder={form.shippingMethodCode ? 'Tính theo phương thức' : '0'}
@@ -209,10 +209,10 @@ export function CreateOrderDialog({ open, onClose, onCreated }: { open: boolean;
         />
       </Field>
       <Field label="Mã giảm giá" htmlFor={`${id}-coupon`} optional>
-        <input id={`${id}-coupon`} className="mono-input" maxLength={80} value={form.couponCode} onChange={(e) => set('couponCode', e.target.value.toUpperCase())} />
+        <input pattern="[A-Za-z0-9_-]+" id={`${id}-coupon`} className="mono-input" maxLength={80} value={form.couponCode} onChange={(e) => set('couponCode', e.target.value.toUpperCase())} />
       </Field>
       <Field label="Giảm thêm trên đơn" htmlFor={`${id}-discountAmount`} error={errors.discountAmount} optional>
-        <input {...bind(id, 'discountAmount', errors)} inputMode="numeric" placeholder="0" value={form.discount} onChange={(e) => set('discount', e.target.value)} />
+        <input data-validation="money" min={0} max={9007199254740991} maxLength={32} {...bind(id, 'discountAmount', errors)} inputMode="numeric" placeholder="0" value={form.discount} onChange={(e) => set('discount', e.target.value)} />
       </Field>
       <label className="check span-2">
         <input type="checkbox" checked={form.applyMarketing} onChange={(e) => set('applyMarketing', e.target.checked)} />

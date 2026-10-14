@@ -435,7 +435,7 @@ function EditRecipientDialog({ open, order, onClose, onSaved }: { open: boolean;
         <input {...bind(id, 'recipientName', errors)} value={form.recipientName} maxLength={150} onChange={(e) => set('recipientName', e.target.value)} />
       </Field>
       <Field label="Số điện thoại" htmlFor={`${id}-recipientPhone`} error={errors.recipientPhone}>
-        <input {...bind(id, 'recipientPhone', errors)} value={form.recipientPhone} maxLength={16} onChange={(e) => set('recipientPhone', e.target.value)} />
+        <input type="tel" {...bind(id, 'recipientPhone', errors)} value={form.recipientPhone} maxLength={16} onChange={(e) => set('recipientPhone', e.target.value)} />
       </Field>
       <Field label="Địa chỉ" htmlFor={`${id}-shippingAddress`} error={errors.shippingAddress} wide>
         <input {...bind(id, 'shippingAddress', errors)} value={form.shippingAddress} maxLength={500} onChange={(e) => set('shippingAddress', e.target.value)} />

@@ -117,7 +117,7 @@ export function AvatarField({
           }}
         />
         {showUrl && (
-          <input
+          <input maxLength={2048}
             id={id}
             type="url"
             className="avatar-url"

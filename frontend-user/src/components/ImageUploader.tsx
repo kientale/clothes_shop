@@ -15,13 +15,24 @@ export function ImageUploader({ value, onChange, max = 5, label = 'Thêm ảnh' 
   const [error, setError] = useState<string>()
 
   const pick = async (files: FileList | null) => {
-    if (!files?.length) return
+    if (!files?.length || busy) return
     setError(undefined)
+    const selected = [...files]
+    if (selected.length + value.length > max) {
+      setError(`Chỉ được chọn tối đa ${max} ảnh.`)
+      if (input.current) input.current.value = ''
+      return
+    }
+    const invalid = selected.find((file) => !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size === 0 || file.size > 5 * 1024 * 1024)
+    if (invalid) {
+      setError(`${invalid.name}: chọn ảnh JPEG, PNG, WebP hoặc GIF, từ 1 byte đến 5 MB.`)
+      if (input.current) input.current.value = ''
+      return
+    }
     setBusy(true)
     const urls = [...value]
     try {
-      for (const file of [...files].slice(0, max - urls.length)) {
-        if (file.size > 5 * 1024 * 1024) throw new Error(`${file.name} lớn hơn 5 MB.`)
+      for (const file of selected) {
         urls.push((await me.uploadImage(file)).url)
         onChange([...urls])
       }
@@ -55,7 +66,7 @@ export function ImageUploader({ value, onChange, max = 5, label = 'Thêm ảnh' 
       <span className="field-hint">
         Tối đa {max} ảnh JPEG, PNG, WebP; mỗi ảnh dưới 5 MB.
       </span>
-      {error && <span className="field-error">{error}</span>}
+      {error && <span className="field-error" role="alert">{error}</span>}
     </div>
   )
 }

@@ -160,14 +160,14 @@ function FlashSaleForm({ open, item, onClose, onSaved }: FormSlot<FlashSale>) {
                 searchPlaceholder="Tìm theo SKU hoặc tên sản phẩm"
               />
             )}
-            <input
+            <input required={Boolean(line.variant)} data-validation="money" min={0} max={9007199254740991} maxLength={32}
               aria-label={`Giá flash dòng ${index + 1}`}
               inputMode="numeric"
               placeholder={line.price !== null ? `< ${vndOf(line.price)}` : '0'}
               value={line.flashPrice}
               onChange={(e) => update(line.key, { flashPrice: e.target.value })}
             />
-            <input aria-label={`Số suất dòng ${index + 1}`} inputMode="numeric" value={line.quantityLimit} onChange={(e) => update(line.key, { quantityLimit: e.target.value })} />
+            <input required={Boolean(line.variant)} data-validation="integer" min={1} max={1000000000} maxLength={32} aria-label={`Số suất dòng ${index + 1}`} inputMode="numeric" value={line.quantityLimit} onChange={(e) => update(line.key, { quantityLimit: e.target.value })} />
             <button
               type="button"
               className="icon-btn danger"

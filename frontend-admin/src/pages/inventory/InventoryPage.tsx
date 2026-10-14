@@ -225,7 +225,7 @@ function AdjustDialog({ stock, onClose, onSaved }: { stock: Stock | null; onClos
         </div>
       )}
       <Field label="Số lượng đếm thực tế" htmlFor={`${id}-quantityOnHand`} error={errors.quantityOnHand}>
-        <input {...bind(id, 'quantityOnHand', errors)} inputMode="numeric" value={form.quantity} onChange={(e) => set('quantity', e.target.value)} />
+        <input data-validation="integer" min={0} max={1000000000} maxLength={32} {...bind(id, 'quantityOnHand', errors)} inputMode="numeric" value={form.quantity} onChange={(e) => set('quantity', e.target.value)} />
       </Field>
       <Field label="Lý do" htmlFor={`${id}-reason`} error={errors.reason} wide>
         <textarea {...bind(id, 'reason', errors)} rows={3} maxLength={500} value={form.reason} onChange={(e) => set('reason', e.target.value)} placeholder="Ví dụ: kiểm kê cuối tháng, hàng lỗi" />

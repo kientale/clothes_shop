@@ -1,6 +1,12 @@
 import { MARKETING_STATUS_LABEL, type DiscountType, type MarketingStatus } from '../../api/marketing'
 import { Field, bind } from '../../components/forms'
 import { vndOf } from '../../components/kit'
+import { parseMoney } from '../catalog/shared'
+
+/** Percentages preserve decimal points; VND fields allow thousand separators. */
+export function parseDiscount(type: DiscountType, value: string) {
+  return type === 'PERCENTAGE' ? (/^\d+(?:\.\d{1,2})?$/.test(value.trim()) ? Number(value) : Number.NaN) : parseMoney(value)
+}
 
 export function discountText(type: DiscountType, value: number) {
   return type === 'PERCENTAGE' ? `-${value}%` : `-${vndOf(value)}`
@@ -11,6 +17,8 @@ export function checkPeriod(startAt: string, endAt: string, required: boolean): 
   const e: Record<string, string> = {}
   if (required && !startAt) e.startAt = 'Chọn thời gian bắt đầu.'
   if (required && !endAt) e.endAt = 'Chọn thời gian kết thúc.'
+  if (startAt && Number.isNaN(Date.parse(startAt))) e.startAt = 'Thời gian bắt đầu không hợp lệ.'
+  if (endAt && Number.isNaN(Date.parse(endAt))) e.endAt = 'Thời gian kết thúc không hợp lệ.'
   if (startAt && endAt && new Date(endAt) <= new Date(startAt)) e.endAt = 'Kết thúc phải sau thời gian bắt đầu.'
   return e
 }

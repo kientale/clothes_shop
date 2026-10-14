@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../components/ValidatedForm'
 import { ArrowSquareOutIcon, LockSimpleIcon, MapPinIcon, PencilSimpleIcon, TShirtIcon, UserIcon } from '@phosphor-icons/react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
@@ -215,7 +216,7 @@ function Checkout() {
           </span>
         </div>
       )}
-      <form className="checkout-layout" onSubmit={submit} noValidate>
+      <ValidatedForm className="checkout-layout" onSubmit={submit} noValidate>
         <div className="checkout-main">
           <section className="form-section">
             <h2>Thông tin nhận hàng</h2>
@@ -244,14 +245,14 @@ function Checkout() {
             {!savedAddress && (
               <div className="form-grid">
                 <Field label="Họ tên người nhận" error={errors.recipientName}>
-                  <input autoComplete="name" maxLength={150} value={form.recipientName} onChange={(e) => set('recipientName', e.target.value)} aria-invalid={!!errors.recipientName} />
+                  <input required={true} autoComplete="name" maxLength={150} value={form.recipientName} onChange={(e) => set('recipientName', e.target.value)} aria-invalid={!!errors.recipientName} />
                 </Field>
                 <Field label="Số điện thoại" error={errors.recipientPhone} hint={!isCustomer ? 'Dùng cùng mã đơn để tra cứu đơn hàng' : undefined}>
-                  <input type="tel" autoComplete="tel" maxLength={20} value={form.recipientPhone} onChange={(e) => set('recipientPhone', e.target.value)} aria-invalid={!!errors.recipientPhone} />
+                  <input required={true} data-normalize-phone="true" type="tel" autoComplete="tel" maxLength={20} value={form.recipientPhone} onChange={(e) => set('recipientPhone', e.target.value)} aria-invalid={!!errors.recipientPhone} />
                 </Field>
                 {!isCustomer && (
                   <Field label="Email" error={errors.email} hint="Nhận xác nhận và cập nhật đơn hàng">
-                    <input type="email" autoComplete="email" maxLength={254} value={form.email} onChange={(e) => set('email', e.target.value)} aria-invalid={!!errors.email} />
+                    <input required={true} type="email" autoComplete="email" maxLength={254} value={form.email} onChange={(e) => set('email', e.target.value)} aria-invalid={!!errors.email} />
                   </Field>
                 )}
                 {!manual && form.address.trim() ? (
@@ -278,13 +279,13 @@ function Checkout() {
                 {manual && (
                   <>
                     <Field label="Số nhà, tên đường" error={errors.address} hint="Thêm số căn hộ, tầng, hẻm nếu có">
-                      <input autoComplete="address-line1" maxLength={300} value={form.address} onChange={(e) => set('address', e.target.value)} aria-invalid={!!errors.address} />
+                      <input required={true} autoComplete="address-line1" maxLength={300} value={form.address} onChange={(e) => set('address', e.target.value)} aria-invalid={!!errors.address} />
                     </Field>
                     <Field label="Phường/xã, quận/huyện">
                       <input autoComplete="address-level3" maxLength={120} value={form.ward} onChange={(e) => set('ward', e.target.value)} />
                     </Field>
                     <Field label="Tỉnh/thành phố" error={errors.city}>
-                      <input autoComplete="address-level1" maxLength={60} value={form.city} onChange={(e) => set('city', e.target.value)} aria-invalid={!!errors.city} />
+                      <input required={true} autoComplete="address-level1" maxLength={60} value={form.city} onChange={(e) => set('city', e.target.value)} aria-invalid={!!errors.city} />
                     </Field>
                   </>
                 )}
@@ -383,7 +384,7 @@ function Checkout() {
             ))}
           </ul>
           <Field label="Mã giảm giá" hint="Kiểm tra khi đặt hàng">
-            <input value={form.coupon} maxLength={80} onChange={(e) => set('coupon', e.target.value.toUpperCase())} className="mono" />
+            <input pattern="[A-Za-z0-9_-]+" value={form.coupon} maxLength={80} onChange={(e) => set('coupon', e.target.value.toUpperCase())} className="mono" />
           </Field>
           <dl className="summary-rows">
             <div>
@@ -410,7 +411,7 @@ function Checkout() {
             <LockSimpleIcon size={16} /> {busy ? 'Đang đặt hàng...' : payment?.kind && ONLINE_KINDS.has(payment.kind) ? 'Đặt hàng và thanh toán' : 'Đặt hàng'}
           </button>
         </aside>
-      </form>
+      </ValidatedForm>
     </div>
   )
 }

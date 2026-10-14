@@ -1,3 +1,4 @@
+import { ValidatedForm } from './ValidatedForm'
 import { BellRingingIcon, CheckCircleIcon } from '@phosphor-icons/react'
 import { useState, type FormEvent } from 'react'
 import { store } from '../api/store'
@@ -35,7 +36,7 @@ export function StockAlertForm({ variantId, label }: { variantId: string; label:
   }
 
   return (
-    <form className="stock-alert" onSubmit={submit}>
+    <ValidatedForm className="stock-alert" onSubmit={submit}>
       <p>
         <BellRingingIcon size={18} aria-hidden /> <strong>{label}</strong> đã hết. Để lại email, LemonadeX báo bạn ngay khi có hàng.
       </p>
@@ -50,6 +51,6 @@ export function StockAlertForm({ variantId, label }: { variantId: string; label:
         </button>
       </div>
       <ErrorBanner error={error} />
-    </form>
+    </ValidatedForm>
   )
 }

@@ -1,3 +1,4 @@
+import { ValidatedForm } from '../../components/ValidatedForm'
 import { KeyIcon, MagnifyingGlassIcon, PencilSimpleIcon, PlusIcon, TrashIcon, UserCircleIcon } from '@phosphor-icons/react'
 import { useEffect, useId, useState, type FormEvent } from 'react'
 import { STATUS_LABEL, accessErrorMessage, adminAccounts, fieldErrors, roles as roleApi } from '../../api/access'
@@ -62,7 +63,7 @@ export default function AdminAccountsPage() {
           <label className="search-box">
             <MagnifyingGlassIcon size={16} aria-hidden />
             <span className="sr-only">Tìm theo email hoặc họ tên</span>
-            <input
+            <input maxLength={254}
               type="search"
               placeholder="Tìm theo email hoặc họ tên"
               value={search}
@@ -394,7 +395,7 @@ function AccountFormDialog({
         </>
       }
     >
-      <form id={`${id}-form`} className="form-grid" onSubmit={submit} noValidate>
+      <ValidatedForm id={`${id}-form`} className="form-grid" onSubmit={submit} noValidate>
         {error ? (
           <div className="banner banner-error span-2" role="alert">
             {accessErrorMessage(error)}
@@ -405,21 +406,21 @@ function AccountFormDialog({
           <label className="field-label" htmlFor={`${id}-fullName`}>
             Họ tên
           </label>
-          <input {...field('fullName')} value={form.fullName} onChange={(e) => set('fullName', e.target.value)} maxLength={150} autoComplete="off" />
+          <input required={true} {...field('fullName')} value={form.fullName} onChange={(e) => set('fullName', e.target.value)} maxLength={150} autoComplete="off" />
           {fieldError('fullName')}
         </div>
         <div className="field">
           <label className="field-label" htmlFor={`${id}-email`}>
             Email
           </label>
-          <input {...field('email')} type="email" value={form.email} onChange={(e) => set('email', e.target.value)} maxLength={254} autoComplete="off" />
+          <input required={true} {...field('email')} type="email" value={form.email} onChange={(e) => set('email', e.target.value)} maxLength={254} autoComplete="off" />
           {fieldError('email')}
         </div>
         <div className="field">
           <label className="field-label" htmlFor={`${id}-phone`}>
             Số điện thoại <span className="optional">(không bắt buộc)</span>
           </label>
-          <input {...field('phone')} type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} placeholder="+84901234567" />
+          <input maxLength={16} {...field('phone')} type="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} placeholder="+84901234567" />
           {fieldError('phone')}
         </div>
         {editing ? (
@@ -441,7 +442,7 @@ function AccountFormDialog({
             <label className="field-label" htmlFor={`${id}-password`}>
               Mật khẩu
             </label>
-            <input
+            <input minLength={8} required={true}
               {...field('password')}
               type="password"
               value={form.password}
@@ -497,7 +498,7 @@ function AccountFormDialog({
           )}
           {fieldError('roleIds')}
         </fieldset>
-      </form>
+      </ValidatedForm>
     </Modal>
   )
 }
@@ -562,7 +563,7 @@ function PasswordDialog({
         </>
       }
     >
-      <form id={`${id}-form`} className="form-stack" onSubmit={submit} noValidate>
+      <ValidatedForm id={`${id}-form`} className="form-stack" onSubmit={submit} noValidate>
         {error && (
           <div className="banner banner-error" role="alert">
             {error}
@@ -572,16 +573,16 @@ function PasswordDialog({
           <label className="field-label" htmlFor={`${id}-new`}>
             Mật khẩu mới
           </label>
-          <input id={`${id}-new`} type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" maxLength={72} />
+          <input minLength={8} required={true} id={`${id}-new`} type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" maxLength={72} />
           <span className="field-hint">Từ 8 đến 72 ký tự. Gửi mật khẩu mới cho người dùng qua kênh an toàn.</span>
         </div>
         <div className="field">
           <label className="field-label" htmlFor={`${id}-confirm`}>
             Nhập lại mật khẩu
           </label>
-          <input id={`${id}-confirm`} type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" maxLength={72} />
+          <input data-match="new-password" minLength={8} required={true} id={`${id}-confirm`} type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} autoComplete="new-password" maxLength={72} />
         </div>
-      </form>
+      </ValidatedForm>
     </Modal>
   )
 }
