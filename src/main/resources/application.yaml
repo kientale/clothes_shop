@@ -125,6 +125,10 @@ app:
     public-base-url: ${UPLOADS_PUBLIC_BASE_URL:}
 
 management:
+  health:
+    # Mail is sent in the background; an unreachable SMTP server must not mark the app down (hosts restart it on a failed health check).
+    mail:
+      enabled: false
   endpoints:
     web:
       exposure:
