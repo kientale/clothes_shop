@@ -1,5 +1,5 @@
 /*
- * LemonadeX storefront. Same brand language as the admin: Onest, white page with soft grey tiles,
+ * TranKien storefront. Same brand language as the admin: Onest, white page with soft grey tiles,
  * navy #0f2f63 and brand blue as the single accent, off-black primary buttons.
  * Radius rule: hero and panels 24px, inner tiles and photos 16px, inputs 12px, buttons / chips full pill.
  * Z-index scale: sticky header 20, filter drawer scrim 30, filter drawer 40.
@@ -156,7 +156,7 @@ textarea {
   padding-bottom: 72px;
 }
 
-/* Wordmark: the brand is the word "LemonadeX", no symbol. */
+/* Wordmark: the brand is the word "TranKien", no symbol. */
 .wordmark {
   font-size: 22px;
   font-weight: 600;

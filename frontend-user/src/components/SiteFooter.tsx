@@ -10,7 +10,7 @@ export function SiteFooter({ shop }: { shop: StoreConfiguration['store'] | undef
       <div className="container footer-grid">
         <div className="footer-brand">
           <Link to="/" className="wordmark wordmark-lg">
-            LemonadeX
+            TranKien
           </Link>
           <p className="muted">Thời trang hằng ngày cho nam, nữ và trẻ em. Đặt online, giao tận nơi.</p>
         </div>
@@ -42,7 +42,7 @@ export function SiteFooter({ shop }: { shop: StoreConfiguration['store'] | undef
         </div>
       </div>
       <div className="container footer-base muted">
-        © {new Date().getFullYear()} {shop?.storeName ?? 'LemonadeX'}
+        © {new Date().getFullYear()} {shop?.storeName ?? 'TranKien'}
       </div>
     </footer>
   )

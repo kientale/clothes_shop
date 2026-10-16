@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { CUSTOMER, TOKEN, failure, mockApi, assertNoToken } from './auth-fixtures.mjs'
 
 test.use({ baseURL: 'http://127.0.0.1:3300' })
-const KEY = 'lemonadex.token'
+const KEY = 'trankien.token'
 
 test('customer login returns to the protected page, restores profile and logs out', async ({ page }) => {
   const requests = await mockApi(page, { account: CUSTOMER })

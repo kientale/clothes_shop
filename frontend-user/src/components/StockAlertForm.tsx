@@ -16,7 +16,7 @@ export function StockAlertForm({ variantId, label }: { variantId: string; label:
   if (done) {
     return (
       <p className="stock-alert done" role="status">
-        <CheckCircleIcon size={18} weight="fill" aria-hidden /> Đã ghi nhận. LemonadeX sẽ email cho {email.trim()} khi {label} có hàng.
+        <CheckCircleIcon size={18} weight="fill" aria-hidden /> Đã ghi nhận. TranKien sẽ email cho {email.trim()} khi {label} có hàng.
       </p>
     )
   }
@@ -38,7 +38,7 @@ export function StockAlertForm({ variantId, label }: { variantId: string; label:
   return (
     <ValidatedForm className="stock-alert" onSubmit={submit}>
       <p>
-        <BellRingingIcon size={18} aria-hidden /> <strong>{label}</strong> đã hết. Để lại email, LemonadeX báo bạn ngay khi có hàng.
+        <BellRingingIcon size={18} aria-hidden /> <strong>{label}</strong> đã hết. Để lại email, TranKien báo bạn ngay khi có hàng.
       </p>
       <div className="stock-alert-row">
         <label htmlFor={`alert-${variantId}`} className="sr-only">

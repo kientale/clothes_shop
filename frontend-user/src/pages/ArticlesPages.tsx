@@ -21,7 +21,7 @@ export function ArticlesPage() {
   const page = Math.max(0, Number(params.get('page') || 1) - 1)
   const articles = useAsync(() => store.articles(type || undefined, PAGE_SIZE, page), [type, page])
   useTitle(type === 'LOOKBOOK' ? 'Lookbook' : 'Tạp chí')
-  useSeo({ description: 'Gợi ý phối đồ, lookbook theo mùa và câu chuyện thời trang từ LemonadeX.' })
+  useSeo({ description: 'Gợi ý phối đồ, lookbook theo mùa và câu chuyện thời trang từ TranKien.' })
 
   return (
     <div className="container articles-page">
@@ -150,7 +150,7 @@ function articleJsonLd(article: Article, text: string) {
     image: [article.thumbnailUrl, ...article.images].filter(Boolean),
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
-    publisher: { '@type': 'Organization', name: 'LemonadeX' },
+    publisher: { '@type': 'Organization', name: 'TranKien' },
     mainEntityOfPage: window.location.origin + '/shop/articles/' + article.slug,
   }
 }

@@ -2,7 +2,7 @@
 # asked for when the Blueprint is created; the frontends are deployed separately on Vercel.
 services:
   - type: web
-    name: lemonadex-backend
+    name: trankien-backend
     runtime: docker
     plan: free
     region: singapore

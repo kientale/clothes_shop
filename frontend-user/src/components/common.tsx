@@ -127,6 +127,6 @@ export function Reveal({ children, className = '', delay = 0, as: Tag = 'div' }:
 /** Mirrors the page title for the browser tab. */
 export function useTitle(title: string | undefined) {
   useEffect(() => {
-    if (title) document.title = `${title} | LemonadeX`
+    if (title) document.title = `${title} | TranKien`
   }, [title])
 }

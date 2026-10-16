@@ -30,7 +30,7 @@ Tạo thương hiệu và danh mục trước, sau đó gửi POST `/products`:
 ```json
 {
   "productCode": "TEE-001",
-  "name": "Áo thun LemonadeX",
+  "name": "Áo thun TranKien",
   "slug": null,
   "description": "Áo cotton mặc hằng ngày",
   "shortDescription": "Cotton 100%",

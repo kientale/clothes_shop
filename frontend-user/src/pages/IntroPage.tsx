@@ -11,7 +11,7 @@ import { useAsync } from '../hooks'
 const HEADLINE = ['Thời', 'trang', 'mặc', 'mỗi', 'ngày']
 
 /**
- * The shop's introduction page ("/"), in the style of the original LemonadeX homepage: a full-bleed
+ * The shop's introduction page ("/"), in the style of the original TranKien homepage: a full-bleed
  * photo card with the navigation on top, then the story, categories, numbers, reviews and the store
  * address. Photos are banners managed in the admin (INTRO_HERO, INTRO_STORY).
  */
@@ -63,7 +63,7 @@ export default function IntroPage() {
             <a href="#visit">Cửa hàng</a>
           </nav>
           <Link to="/" className="wordmark intro-wordmark">
-            LemonadeX
+            TranKien
           </Link>
           <div className="intro-header-end">
             <Link to="/shop" className="pill pill-light">
@@ -172,7 +172,7 @@ export default function IntroPage() {
 
       {d?.products && d.products.totalElements > 0 && (
         <Reveal as="section" className="container">
-          <div className={`intro-numbers n${stats.length}`} aria-label="LemonadeX bằng con số">
+          <div className={`intro-numbers n${stats.length}`} aria-label="TranKien bằng con số">
             {stats.map((stat) => (
               <Stat key={stat.label} value={stat.value} label={stat.label} />
             ))}

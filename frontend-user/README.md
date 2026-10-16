@@ -1,6 +1,6 @@
-# LemonadeX Khách hàng
+# TranKien Khách hàng
 
-Cửa hàng thời trang của LemonadeX: trang chủ, danh sách sản phẩm có bộ lọc, chi tiết sản phẩm, giỏ hàng, thanh toán và đơn hàng của khách. Toàn bộ dữ liệu đọc từ backend (xem [API cửa hàng](../docs/storefront.md)), không dùng dữ liệu giả.
+Cửa hàng thời trang của TranKien: trang chủ, danh sách sản phẩm có bộ lọc, chi tiết sản phẩm, giỏ hàng, thanh toán và đơn hàng của khách. Toàn bộ dữ liệu đọc từ backend (xem [API cửa hàng](../docs/storefront.md)), không dùng dữ liệu giả.
 
 Chạy backend theo [README gốc](../README.md), sau đó ở thư mục `frontend-user`:
 
@@ -29,7 +29,7 @@ Muốn có dữ liệu để xem thử, chạy [seed dữ liệu mẫu](../docs/
 
 Nội dung quản lý trong trang admin: ảnh hero là banner vị trí `INTRO_HERO` (trang giới thiệu) và `HOME_HERO` (trang chủ cửa hàng), ảnh câu chuyện là banner `INTRO_STORY` (Marketing > Banner), Lookbook là bài viết loại Lookbook đã xuất bản, thông tin liên hệ ở chân trang lấy từ Cài đặt > Thông tin cửa hàng. Khi chưa có sản phẩm, trang hiển thị trạng thái "đang cập nhật sản phẩm".
 
-Đăng nhập gọi `POST /api/v1/auth/login`, lưu `data.accessToken` tại `lemonadex.token`; tải lại trang xác thực qua `GET /api/v1/auth/me`. Đăng xuất hoặc lỗi 401 xóa token. Giao diện sáng/tối theo hệ thống, có nút chuyển và lưu lựa chọn tại `lemonadex.theme`.
+Đăng nhập gọi `POST /api/v1/auth/login`, lưu `data.accessToken` tại `trankien.token`; tải lại trang xác thực qua `GET /api/v1/auth/me`. Đăng xuất hoặc lỗi 401 xóa token. Giao diện sáng/tối theo hệ thống, có nút chuyển và lưu lựa chọn tại `trankien.theme`.
 
 Vite chuyển `/api` tới `http://localhost:8080`. Có thể sao chép `.env.example` thành `.env.local` rồi đổi `VITE_API_PROXY_TARGET`. `VITE_API_BASE_URL` để trống khi dùng proxy; nếu gọi backend trực tiếp, đặt origin backend và cho phép origin frontend trong `CORS_ALLOWED_ORIGINS`. Bản build là một SPA: reverse proxy chuyển `/api` tới backend và trả `index.html` cho mọi đường dẫn khác.
 

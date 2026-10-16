@@ -235,11 +235,11 @@ export default function HomePage() {
       </div>
 
       <section className="panel">
-        <h2 className="panel-title">LemonadeX Clothes</h2>
+        <h2 className="panel-title">TranKien Clothes</h2>
 
         <div className="feature-grid">
           <article className="feature">
-            <StackArt photos={[photos[0], photos[1]]} seeds={['lemonadex-linen-shirt', 'lemonadex-denim-rack']} />
+            <StackArt photos={[photos[0], photos[1]]} seeds={['trankien-linen-shirt', 'trankien-denim-rack']} />
             <h3>{productCount > 0 ? 'Thêm sản phẩm mới' : 'Thêm sản phẩm đầu tiên'}</h3>
             <p>
               {loading ? (
@@ -263,7 +263,7 @@ export default function HomePage() {
           </article>
 
           <article className="feature">
-            <StackArt photos={[photos[2], photos[3]]} seeds={['lemonadex-parcel-desk', 'lemonadex-folded-tees']} />
+            <StackArt photos={[photos[2], photos[3]]} seeds={['trankien-parcel-desk', 'trankien-folded-tees']} />
             <h3>Xử lý đơn hàng mới</h3>
             <p>
               {loading ? (
@@ -347,7 +347,7 @@ export default function HomePage() {
         <h2 className="panel-subtitle">Vận hành kho và giao hàng</h2>
         <div className="media-grid">
           <article className="media-card">
-            <img src="https://picsum.photos/seed/lemonadex-stockroom/320/240" alt="Kệ hàng trong kho" loading="lazy" />
+            <img src="https://picsum.photos/seed/trankien-stockroom/320/240" alt="Kệ hàng trong kho" loading="lazy" />
             <div>
               <h3>Kiểm tra tồn kho</h3>
               <p>Nhập, xuất và kiểm kê theo SKU. Mỗi lần thay đổi được ghi vào sổ kho kèm lý do.</p>
@@ -357,7 +357,7 @@ export default function HomePage() {
             </div>
           </article>
           <article className="media-card">
-            <img src="https://picsum.photos/seed/lemonadex-courier/320/240" alt="Đơn hàng đang được giao" loading="lazy" />
+            <img src="https://picsum.photos/seed/trankien-courier/320/240" alt="Đơn hàng đang được giao" loading="lazy" />
             <div>
               <h3>Theo dõi vận đơn</h3>
               <p>Cập nhật trạng thái theo hãng vận chuyển. Đơn tự chuyển sang đã giao khi vận đơn giao thành công.</p>

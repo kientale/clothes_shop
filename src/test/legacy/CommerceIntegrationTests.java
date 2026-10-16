@@ -1,16 +1,16 @@
-package lemonadex.project.clothes;
+package trankien.project.clothes;
 
-import lemonadex.project.clothes.service.CartService;
-import lemonadex.project.clothes.service.CatalogService;
-import lemonadex.project.clothes.dto.catalog.*;
-import lemonadex.project.clothes.service.AuthService;
-import lemonadex.project.clothes.dto.auth.*;
-import lemonadex.project.clothes.service.InventoryService;
-import lemonadex.project.clothes.service.OrderService;
-import lemonadex.project.clothes.dto.order.*;
-import lemonadex.project.clothes.model.*;
-import lemonadex.project.clothes.repository.OrderRepository;
-import lemonadex.project.clothes.exception.BusinessException;
+import trankien.project.clothes.service.CartService;
+import trankien.project.clothes.service.CatalogService;
+import trankien.project.clothes.dto.catalog.*;
+import trankien.project.clothes.service.AuthService;
+import trankien.project.clothes.dto.auth.*;
+import trankien.project.clothes.service.InventoryService;
+import trankien.project.clothes.service.OrderService;
+import trankien.project.clothes.dto.order.*;
+import trankien.project.clothes.model.*;
+import trankien.project.clothes.repository.OrderRepository;
+import trankien.project.clothes.exception.BusinessException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import lemonadex.project.clothes.config.SecurityProperties;
+import trankien.project.clothes.config.SecurityProperties;
 import tools.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.nio.file.*;
@@ -64,7 +64,7 @@ class CommerceIntegrationTests {
                 documented.add(method.toUpperCase(Locale.ROOT) + " " + path)));
         Set<String> implemented = new HashSet<>();
         mappings.getHandlerMethods().forEach((mapping, handler) -> {
-            if (handler.getBeanType().getName().startsWith("lemonadex.project.clothes.")) {
+            if (handler.getBeanType().getName().startsWith("trankien.project.clothes.")) {
                 mapping.getPatternValues().forEach(path -> mapping.getMethodsCondition().getMethods()
                         .forEach(method -> implemented.add(method.name() + " " + path)));
             }
@@ -105,7 +105,7 @@ class CommerceIntegrationTests {
                 .content(json.writeValueAsString(new CategoryRequest("Shirts", "shirts-" + suffix))))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
         UUID category = UUID.fromString(json.readTree(categoryBody).get("id").asText());
-        ProductRequest product = new ProductRequest("HTTP Shirt", "http-shirt-" + suffix, null, "LemonadeX", category,
+        ProductRequest product = new ProductRequest("HTTP Shirt", "http-shirt-" + suffix, null, "TranKien", category,
                 List.of(), List.of(new VariantRequest("HTTP-" + suffix, "S", "White", new BigDecimal("120000.00"), 4)));
         String productBody = mvc.perform(post("/api/v1/admin/products").header(HttpHeaders.AUTHORIZATION, adminToken)
                 .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(product)))
@@ -362,7 +362,7 @@ class CommerceIntegrationTests {
             variants.add(new VariantRequest("SKU-" + suffix + "-" + index, index == 0 ? "M" : "L",
                     "Black", new BigDecimal("250000.00"), quantities[index]));
         }
-        return catalog.createProduct(new ProductRequest("Cotton Shirt", "shirt-" + suffix, "Cotton", "LemonadeX",
+        return catalog.createProduct(new ProductRequest("Cotton Shirt", "shirt-" + suffix, "Cotton", "TranKien",
                 category, List.of("https://example.com/shirt.jpg"), variants));
     }
 

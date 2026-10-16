@@ -1,5 +1,5 @@
 -- =====================================================================================================
--- LemonadeX: dữ liệu mẫu chi tiết (Flyway repeatable migration, chỉ chạy khi được bật)
+-- TranKien: dữ liệu mẫu chi tiết (Flyway repeatable migration, chỉ chạy khi được bật)
 --
 -- Nội dung: thông tin cửa hàng, phương thức giao/thanh toán, thương hiệu, danh mục, màu, size,
 -- 24 sản phẩm với ảnh và biến thể, 2 kho với tồn kho đầu kỳ (có sổ kho), bộ sưu tập, banner trang
@@ -63,7 +63,7 @@ DECLARE
     c_img CONSTANT TEXT := 'https://images.pexels.com/photos/%s/pexels-photo-%s.jpeg?auto=compress&cs=tinysrgb&w=1200';
 
     c_brands CONSTANT JSONB := '[
-      {"slug": "lemonadex-basics", "name": "LemonadeX Basics", "description": "Dòng cơ bản mặc hằng ngày: cotton dày, form dễ mặc, giá dễ chịu."},
+      {"slug": "trankien-basics", "name": "TranKien Basics", "description": "Dòng cơ bản mặc hằng ngày: cotton dày, form dễ mặc, giá dễ chịu."},
       {"slug": "saigon-atelier", "name": "Saigon Atelier", "description": "Thiết kế nữ tối giản, chất liệu tự nhiên như linen và lụa."},
       {"slug": "indigo-lab", "name": "Indigo Lab", "description": "Denim và streetwear: jean, hoodie, áo nỉ."},
       {"slug": "northline", "name": "Northline", "description": "Đồ công sở và áo khoác cho mùa thu đông."},
@@ -115,19 +115,19 @@ DECLARE
        "material": "55% linen, 45% cotton", "price": 459000, "compare": 529000, "images": [4036896, 4153172], "colors": ["Trắng", "Be"], "sizes": ["S", "M", "L"],
        "short": "Linen pha cotton thoáng mát, form rộng vừa, mặc đi làm hay dạo phố đều hợp.",
        "description": "Chất linen pha cotton mềm, ít nhăn hơn linen thường.\nCổ trụ, tay dài có thể xắn, hàng cúc gỗ.\nGiặt tay hoặc giặt máy chế độ nhẹ, phơi trong bóng râm."},
-      {"code": "LXS-SM02", "slug": "ao-so-mi-oxford-nam", "name": "Áo sơ mi oxford nam", "category": "ao-so-mi", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-SM02", "slug": "ao-so-mi-oxford-nam", "name": "Áo sơ mi oxford nam", "category": "ao-so-mi", "brand": "trankien-basics", "gender": "MEN",
        "material": "100% cotton oxford", "price": 429000, "compare": null, "images": [775771], "colors": ["Trắng", "Xanh dương"], "sizes": ["M", "L", "XL"],
        "short": "Sơ mi oxford dáng regular, cổ button-down, mặc với quần jean hay quần tây đều đẹp.",
        "description": "Vải oxford dệt chéo dày dặn, bền màu.\nCổ button-down giữ form khi không đeo cà vạt.\nGiặt máy ở 30 độ C."},
-      {"code": "LXS-TH01", "slug": "ao-thun-cotton-day-basic", "name": "Áo thun cotton dày basic", "category": "ao-thun", "brand": "lemonadex-basics", "gender": "UNISEX",
+      {"code": "LXS-TH01", "slug": "ao-thun-cotton-day-basic", "name": "Áo thun cotton dày basic", "category": "ao-thun", "brand": "trankien-basics", "gender": "UNISEX",
        "material": "100% cotton 250gsm", "price": 199000, "compare": 249000, "images": [8217536, 8217507], "colors": ["Trắng", "Đen", "Xám"], "sizes": ["S", "M", "L", "XL", "XXL"],
        "short": "Cotton 250gsm dày dặn, không lộ, cổ bo rib giữ form sau nhiều lần giặt.",
        "description": "Cotton compact 250gsm, mặt vải mịn.\nCổ rib 2cm, đường may đôi ở vai và lai.\nForm regular, nam nữ đều mặc được."},
-      {"code": "LXS-TH02", "slug": "ao-thun-oversize-den", "name": "Áo thun oversize", "category": "ao-thun", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-TH02", "slug": "ao-thun-oversize-den", "name": "Áo thun oversize", "category": "ao-thun", "brand": "trankien-basics", "gender": "MEN",
        "material": "100% cotton", "price": 249000, "compare": null, "images": [17630522, 28446958], "colors": ["Đen", "Trắng"], "sizes": ["M", "L", "XL"],
        "short": "Dáng oversize vai rơi, mặc thoải mái cả ngày.",
        "description": "Vai rơi, thân rộng, dài qua hông.\nCotton mềm đã xử lý co rút.\nMặc rộng thì chọn đúng size, muốn vừa người thì giảm một size."},
-      {"code": "LXS-TH03", "slug": "ao-thun-relaxed-fit", "name": "Áo thun relaxed fit", "category": "ao-thun", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-TH03", "slug": "ao-thun-relaxed-fit", "name": "Áo thun relaxed fit", "category": "ao-thun", "brand": "trankien-basics", "gender": "MEN",
        "material": "95% cotton, 5% spandex", "price": 229000, "compare": null, "images": [24779116, 9775825], "colors": ["Trắng", "Be"], "sizes": ["S", "M", "L", "XL"],
        "short": "Có chút spandex nên co giãn nhẹ, ôm vừa phải.",
        "description": "Cotton pha 5% spandex, đàn hồi tốt.\nCổ tròn, tay ngắn vừa bắp tay.\nGiặt máy, không dùng thuốc tẩy."},
@@ -139,7 +139,7 @@ DECLARE
        "material": "70% cotton, 30% modal", "price": 399000, "compare": 459000, "images": [8422392, 10769408], "colors": ["Be", "Đen"], "sizes": ["M", "L", "XL"],
        "short": "Polo dệt kim mềm, rủ nhẹ, lên form thanh lịch.",
        "description": "Sợi cotton pha modal mát và mềm.\nCổ mở không cúc theo kiểu resort.\nGiặt tay, phơi ngang để giữ form."},
-      {"code": "LXS-PL03", "slug": "ao-polo-cotton-thoang", "name": "Áo polo cotton thoáng", "category": "ao-polo", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-PL03", "slug": "ao-polo-cotton-thoang", "name": "Áo polo cotton thoáng", "category": "ao-polo", "brand": "trankien-basics", "gender": "MEN",
        "material": "100% cotton", "price": 299000, "compare": null, "images": [15835619, 12183279], "colors": ["Xanh navy", "Trắng"], "sizes": ["S", "M", "L"],
        "short": "Polo cơ bản giá tốt, mặc hằng ngày.",
        "description": "Cotton jersey nhẹ.\nForm regular, tay ngắn.\nGiặt máy chế độ thường."},
@@ -195,7 +195,7 @@ DECLARE
        "material": "75% polyester, 25% spandex", "price": 329000, "compare": null, "images": [3621168, 206341], "colors": ["Xám", "Đen"], "sizes": ["S", "M", "L"],
        "short": "Legging cạp cao, có túi nhỏ ở cạp.",
        "description": "Vải dày, không xuyên thấu.\nTúi nhỏ ở cạp sau đựng chìa khóa.\nGiặt máy chế độ nhẹ."},
-      {"code": "LXS-PK01", "slug": "tui-tote-vai-canvas", "name": "Túi tote vải canvas", "category": "phu-kien", "brand": "lemonadex-basics", "gender": "UNISEX",
+      {"code": "LXS-PK01", "slug": "tui-tote-vai-canvas", "name": "Túi tote vải canvas", "category": "phu-kien", "brand": "trankien-basics", "gender": "UNISEX",
        "material": "Canvas cotton 12oz", "price": 259000, "compare": null, "images": [4004226, 3808249], "colors": ["Be"], "sizes": ["Free size"],
        "short": "Túi tote canvas dày, đựng vừa laptop 14 inch.",
        "description": "Canvas cotton 12oz, quai đeo vai.\nNgăn trong có khóa kéo.\nGiặt tay."},
@@ -203,11 +203,11 @@ DECLARE
        "material": "Da bò thật", "price": 690000, "compare": null, "images": [28719728, 5405644], "colors": ["Nâu"], "sizes": ["Free size"],
        "short": "Thắt lưng và ví da bò, đóng hộp quà.",
        "description": "Da bò thật, khóa hợp kim không gỉ.\nĐóng hộp, kèm thiệp.\nLau bằng khăn khô."},
-      {"code": "LXS-KD01", "slug": "set-do-tre-em-nang-dong", "name": "Set đồ trẻ em năng động", "category": "ao-thun", "brand": "lemonadex-basics", "gender": "KIDS",
+      {"code": "LXS-KD01", "slug": "set-do-tre-em-nang-dong", "name": "Set đồ trẻ em năng động", "category": "ao-thun", "brand": "trankien-basics", "gender": "KIDS",
        "material": "100% cotton", "price": 279000, "compare": null, "images": [6261877], "colors": ["Be"], "sizes": ["S", "M"],
        "short": "Set áo thun và quần cotton mềm cho bé 4-8 tuổi.",
        "description": "Cotton mềm, không gây kích ứng.\nSize S cho bé 4-5 tuổi, M cho bé 6-8 tuổi.\nGiặt máy chế độ nhẹ."},
-      {"code": "LXS-TH04", "slug": "ao-thun-ke-soc-breton", "name": "Áo thun kẻ sọc Breton", "category": "ao-thun", "brand": "lemonadex-basics", "gender": "WOMEN",
+      {"code": "LXS-TH04", "slug": "ao-thun-ke-soc-breton", "name": "Áo thun kẻ sọc Breton", "category": "ao-thun", "brand": "trankien-basics", "gender": "WOMEN",
        "material": "100% cotton jersey", "price": 219000, "compare": 259000, "images": [3050005, 1171601], "colors": ["Xanh navy", "Đen"], "sizes": ["S", "M", "L"],
        "short": "Sọc ngang kiểu thủy thủ, cổ thuyền, mặc với quần jean hay chân váy đều hợp.",
        "description": "Cotton jersey dày vừa, sọc dệt nên không bong tróc.\nCổ thuyền rộng, tay dài có thể xắn.\nGiặt máy ở 30 độ C."},
@@ -219,7 +219,7 @@ DECLARE
        "material": "95% cotton, 5% spandex", "price": 239000, "compare": null, "images": [20821027], "colors": ["Trắng", "Đen"], "sizes": ["S", "M"],
        "short": "Croptop dài tay ôm nhẹ, hợp với quần cạp cao.",
        "description": "Cotton pha spandex co giãn.\nDài ngang eo, cổ tròn.\nGiặt tay hoặc giặt máy chế độ nhẹ."},
-      {"code": "LXS-TH07", "slug": "ao-thun-boxy-co-tron", "name": "Áo thun boxy cổ tròn", "category": "ao-thun", "brand": "lemonadex-basics", "gender": "WOMEN",
+      {"code": "LXS-TH07", "slug": "ao-thun-boxy-co-tron", "name": "Áo thun boxy cổ tròn", "category": "ao-thun", "brand": "trankien-basics", "gender": "WOMEN",
        "material": "100% cotton", "price": 199000, "compare": null, "images": [9558777], "colors": ["Trắng", "Be"], "sizes": ["S", "M", "L"],
        "short": "Dáng boxy ngắn vừa, sơ vin hay thả ngoài đều gọn.",
        "description": "Cotton 220gsm mềm, không xù.\nTay lửng qua vai, thân suông.\nGiặt máy chế độ thường."},
@@ -235,11 +235,11 @@ DECLARE
        "material": "Cotton pha modal", "price": 329000, "compare": null, "images": [19185919], "colors": ["Trắng"], "sizes": ["S", "M", "L"],
        "short": "Áo trễ vai tay dài, ôm vừa, đi chơi hay hẹn hò đều hợp.",
        "description": "Cotton pha modal mềm và mát.\nCổ trễ vai có chun giữ form.\nGiặt tay nước lạnh."},
-      {"code": "LXS-SM06", "slug": "ao-so-mi-linen-nam", "name": "Áo sơ mi linen nam", "category": "ao-so-mi", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-SM06", "slug": "ao-so-mi-linen-nam", "name": "Áo sơ mi linen nam", "category": "ao-so-mi", "brand": "trankien-basics", "gender": "MEN",
        "material": "100% linen", "price": 449000, "compare": null, "images": [18016780, 16235607], "colors": ["Trắng", "Be"], "sizes": ["M", "L", "XL"],
        "short": "Linen thoáng mát cho mùa hè, mặc đi biển hay dạo phố.",
        "description": "Linen nguyên chất, càng giặt càng mềm.\nCổ bẻ, tay dài có thể xắn.\nGiặt tay, phơi trong bóng râm."},
-      {"code": "LXS-SM07", "slug": "ao-so-mi-hoa-tiet-di-bien", "name": "Áo sơ mi họa tiết đi biển", "category": "ao-so-mi", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-SM07", "slug": "ao-so-mi-hoa-tiet-di-bien", "name": "Áo sơ mi họa tiết đi biển", "category": "ao-so-mi", "brand": "trankien-basics", "gender": "MEN",
        "material": "100% rayon", "price": 359000, "compare": 399000, "images": [34068161], "colors": ["Xanh navy"], "sizes": ["M", "L", "XL"],
        "short": "Sơ mi cổ mở in họa tiết, vải rayon rủ và mát.",
        "description": "Rayon nhẹ, khô nhanh.\nCổ mở kiểu resort, tay ngắn.\nGiặt tay, không vắt mạnh."},
@@ -291,7 +291,7 @@ DECLARE
        "material": "98% cotton, 2% spandex", "price": 589000, "compare": 659000, "images": [2319130], "colors": ["Xanh denim"], "sizes": ["S", "M", "L"],
        "short": "Jean skinny rách gối, co giãn ôm chân.",
        "description": "Denim pha spandex co giãn.\nRách gối xử lý chống tưa sợi.\nGiặt tay, không vắt mạnh."},
-      {"code": "LXS-KK02", "slug": "quan-kaki-ong-suong-nam", "name": "Quần kaki ống suông nam", "category": "quan-kaki", "brand": "lemonadex-basics", "gender": "MEN",
+      {"code": "LXS-KK02", "slug": "quan-kaki-ong-suong-nam", "name": "Quần kaki ống suông nam", "category": "quan-kaki", "brand": "trankien-basics", "gender": "MEN",
        "material": "100% cotton twill", "price": 449000, "compare": null, "images": [11734417, 12154890], "colors": ["Be"], "sizes": ["M", "L", "XL"],
        "short": "Kaki ống suông thoải mái, mặc cả ngày không bí.",
        "description": "Cotton twill dày vừa.\nỐng suông, cạp có đỉa.\nGiặt máy, ủi nhiệt độ trung bình."},
@@ -343,7 +343,7 @@ DECLARE
        "material": "100% acrylic", "price": 199000, "compare": null, "images": [3566870, 7820684], "colors": ["Hồng", "Đỏ"], "sizes": ["Free size"],
        "short": "Khăn len dài dệt dày, quàng nhiều vòng vẫn mềm.",
        "description": "Sợi acrylic mềm, không ngứa.\nDài 180cm, rộng 30cm.\nGiặt tay nước lạnh."},
-      {"code": "LXS-PK05", "slug": "mu-bucket-kaki", "name": "Mũ bucket kaki", "category": "phu-kien", "brand": "lemonadex-basics", "gender": "UNISEX",
+      {"code": "LXS-PK05", "slug": "mu-bucket-kaki", "name": "Mũ bucket kaki", "category": "phu-kien", "brand": "trankien-basics", "gender": "UNISEX",
        "material": "100% cotton kaki", "price": 159000, "compare": null, "images": [15035198, 5429325], "colors": ["Be", "Xám"], "sizes": ["Free size"],
        "short": "Mũ bucket vành rộng che nắng, gấp gọn được.",
        "description": "Kaki cotton, vành rộng 6cm.\nLỗ thoáng khí hai bên.\nGiặt tay."},
@@ -355,7 +355,7 @@ DECLARE
        "material": "Gọng kim loại, tròng polycarbonate", "price": 349000, "compare": 399000, "images": [1926768, 3008144, 26892329], "colors": ["Đen", "Nâu"], "sizes": ["Free size"],
        "short": "Kính mát gọng mảnh, tròng chống tia UV400.",
        "description": "Tròng polycarbonate UV400.\nGọng kim loại nhẹ, đệm mũi silicon.\nKèm hộp và khăn lau."},
-      {"code": "LXS-KD02", "slug": "ao-khoac-tre-em", "name": "Áo khoác trẻ em", "category": "ao-khoac", "brand": "lemonadex-basics", "gender": "KIDS",
+      {"code": "LXS-KD02", "slug": "ao-khoac-tre-em", "name": "Áo khoác trẻ em", "category": "ao-khoac", "brand": "trankien-basics", "gender": "KIDS",
        "material": "Vỏ polyester, lót nỉ", "price": 359000, "compare": null, "images": [14316314, 3147216, 5792943], "colors": ["Xanh dương", "Đỏ"], "sizes": ["S", "M"],
        "short": "Áo khoác có mũ, lót nỉ ấm cho bé đi học.",
        "description": "Vỏ polyester cản gió, lót nỉ mềm.\nSize S cho bé 4-5 tuổi, M cho bé 6-8 tuổi.\nGiặt máy chế độ nhẹ."},
@@ -415,10 +415,10 @@ BEGIN
     SELECT setting_value::jsonb, revision INTO v_value, v_rev FROM system_settings WHERE setting_group = 'STORE' AND setting_key = 'CONFIG';
     IF v_value IS NOT NULL AND v_value->>'supportEmail' IS NULL AND v_value->>'address' IS NULL THEN
         UPDATE system_settings SET setting_value = jsonb_build_object(
-                'storeName', 'LemonadeX', 'legalName', 'Công ty TNHH Thời trang LemonadeX', 'taxCode', '0318294417',
-                'supportEmail', 'hotro@lemonadex.vn', 'supportPhone', '028 3920 4417',
+                'storeName', 'TranKien', 'legalName', 'Công ty TNHH Thời trang TranKien', 'taxCode', '0318294417',
+                'supportEmail', 'hotro@trankien.vn', 'supportPhone', '028 3920 4417',
                 'address', '214 Nguyễn Trãi, Phường 7, Quận 5, TP. Hồ Chí Minh', 'logoUrl', NULL,
-                'websiteUrl', 'https://lemonadex.vn', 'businessHours', '9:00 - 21:30 hằng ngày')::text,
+                'websiteUrl', 'https://trankien.vn', 'businessHours', '9:00 - 21:30 hằng ngày')::text,
             revision = revision + 1, updated_by = v_admin, updated_at = v_now
         WHERE setting_group = 'STORE' AND setting_key = 'CONFIG';
     END IF;
@@ -441,7 +441,7 @@ BEGIN
     UPDATE payment_methods SET name = 'Thanh toán khi nhận hàng (COD)' WHERE code = 'COD' AND name = 'Cash on delivery';
     UPDATE payment_methods SET name = 'Chuyển khoản ngân hàng',
             configuration = jsonb_build_object('kind', 'BANK_TRANSFER',
-                'bankDetails', jsonb_build_object('bankName', 'Vietcombank', 'accountNumber', '0071000428813', 'accountHolder', 'CONG TY TNHH THOI TRANG LEMONADEX'),
+                'bankDetails', jsonb_build_object('bankName', 'Vietcombank', 'accountNumber', '0071000428813', 'accountHolder', 'CONG TY TNHH THOI TRANG TRANKIEN'),
                 'instructions', 'Ghi mã đơn hàng trong nội dung chuyển khoản. Đơn được xác nhận khi cửa hàng nhận được tiền.'),
             revision = revision + 1
         WHERE code = 'BANK_TRANSFER' AND name = 'Bank transfer';
@@ -617,8 +617,8 @@ BEGIN
     SELECT b.title, format(c_img, b.photo, b.photo), b.link, b.position, b.sort, NULL::timestamptz, NULL::timestamptz, 'ACTIVE'
     FROM (VALUES
         ('Thu đông 2026', 9968414, '/shop/products?sort=newest', 'HOME_HERO', 0),
-        ('LemonadeX - thời trang mặc mỗi ngày', 10057713, '/shop', 'INTRO_HERO', 0),
-        ('Cửa hàng LemonadeX Quận 5', 5424922, NULL, 'INTRO_STORY', 0),
+        ('TranKien - thời trang mặc mỗi ngày', 10057713, '/shop', 'INTRO_HERO', 0),
+        ('Cửa hàng TranKien Quận 5', 5424922, NULL, 'INTRO_STORY', 0),
         ('Kệ hàng mới về mỗi tuần', 4857762, NULL, 'INTRO_STORY', 1),
         ('Không gian thử đồ', 19599223, NULL, 'INTRO_STORY', 2)
     ) AS b(title, photo, link, position, sort)
@@ -658,8 +658,8 @@ BEGIN
         {"type": "SHIPPING", "title": "Chính sách giao hàng", "content": "Giao hàng toàn quốc qua Giao Hàng Nhanh, thời gian 2-4 ngày làm việc. Nội thành TP. Hồ Chí Minh có giao hỏa tốc trong ngày.\n\nPhí giao hàng tiêu chuẩn 30.000 ₫, miễn phí cho đơn từ 499.000 ₫ sau giảm giá.\n\nĐơn được đóng gói và bàn giao cho đơn vị vận chuyển trong 24 giờ sau khi cửa hàng xác nhận. Khách nhận được mã vận đơn để theo dõi trong trang Đơn hàng."},
         {"type": "RETURN_EXCHANGE", "title": "Chính sách đổi trả", "content": "Đổi size, đổi màu hoặc trả hàng trong 7 ngày kể từ khi nhận hàng.\n\nSản phẩm cần còn nguyên tem, chưa giặt và chưa qua sử dụng. Đồ lót, đồ bơi và hàng giảm giá trên 50% không áp dụng đổi trả.\n\nCửa hàng hỗ trợ phí giao hàng khi sản phẩm lỗi do sản xuất hoặc giao nhầm. Tiền hoàn được chuyển trong 3-5 ngày làm việc sau khi cửa hàng nhận lại hàng."},
         {"type": "PAYMENT", "title": "Chính sách thanh toán", "content": "Cửa hàng nhận thanh toán khi nhận hàng (COD) và chuyển khoản ngân hàng.\n\nVới chuyển khoản, ghi mã đơn hàng trong nội dung chuyển khoản. Đơn được xác nhận khi cửa hàng nhận được tiền."},
-        {"type": "PRIVACY", "title": "Chính sách bảo mật", "content": "LemonadeX chỉ dùng thông tin của khách để xử lý đơn hàng, giao hàng và chăm sóc khách hàng.\n\nThông tin không được bán hay chia sẻ cho bên thứ ba, trừ đơn vị vận chuyển cần địa chỉ và số điện thoại để giao hàng.\n\nKhách có thể yêu cầu xem, sửa hoặc xóa thông tin cá nhân qua email hotro@lemonadex.vn."},
-        {"type": "TERMS_OF_SERVICE", "title": "Điều khoản dịch vụ", "content": "Khi đặt hàng tại LemonadeX, khách đồng ý với giá và khuyến mãi hiển thị tại thời điểm đặt.\n\nCửa hàng có quyền hủy đơn khi sản phẩm hết hàng ngoài dự kiến và sẽ thông báo cho khách. Khoản đã thanh toán được hoàn đầy đủ."},
+        {"type": "PRIVACY", "title": "Chính sách bảo mật", "content": "TranKien chỉ dùng thông tin của khách để xử lý đơn hàng, giao hàng và chăm sóc khách hàng.\n\nThông tin không được bán hay chia sẻ cho bên thứ ba, trừ đơn vị vận chuyển cần địa chỉ và số điện thoại để giao hàng.\n\nKhách có thể yêu cầu xem, sửa hoặc xóa thông tin cá nhân qua email hotro@trankien.vn."},
+        {"type": "TERMS_OF_SERVICE", "title": "Điều khoản dịch vụ", "content": "Khi đặt hàng tại TranKien, khách đồng ý với giá và khuyến mãi hiển thị tại thời điểm đặt.\n\nCửa hàng có quyền hủy đơn khi sản phẩm hết hàng ngoài dự kiến và sẽ thông báo cho khách. Khoản đã thanh toán được hoàn đầy đủ."},
         {"type": "WARRANTY", "title": "Chính sách bảo hành", "content": "Bảo hành đường may và khóa kéo trong 30 ngày kể từ ngày nhận hàng.\n\nMang sản phẩm đến cửa hàng hoặc gửi về kho Quận 7 kèm mã đơn hàng để được sửa miễn phí."}
     ]'::jsonb) LOOP
         IF NOT EXISTS (SELECT 1 FROM store_policies WHERE policy_type = v_item->>'type' AND status = 'ACTIVE' AND NOT deleted) THEN
@@ -842,7 +842,7 @@ BEGIN
         END IF;
     END LOOP;
 
-    RAISE NOTICE 'Seed LemonadeX hoàn tất: % sản phẩm mẫu, % biến thể, % đơn mẫu.',
+    RAISE NOTICE 'Seed TranKien hoàn tất: % sản phẩm mẫu, % biến thể, % đơn mẫu.',
         (SELECT count(*) FROM products WHERE product_code LIKE 'LXS-%'),
         (SELECT count(*) FROM product_variants v JOIN products p ON p.id = v.product_id WHERE p.product_code LIKE 'LXS-%'),
         (SELECT count(*) FROM orders WHERE order_code LIKE 'LX-SEED%');

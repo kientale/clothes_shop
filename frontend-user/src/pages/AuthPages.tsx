@@ -21,7 +21,7 @@ function AuthShell({ title, lede, children }: { title: string; lede: string; chi
     <div className="container auth-page">
       <div className="auth-shell">
         <aside className="auth-brand" aria-hidden>
-          <span className="wordmark wordmark-lg">LemonadeX</span>
+          <span className="wordmark wordmark-lg">TranKien</span>
           <p>Theo dõi đơn hàng, lưu thông tin giao hàng và đặt mua nhanh hơn ở lần sau.</p>
         </aside>
         <div className="auth-form">
@@ -61,7 +61,7 @@ export function LoginPage() {
   }
 
   return (
-    <AuthShell title="Đăng nhập" lede="Chào mừng bạn quay lại LemonadeX.">
+    <AuthShell title="Đăng nhập" lede="Chào mừng bạn quay lại TranKien.">
     <ValidatedForm className="form-stack" onSubmit={submit}>
       <Field label="Email">
         <input type="email" required maxLength={254} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -204,7 +204,7 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <AuthShell title="Quên mật khẩu" lede="Nhập email đã đăng ký, LemonadeX sẽ gửi liên kết để bạn đặt mật khẩu mới.">
+    <AuthShell title="Quên mật khẩu" lede="Nhập email đã đăng ký, TranKien sẽ gửi liên kết để bạn đặt mật khẩu mới.">
       {sent ? (
         <div className="form-stack">
           <div className="alert alert-success" role="status">
@@ -264,7 +264,7 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <AuthShell title="Đặt mật khẩu mới" lede="Chọn mật khẩu mới cho tài khoản LemonadeX của bạn.">
+    <AuthShell title="Đặt mật khẩu mới" lede="Chọn mật khẩu mới cho tài khoản TranKien của bạn.">
       {!token ? (
         <div className="form-stack">
           <div className="alert alert-warning" role="alert">

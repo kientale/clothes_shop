@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 // Per-page meta tags for search engines and link previews (Facebook, Zalo, X). The shop is a single-page
 // app, so crawlers that run JavaScript (Google) read these; for crawlers that do not, see README (prerendering).
 
-const DEFAULT_DESCRIPTION = 'LemonadeX: thời trang hằng ngày cho nam, nữ và trẻ em. Đặt online, giao tận nơi.'
+const DEFAULT_DESCRIPTION = 'TranKien: thời trang hằng ngày cho nam, nữ và trẻ em. Đặt online, giao tận nơi.'
 
 interface Seo {
   description?: string

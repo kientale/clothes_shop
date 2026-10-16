@@ -16,7 +16,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme
     try {
-      localStorage.setItem('lemonadex.admin.theme', theme)
+      localStorage.setItem('trankien.admin.theme', theme)
     } catch {
       // Theme switching still works when the browser blocks storage.
     }

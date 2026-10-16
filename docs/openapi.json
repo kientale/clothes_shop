@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "LemonadeX Authentication and Administration API",
+    "title": "TranKien Authentication and Administration API",
     "version": "1.0.0",
     "description": "Feature-based Spring MVC API for authentication, administrator accounts, roles and customers. JWT lifetime is 15 minutes. Every authenticated request checks current account status and database roles/permissions."
   },

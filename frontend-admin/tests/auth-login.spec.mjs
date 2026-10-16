@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { ADMIN, CUSTOMER, TOKEN, envelope, failure, mockApi, adminLogin, assertNoToken } from './auth-fixtures.mjs'
 
-const KEY = 'lemonadex.admin.token'
+const KEY = 'trankien.admin.token'
 
 test('backend admin login persists JWT, restores profile and logs out', async ({ page }) => {
   const errors = []
@@ -27,12 +27,12 @@ test('backend admin login persists JWT, restores profile and logs out', async ({
 })
 
 test('obsolete mock session does not grant access', async ({ page }) => {
-  await page.addInitScript(() => localStorage.setItem('lemonadex.admin.mock-session', 'admin'))
+  await page.addInitScript(() => localStorage.setItem('trankien.admin.mock-session', 'admin'))
   const requests = await mockApi(page)
   await page.goto('/')
   await expect(page).toHaveURL(/\/login$/)
   expect(requests).toEqual([])
-  expect(await page.evaluate(() => localStorage.getItem('lemonadex.admin.mock-session'))).toBeNull()
+  expect(await page.evaluate(() => localStorage.getItem('trankien.admin.mock-session'))).toBeNull()
 })
 
 test('storage write failure preserves JWT in memory until logout or reload', async ({ page }) => {

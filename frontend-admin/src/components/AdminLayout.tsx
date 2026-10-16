@@ -28,7 +28,7 @@ export default function AdminLayout() {
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 767px)').matches)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try {
-      return localStorage.getItem('lemonadex.admin.sidebarCollapsed') === 'true'
+      return localStorage.getItem('trankien.admin.sidebarCollapsed') === 'true'
     } catch {
       return false
     }
@@ -83,7 +83,7 @@ export default function AdminLayout() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('lemonadex.admin.sidebarCollapsed', String(sidebarCollapsed))
+      localStorage.setItem('trankien.admin.sidebarCollapsed', String(sidebarCollapsed))
     } catch {
       // The sidebar remains usable when storage is unavailable.
     }
@@ -154,7 +154,7 @@ export default function AdminLayout() {
           <ListIcon size={20} />
         </button>
         <Link to="/" className="brand">
-          <span className="brand-name">LemonadeX</span>
+          <span className="brand-name">TranKien</span>
           <span className="brand-tag">Admin</span>
         </Link>
 

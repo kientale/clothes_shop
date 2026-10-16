@@ -5,7 +5,7 @@ const SHOP = 'http://127.0.0.1:3300'
 const writes = (requests) => requests.filter(({ method }) => ['POST', 'PUT', 'PATCH'].includes(method))
 
 async function admin(page, permissions) {
-  await page.addInitScript((token) => localStorage.setItem('lemonadex.admin.token', token), TOKEN)
+  await page.addInitScript((token) => localStorage.setItem('trankien.admin.token', token), TOKEN)
   return mockApi(page, { account: { ...ADMIN, permissions } })
 }
 
@@ -70,7 +70,7 @@ test('catalog dialog validates external submit buttons, optional fields and imag
   await dialog.getByRole('button', { name: 'Thêm thương hiệu', exact: true }).click()
   await expect(dialog.locator('input').first()).toHaveAttribute('aria-invalid', 'true')
   expect(writes(requests)).toEqual([])
-  await dialog.getByLabel('Tên thương hiệu', { exact: true }).fill('LemonadeX')
+  await dialog.getByLabel('Tên thương hiệu', { exact: true }).fill('TranKien')
   await dialog.getByRole('button', { name: 'Dán đường dẫn ảnh', exact: true }).click()
   await dialog.getByLabel('Đường dẫn ảnh đại diện', { exact: true }).fill('javascript:alert(1)')
   await dialog.getByRole('button', { name: 'Thêm thương hiệu', exact: true }).click()
@@ -79,7 +79,7 @@ test('catalog dialog validates external submit buttons, optional fields and imag
   await dialog.getByLabel('Đường dẫn ảnh đại diện', { exact: true }).fill('')
   await dialog.getByRole('button', { name: 'Thêm thương hiệu', exact: true }).click()
   await expect.poll(() => writes(requests).length).toBe(1)
-  expect(writes(requests)[0].body).toMatchObject({ name: 'LemonadeX', logoUrl: null })
+  expect(writes(requests)[0].body).toMatchObject({ name: 'TranKien', logoUrl: null })
 })
 
 test('order settings reject missing values, zero, fractions and values outside backend limits', async ({ page }) => {

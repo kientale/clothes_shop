@@ -171,7 +171,7 @@ POST {{baseUrl}}/api/v1/admin/categories
 Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
 Content-Type: application/json
 
-{"name":"Áo thun LemonadeX","parentId":null,"slug":null,"description":"Danh mục áo thun","status":"ACTIVE"}
+{"name":"Áo thun TranKien","parentId":null,"slug":null,"description":"Danh mục áo thun","status":"ACTIVE"}
 
 ### Create brand
 # @name createdBrand
@@ -179,7 +179,7 @@ POST {{baseUrl}}/api/v1/admin/brands
 Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
 Content-Type: application/json
 
-{"name":"LemonadeX Studio","slug":null,"logoUrl":null,"description":null,"status":"ACTIVE"}
+{"name":"TranKien Studio","slug":null,"logoUrl":null,"description":null,"status":"ACTIVE"}
 
 ### Create color
 # @name createdColor
@@ -205,7 +205,7 @@ Content-Type: application/json
 
 {
   "productCode":"TEE-001",
-  "name":"Áo thun LemonadeX",
+  "name":"Áo thun TranKien",
   "slug":null,
   "description":"Áo cotton mặc hằng ngày",
   "shortDescription":"Cotton 100%",
@@ -274,7 +274,7 @@ Authorization: Bearer {{adminLogin.response.body.$.data.accessToken}}
 Content-Type: application/json
 
 {
-  "name":"LemonadeX Thu Đông 2026",
+  "name":"TranKien Thu Đông 2026",
   "slug":null,
   "description":"Bộ sưu tập mùa mới",
   "imageUrl":null,

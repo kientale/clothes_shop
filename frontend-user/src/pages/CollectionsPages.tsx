@@ -10,7 +10,7 @@ import { useSeo } from '../seo'
 /** Every visible collection as large photo tiles. */
 export function CollectionsPage() {
   useTitle('Bộ sưu tập')
-  useSeo({ description: 'Các bộ sưu tập theo mùa và theo phong cách của LemonadeX.' })
+  useSeo({ description: 'Các bộ sưu tập theo mùa và theo phong cách của TranKien.' })
   const data = useAsync(() => store.collections(), [])
 
   return (

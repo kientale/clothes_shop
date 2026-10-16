@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-JAVA = ROOT / "src/main/java/lemonadex/project/clothes/features"
+JAVA = ROOT / "src/main/java/trankien/project/clothes/features"
 PREFIX = "Commerce"
 spec_path = ROOT / "docs/openapi.json"
 spec = json.loads(spec_path.read_text(encoding="utf-8"))

@@ -13,7 +13,7 @@ Content-Type: application/json
 {
   "expectedRevision": 0,
   "configuration": {
-    "storeName": "LemonadeX",
+    "storeName": "TranKien",
     "legalName": null,
     "taxCode": null,
     "supportEmail": "support@example.com",

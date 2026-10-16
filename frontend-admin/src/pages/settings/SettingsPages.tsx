@@ -118,7 +118,7 @@ export function StoreSettingsPage() {
                 <input data-normalize-phone="true" {...bind(id, 'zaloPhone', errors)} inputMode="tel" maxLength={20} placeholder="0901234567" value={form.zaloPhone} onChange={(e) => set('zaloPhone', e.target.value)} />
               </Field>
               <Field label="Link Messenger" htmlFor={`${id}-messengerUrl`} error={errors.messengerUrl} optional>
-                <input type="url" {...bind(id, 'messengerUrl', errors)} maxLength={2048} placeholder="https://m.me/lemonadex" value={form.messengerUrl} onChange={(e) => set('messengerUrl', e.target.value)} />
+                <input type="url" {...bind(id, 'messengerUrl', errors)} maxLength={2048} placeholder="https://m.me/trankien" value={form.messengerUrl} onChange={(e) => set('messengerUrl', e.target.value)} />
               </Field>
             </div>
           </SettingsSection>

@@ -43,6 +43,6 @@ export async function adminLogin(page, username = 'admin', password = 'admin123'
   await page.getByRole('button', { name: 'Đăng nhập', exact: true }).click()
 }
 
-export async function assertNoToken(page, key = 'lemonadex.admin.token') {
+export async function assertNoToken(page, key = 'trankien.admin.token') {
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), key)).toBeNull()
 }

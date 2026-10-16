@@ -19,7 +19,7 @@ function useTheme() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     try {
-      localStorage.setItem('lemonadex.theme', theme)
+      localStorage.setItem('trankien.theme', theme)
     } catch {
       // The choice simply is not remembered.
     }
@@ -58,8 +58,8 @@ export default function Layout() {
       <EmailVerifyBanner />
       <header className="site-header">
         <div className="container header-inner">
-          <Link to="/shop" className="wordmark" aria-label="LemonadeX - Trang chủ cửa hàng">
-            LemonadeX
+          <Link to="/shop" className="wordmark" aria-label="TranKien - Trang chủ cửa hàng">
+            TranKien
           </Link>
 
           <nav className="main-nav" aria-label="Danh mục chính">

@@ -7,14 +7,14 @@ API quản lý admin, vai trò, khách hàng và quyền bổ sung bởi V4 đư
 | Tiêu chuẩn | Triển khai |
 | --- | --- |
 | Migration | [V2](../src/main/resources/db/migration/V2__authentication_soft_delete_and_roles.sql) bổ sung deleted, timestamp và role/permission; giữ V1. Flyway chạy SQL, ddl-auto: validate. |
-| Entity | Account, Customer, Role, Permission kế thừa [BaseEntity](../src/main/java/lemonadex/project/clothes/common/model/BaseEntity.java). @SQLDelete cập nhật deleted=true; @SQLRestriction ẩn bản ghi xóa mềm. |
+| Entity | Account, Customer, Role, Permission kế thừa [BaseEntity](../src/main/java/trankien/project/clothes/common/model/BaseEntity.java). @SQLDelete cập nhật deleted=true; @SQLRestriction ẩn bản ghi xóa mềm. |
 | DTO/Validation | RegisterRequest, LoginRequest và response DTO riêng; @NotBlank, @Email, @Size, @Pattern, @Past, @AssertTrue. |
-| Ngày/giờ | [DateTimeUtils](../src/main/java/lemonadex/project/clothes/common/util/DateTimeUtils.java) cung cấp DATE_PATTERN, TIME_PATTERN, DATE_TIME_PATTERN; DTO dùng @JsonFormat. |
-| Mapper | [AuthMapper](../src/main/java/lemonadex/project/clothes/features/auth/mapper/AuthMapper.java) dùng componentModel="spring"; bỏ qua id, trạng thái, quyền và trường hệ thống khi tạo entity. |
+| Ngày/giờ | [DateTimeUtils](../src/main/java/trankien/project/clothes/common/util/DateTimeUtils.java) cung cấp DATE_PATTERN, TIME_PATTERN, DATE_TIME_PATTERN; DTO dùng @JsonFormat. |
+| Mapper | [AuthMapper](../src/main/java/trankien/project/clothes/features/auth/mapper/AuthMapper.java) dùng componentModel="spring"; bỏ qua id, trạng thái, quyền và trường hệ thống khi tạo entity. |
 | Repository/Spec | Truy vấn auth có DeletedFalse; AccountSpecification.visible luôn thêm deleted=false; entity restriction áp dụng cả quan hệ role/permission. |
 | Response | Controller trả ApiResponse<T>; danh sách tài khoản trả ApiResponse<PageResponse<AccountSummaryResponse>>. |
-| Exception | [GlobalExceptionHandler](../src/main/java/lemonadex/project/clothes/common/exception/GlobalExceptionHandler.java) xử lý ResourceNotFoundException, IllegalArgumentException, validation và lỗi dữ liệu; ApiErrorWriter xử lý lỗi security filter. |
-| Security/Gateway | [SecurityConfig](../src/main/java/lemonadex/project/clothes/features/auth/config/SecurityConfig.java) khai báo route public, JWT, ADMIN; controller kiểm tra permission. [Nginx](../gateway/nginx.conf) định tuyến auth/admin và giới hạn request auth. |
+| Exception | [GlobalExceptionHandler](../src/main/java/trankien/project/clothes/common/exception/GlobalExceptionHandler.java) xử lý ResourceNotFoundException, IllegalArgumentException, validation và lỗi dữ liệu; ApiErrorWriter xử lý lỗi security filter. |
+| Security/Gateway | [SecurityConfig](../src/main/java/trankien/project/clothes/features/auth/config/SecurityConfig.java) khai báo route public, JWT, ADMIN; controller kiểm tra permission. [Nginx](../gateway/nginx.conf) định tuyến auth/admin và giới hạn request auth. |
 
 ## Request
 
@@ -53,7 +53,7 @@ Hai endpoint trả data.accessToken, tokenType="Bearer", expiresIn=900 và accou
 
 [Frontend admin](../frontend-admin/README.md) tại `http://localhost:3001/login` và [frontend khách hàng](../frontend-user/README.md) tại `http://localhost:3000/shop/login` dùng các API auth trên. Client đọc `ApiResponse.data`, lưu JWT và gửi Bearer cho request được bảo vệ. Reload gọi `/auth/me` trước khi mở trang cần đăng nhập. Frontend admin kiểm tra `roles.includes('ADMIN')`; backend vẫn kiểm tra role và permission cho từng request.
 
-Đăng xuất xóa JWT và trạng thái tài khoản tại trình duyệt. Lỗi 401 của phiên hiện tại cũng xóa phiên; lỗi 403 giữ phiên và hiển thị lỗi. JWT hết hạn cần đăng nhập lại. Hai frontend có key lưu token riêng: `lemonadex.admin.token` và `lemonadex.token`.
+Đăng xuất xóa JWT và trạng thái tài khoản tại trình duyệt. Lỗi 401 của phiên hiện tại cũng xóa phiên; lỗi 403 giữ phiên và hiển thị lỗi. JWT hết hạn cần đăng nhập lại. Hai frontend có key lưu token riêng: `trankien.admin.token` và `trankien.token`.
 
 Vite proxy `/api` tới backend cổng 8080 mặc định. Có thể đổi `VITE_API_PROXY_TARGET` trong `.env.local` của frontend. `VITE_API_BASE_URL` nhận origin backend khi gọi trực tiếp; CORS mặc định cho phép `http://localhost:3000` và `http://localhost:3001`, có thể ghi đè bằng `CORS_ALLOWED_ORIGINS`.
 

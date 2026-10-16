@@ -5,7 +5,7 @@ import { useAuth } from '../auth/AuthContext'
 
 /** Per-line cap; the backend also enforces the configured limits at checkout. */
 export const MAX_LINE_QUANTITY = 20
-const STORAGE_KEY = 'lemonadex.cart'
+const STORAGE_KEY = 'trankien.cart'
 
 /**
  * A cart line keeps a snapshot for display only. Prices, promotions and stock are always

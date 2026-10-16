@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    try { localStorage.removeItem('lemonadex.admin.mock-session') } catch { /* Storage unavailable. */ }
+    try { localStorage.removeItem('trankien.admin.mock-session') } catch { /* Storage unavailable. */ }
     const unsubscribe = onUnauthorized(logout)
     const token = getToken()
     if (!token) {

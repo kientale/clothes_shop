@@ -2,6 +2,8 @@
 
 File Flyway: `src/main/resources/db/migration/V1__init_fashion_ecommerce.sql`.
 
+V13 (`V13__rename_brand_to_trankien.sql`) đổi tên thương hiệu sang TranKien trong cấu hình cửa hàng, thông tin thanh toán, thương hiệu sản phẩm, banner, bài viết và chính sách đã lưu. Migration giữ nguyên ID và quan hệ sản phẩm để dữ liệu mẫu có thể chạy lại mà không nhân bản. Các migration cũ được giữ nguyên để database đang sử dụng vẫn vượt qua kiểm tra checksum Flyway.
+
 Migration khởi tạo database trống với đúng 50 bảng và các cột trong mô hình đã cung cấp. Các bảng được tạo theo thứ tự phụ thuộc; không có dữ liệu tài khoản, role, permission hay phương thức thanh toán mặc định.
 
 ## Quy ước

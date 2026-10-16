@@ -1,4 +1,4 @@
-# LemonadeX Admin
+# TranKien Admin
 
 Chạy backend theo [README gốc](../README.md), sau đó ở thư mục `frontend-admin`:
 
@@ -9,7 +9,7 @@ npm.cmd run dev
 
 Mở http://localhost:3001/login. Tài khoản admin được Flyway tạo trong database: tên đăng nhập `admin` hoặc email `admin@example.com`, mật khẩu `admin123`.
 
-Frontend gọi `POST /api/v1/auth/login`, đọc `ApiResponse.data.account` và chỉ chấp nhận tài khoản ACTIVE có role ADMIN. JWT từ `data.accessToken` được lưu tại `lemonadex.admin.token` và gửi qua `Authorization: Bearer <token>`. Khi tải lại trang, `GET /api/v1/auth/me` kiểm tra tài khoản và quyền hiện tại. Đăng xuất, phiên không hợp lệ hoặc lỗi 401 của phiên hiện tại xóa token; lỗi 403 hiển thị lỗi và giữ phiên. Không còn đăng nhập mock khi backend không chạy. Nếu localStorage không khả dụng, phiên chỉ giữ trong bộ nhớ đến khi tải lại trang.
+Frontend gọi `POST /api/v1/auth/login`, đọc `ApiResponse.data.account` và chỉ chấp nhận tài khoản ACTIVE có role ADMIN. JWT từ `data.accessToken` được lưu tại `trankien.admin.token` và gửi qua `Authorization: Bearer <token>`. Khi tải lại trang, `GET /api/v1/auth/me` kiểm tra tài khoản và quyền hiện tại. Đăng xuất, phiên không hợp lệ hoặc lỗi 401 của phiên hiện tại xóa token; lỗi 403 hiển thị lỗi và giữ phiên. Không còn đăng nhập mock khi backend không chạy. Nếu localStorage không khả dụng, phiên chỉ giữ trong bộ nhớ đến khi tải lại trang.
 
 Vite chuyển `/api` tới `http://localhost:8080`. Có thể sao chép `.env.example` thành `.env.local` rồi đổi `VITE_API_PROXY_TARGET`. `VITE_API_BASE_URL` để trống khi dùng proxy; nếu gọi backend trực tiếp, đặt origin backend và cho phép origin frontend trong `CORS_ALLOWED_ORIGINS`. Bản build cần reverse proxy `/api` hoặc cấu hình backend origin trước khi build.
 

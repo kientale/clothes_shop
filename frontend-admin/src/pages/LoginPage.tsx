@@ -86,7 +86,7 @@ export default function LoginPage() {
         </div>
 
         <header className="signin-brand">
-          <span>LemonadeX</span>
+          <span>TranKien</span>
         </header>
 
         <div className="signin-hero-foot">
@@ -105,7 +105,7 @@ export default function LoginPage() {
 
       <main className="signin-panel">
         <div className="signin-panel-top">
-          <span className="signin-panel-name">LemonadeX Admin</span>
+          <span className="signin-panel-name">TranKien Admin</span>
           <ThemeToggle className="signin-theme" />
         </div>
 
@@ -184,7 +184,7 @@ export default function LoginPage() {
           </div>
         </ValidatedForm>
 
-        <footer className="signin-foot">© 2026 LemonadeX</footer>
+        <footer className="signin-foot">© 2026 TranKien</footer>
       </main>
     </div>
   )

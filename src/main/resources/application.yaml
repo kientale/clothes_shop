@@ -71,15 +71,15 @@ server:
 
 app:
   security:
-    issuer: ${JWT_ISSUER:lemonadex-clothes}
+    issuer: ${JWT_ISSUER:trankien-clothes}
     audience: clothes-api
     secret: ${JWT_SECRET}
     access-token-ttl: 15m
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:3001}
   mail:
-    from: ${MAIL_FROM:no-reply@lemonadex.vn}
-    from-name: ${MAIL_FROM_NAME:LemonadeX}
+    from: ${MAIL_FROM:no-reply@trankien.vn}
+    from-name: ${MAIL_FROM_NAME:TranKien}
     # Public address of the shop, used in email links (password reset, order).
     storefront-url: ${STOREFRONT_URL:http://localhost:3000}
   rate-limit:

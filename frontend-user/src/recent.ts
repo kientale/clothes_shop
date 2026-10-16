@@ -1,7 +1,7 @@
 import type { ProductCard, ProductDetail } from './api/types'
 
 // Products the shopper opened recently, newest first. Kept in this browser only; nothing is sent to the server.
-const KEY = 'lemonadex.recent'
+const KEY = 'trankien.recent'
 const LIMIT = 12
 
 export function recentProducts(): ProductCard[] {

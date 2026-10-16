@@ -3,7 +3,7 @@
 Ứng dụng là backend REST theo Spring MVC, tổ chức package theo chức năng nghiệp vụ: auth quản lý xác thực/JWT, account quản lý tài khoản admin, role quản lý vai trò/quyền, customer quản lý khách hàng, file lưu ảnh, catalog quản lý sản phẩm, inventory quản lý kho và order quản lý đơn/thanh toán/giao hàng/đổi trả/hoàn tiền. Review quản lý đánh giá sau mua; marketing quản lý coupon, promotion, Flash Sale, banner và hộp thư thông báo. Controller nhận request, gọi Service và trả JSON từ response DTO. Service quản lý nghiệp vụ và transaction; Repository truy vấn entity.
 
 ```text
-lemonadex.project.clothes
+trankien.project.clothes
 ├── ClothesApplication
 ├── features
 │   ├── auth

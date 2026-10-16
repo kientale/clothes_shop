@@ -8,10 +8,10 @@
         <version>4.1.1</version>
         <relativePath/>
     </parent>
-    <groupId>lemonadex.project</groupId>
+    <groupId>trankien.project</groupId>
     <artifactId>clothes</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>LemonadeX Clothes</name>
+    <name>TranKien Clothes</name>
     <description>Fashion commerce backend organized by feature using Spring MVC</description>
     <properties>
         <java.version>25</java.version>

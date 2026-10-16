@@ -56,7 +56,7 @@ Ví dụ tạo chuyển khoản thủ công:
     "bankDetails": {
       "bankName": "Vietcombank",
       "accountNumber": "0123456789",
-      "accountHolder": "LEMONADEX"
+      "accountHolder": "TRANKIEN"
     },
     "instructions": "Ghi mã đơn hàng trong nội dung chuyển khoản"
   }

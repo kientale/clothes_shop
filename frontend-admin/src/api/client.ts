@@ -1,7 +1,7 @@
 import type { ApiResponse, Problem } from './types'
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '') + '/api/v1'
-const TOKEN_KEY = 'lemonadex.admin.token'
+const TOKEN_KEY = 'trankien.admin.token'
 let memoryToken: string | null = null
 let storageWriteFailed = false
 let unauthorizedHandler: (() => void) | null = null

@@ -30,8 +30,8 @@ MAIL_HOST=smtp.gmail.com        # để trống: chỉ ghi email ra log (môi tr
 MAIL_PORT=587
 MAIL_USERNAME=...
 MAIL_PASSWORD=...               # Gmail: dùng App Password
-MAIL_FROM=no-reply@lemonadex.vn
-STOREFRONT_URL=https://lemonadex.vn
+MAIL_FROM=no-reply@trankien.vn
+STOREFRONT_URL=https://trankien.vn
 ```
 
 Khi `MAIL_HOST` trống và `STOREFRONT_URL` là localhost, nội dung email (kể cả liên kết đặt lại mật khẩu) được in ra log để thử ở máy dev. Với địa chỉ khác localhost, log chỉ ghi người nhận và tiêu đề.

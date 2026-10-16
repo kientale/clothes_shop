@@ -1,4 +1,4 @@
-# LemonadeX Clothes Backend
+# TranKien Clothes Backend
 
 Backend thời trang dùng Java 25, Spring Boot 4.1.1, PostgreSQL, Flyway và Spring Security JWT. Chức năng hiện có: xác thực, quản lý tài khoản admin, vai trò, khách hàng, catalog sản phẩm, kho hàng, đơn hàng, đánh giá và Marketing. V1 tạo schema; V2–V7 bổ sung auth, quản trị, file, catalog và kho/đơn; V8 bổ sung đánh giá sau mua, coupon, khuyến mãi, Flash Sale, banner và thông báo.
 
@@ -34,7 +34,7 @@ Chạy `.\mvnw.cmd spring-boot:run` ở thư mục gốc sau khi điền `.env`.
 
 Lỗi `UnknownHostException: aws-0-REGION.pooler.supabase.com` nghĩa là ứng dụng vẫn đọc hostname mẫu. Kiểm tra `.env` và biến môi trường `DB_URL` trong terminal/Run Configuration; biến môi trường thật được ưu tiên hơn `.env`.
 
-Flyway tự chạy V1–V9; Hibernate chỉ dùng ddl-auto: validate. Xem [migration PostgreSQL](docs/database-migration.md).
+Flyway tự chạy V1–V13; Hibernate chỉ dùng ddl-auto: validate. V13 chuyển tên thương hiệu đã lưu sang TranKien khi khởi động, giữ ID và các thông tin tùy chỉnh không chứa tên cũ. Xem [migration PostgreSQL](docs/database-migration.md).
 
 ## API
 
